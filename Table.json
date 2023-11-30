@@ -1,0 +1,165 @@
+[
+    {
+        "id": "3ab6dfd56fd59205",
+        "type": "tab",
+        "label": "Table",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "465277580dac1475",
+        "type": "mysql",
+        "z": "3ab6dfd56fd59205",
+        "mydb": "a94c2155e352c42e",
+        "name": "MySQL Database",
+        "x": 550,
+        "y": 200,
+        "wires": [
+            [
+                "7a80c512340862b5"
+            ]
+        ]
+    },
+    {
+        "id": "72c1a23117bd02a7",
+        "type": "function",
+        "z": "3ab6dfd56fd59205",
+        "name": "Prepare SQL Query",
+        "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"SELECT temperature, pressure, humidity, moilSoilture, date FROM plant_data\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 200,
+        "wires": [
+            [
+                "465277580dac1475"
+            ]
+        ]
+    },
+    {
+        "id": "7a80c512340862b5",
+        "type": "ui_table",
+        "z": "3ab6dfd56fd59205",
+        "group": "eac793334bdbe5ed",
+        "name": "",
+        "order": 1,
+        "width": "11",
+        "height": "5",
+        "columns": [
+            {
+                "field": "temperature",
+                "title": "Temperature",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "pressure",
+                "title": "Pressure",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "humidity",
+                "title": "Humidity",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "moilSoilture",
+                "title": "moilSoilture",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "date",
+                "title": "Date",
+                "width": "200",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 710,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "c90c9627271e02d1",
+        "type": "inject",
+        "z": "3ab6dfd56fd59205",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "72c1a23117bd02a7"
+            ]
+        ]
+    },
+    {
+        "id": "a94c2155e352c42e",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "internetofthings",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "eac793334bdbe5ed",
+        "type": "ui_group",
+        "name": "DataTable",
+        "tab": "5b044158fe22bff6",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5b044158fe22bff6",
+        "type": "ui_tab",
+        "name": "Table",
+        "icon": "fa-table",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    }
+]

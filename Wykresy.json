@@ -1,0 +1,334 @@
+[
+    {
+        "id": "69a6f6efb3aa918d",
+        "type": "tab",
+        "label": "Wykresy",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8831e4cdae27d9c5",
+        "type": "mqtt in",
+        "z": "69a6f6efb3aa918d",
+        "name": "temperatura",
+        "topic": "PIR/L1/Z3/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 180,
+        "wires": [
+            [
+                "00b8f267e5f939bb"
+            ]
+        ]
+    },
+    {
+        "id": "4fad227b342ecd09",
+        "type": "switch",
+        "z": "69a6f6efb3aa918d",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "temperatureData",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "pressureData",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "humidityData",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "moilSoiltureData",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 410,
+        "y": 220,
+        "wires": [
+            [
+                "c24b2c2a1856bde7"
+            ],
+            [
+                "4185e6f83349725f"
+            ],
+            [
+                "d9e7175f53635b55"
+            ],
+            [
+                "2245543fa899c9aa"
+            ]
+        ]
+    },
+    {
+        "id": "00b8f267e5f939bb",
+        "type": "function",
+        "z": "69a6f6efb3aa918d",
+        "name": "function 3",
+        "func": "if (msg.topic === \"PIR/L1/Z3/temperature\") {\n    msg.topic = \"temperatureData\";\n} else if (msg.topic === \"PIR/L1/Z3/pressure\") {\n    msg.topic = \"pressureData\";\n} else if (msg.topic === \"PIR/L1/Z3/humidity\") {\n    msg.topic = \"humidityData\";\n} else if (msg.topic === \"PIR/L1/Z3/moilSoilture\") {\n    msg.topic = \"moilSoiltureData\";\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 200,
+        "wires": [
+            [
+                "4fad227b342ecd09"
+            ]
+        ]
+    },
+    {
+        "id": "c24b2c2a1856bde7",
+        "type": "ui_chart",
+        "z": "69a6f6efb3aa918d",
+        "name": "",
+        "group": "ac88ae8c24c6ac3a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 650,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4185e6f83349725f",
+        "type": "ui_chart",
+        "z": "69a6f6efb3aa918d",
+        "name": "",
+        "group": "cd40c376364e1a81",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "pressure",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 680,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d9e7175f53635b55",
+        "type": "ui_chart",
+        "z": "69a6f6efb3aa918d",
+        "name": "",
+        "group": "cd40c376364e1a81",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "humidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 640,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2245543fa899c9aa",
+        "type": "ui_chart",
+        "z": "69a6f6efb3aa918d",
+        "name": "",
+        "group": "ac88ae8c24c6ac3a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "moilSoilture",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 610,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": "",
+        "credentials": {}
+    },
+    {
+        "id": "ac88ae8c24c6ac3a",
+        "type": "ui_group",
+        "name": "chart",
+        "tab": "1bae6484ac896a0a",
+        "order": 2,
+        "disp": false,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "cd40c376364e1a81",
+        "type": "ui_group",
+        "name": "chartPressureHumidity",
+        "tab": "1bae6484ac896a0a",
+        "order": 2,
+        "disp": false,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1bae6484ac896a0a",
+        "type": "ui_tab",
+        "name": "Chart",
+        "icon": "fa-bar-chart",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]

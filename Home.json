@@ -1,0 +1,948 @@
+[
+    {
+        "id": "206420c3420ca147",
+        "type": "tab",
+        "label": "Home",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c5f564080741f47a",
+        "type": "inject",
+        "z": "206420c3420ca147",
+        "name": "0",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "13 10 * * 1,2,3,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 110,
+        "y": 440,
+        "wires": [
+            [
+                "4528b8888602e9d7"
+            ]
+        ]
+    },
+    {
+        "id": "042e73c4c205ee23",
+        "type": "inject",
+        "z": "206420c3420ca147",
+        "name": "1",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "12 10 * * 1,2,3,5",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 110,
+        "y": 500,
+        "wires": [
+            [
+                "4528b8888602e9d7"
+            ]
+        ]
+    },
+    {
+        "id": "4528b8888602e9d7",
+        "type": "template",
+        "z": "206420c3420ca147",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload}}",
+        "output": "str",
+        "x": 330,
+        "y": 480,
+        "wires": [
+            [
+                "92a09255ab1c0a3b",
+                "a9fda4d046ce9612",
+                "f4cf6d11f046fcca"
+            ]
+        ]
+    },
+    {
+        "id": "92a09255ab1c0a3b",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "PIR/L1/Z3/buttB",
+        "topic": "PIR/L1/Z3/buttB",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 540,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "af07d51.5afe728",
+        "type": "ui_switch",
+        "z": "206420c3420ca147",
+        "name": "",
+        "label": "Water",
+        "tooltip": "",
+        "group": "415ff655.a1d8f8",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "fa-toggle-on bigIcon",
+        "oncolor": "green",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "fa-toggle-off bigIcon",
+        "offcolor": "red",
+        "animate": false,
+        "className": "",
+        "x": 590,
+        "y": 520,
+        "wires": [
+            [
+                "4bc3bbafb4434a55"
+            ]
+        ]
+    },
+    {
+        "id": "5aabc2ceac08d0ae",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "PIR/L1/Z3/buttB",
+        "topic": "PIR/L1/Z3/buttB",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 840,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "a9fda4d046ce9612",
+        "type": "function",
+        "z": "206420c3420ca147",
+        "name": "function 4",
+        "func": "if (msg.payload == \"0\") msg.payload = false;\nelse if (msg.payload == \"1\") msg.payload = true;\nelse console.log(\"Stan nieokreslony\");\n//msg.pass = (msg.payload == 1) ? true : false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 560,
+        "wires": [
+            [
+                "af07d51.5afe728"
+            ]
+        ]
+    },
+    {
+        "id": "4bc3bbafb4434a55",
+        "type": "function",
+        "z": "206420c3420ca147",
+        "name": "control",
+        "func": "if (msg.payload == false) msg.payload = \"0\";\nelse if (msg.payload == true) msg.payload = \"1\";\nelse console.log(\"Stan nieokreslony\");\n//msg.pass = (msg.payload == 1) ? true : false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 500,
+        "wires": [
+            [
+                "5aabc2ceac08d0ae"
+            ]
+        ]
+    },
+    {
+        "id": "cda848ce.b96c58",
+        "type": "ui_template",
+        "z": "206420c3420ca147",
+        "group": "357d373a.2d1478",
+        "name": "icon style",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    .bigIcon{\n        font-size:2em;\n        transition: 1s;\n    }\n    .bigIcon.red{\n        color:red;\n    }\n    \n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "global",
+        "className": "",
+        "x": 600,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "62716c0c0d7c99c9",
+        "type": "ui_slider",
+        "z": "206420c3420ca147",
+        "name": "",
+        "label": "temperature",
+        "tooltip": "",
+        "group": "3a8dd3b0727a141b",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "30",
+        "step": 1,
+        "className": "",
+        "x": 590,
+        "y": 720,
+        "wires": [
+            [
+                "3de75f13b6c7f325"
+            ]
+        ]
+    },
+    {
+        "id": "59e70d1f804bbb4d",
+        "type": "ui_slider",
+        "z": "206420c3420ca147",
+        "name": "",
+        "label": "pressure",
+        "tooltip": "",
+        "group": "3a8dd3b0727a141b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "1200",
+        "step": 1,
+        "className": "",
+        "x": 640,
+        "y": 800,
+        "wires": [
+            [
+                "ca2da284d0727b36"
+            ]
+        ]
+    },
+    {
+        "id": "3b05d62f4ec1f24c",
+        "type": "ui_slider",
+        "z": "206420c3420ca147",
+        "name": "",
+        "label": "humidity",
+        "tooltip": "",
+        "group": "3a8dd3b0727a141b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "100",
+        "step": 1,
+        "className": "",
+        "x": 640,
+        "y": 860,
+        "wires": [
+            [
+                "8bf1d344670a4195"
+            ]
+        ]
+    },
+    {
+        "id": "deaa78782973c1f4",
+        "type": "switch",
+        "z": "206420c3420ca147",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "temperatureData2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "pressureData2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "humidityData2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 430,
+        "y": 800,
+        "wires": [
+            [
+                "62716c0c0d7c99c9"
+            ],
+            [
+                "59e70d1f804bbb4d"
+            ],
+            [
+                "3b05d62f4ec1f24c"
+            ]
+        ]
+    },
+    {
+        "id": "efacf264d563c7e1",
+        "type": "function",
+        "z": "206420c3420ca147",
+        "name": "function 5",
+        "func": "if (msg.topic === \"PIR/L1/condition/temperature\") {\n    msg.topic = \"temperatureData2\";\n} else if (msg.topic === \"PIR/L1/condition/pressure\") {\n    msg.topic = \"pressureData2\";\n} else if (msg.topic === \"PIR/L1/condition/humidity\") {\n    msg.topic = \"humidityData2\";\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 800,
+        "wires": [
+            [
+                "deaa78782973c1f4"
+            ]
+        ]
+    },
+    {
+        "id": "b8af663df7cd693d",
+        "type": "mqtt in",
+        "z": "206420c3420ca147",
+        "name": "condition",
+        "topic": "PIR/L1/condition/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 800,
+        "wires": [
+            [
+                "efacf264d563c7e1"
+            ]
+        ]
+    },
+    {
+        "id": "3de75f13b6c7f325",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/temperature",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 740,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "ca2da284d0727b36",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/pressure",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 870,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "8bf1d344670a4195",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/humidity",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 770,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "7ef835b1.a0e8f8",
+        "type": "http request",
+        "z": "206420c3420ca147",
+        "name": "Get Weather Data",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Rzeszow&units=metric&appid=api",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "credentials": {},
+        "x": 150,
+        "y": 1120,
+        "wires": [
+            [
+                "a4ef4e03.a89408",
+                "6e84bc277f489a24"
+            ]
+        ]
+    },
+    {
+        "id": "a4ef4e03.a89408",
+        "type": "function",
+        "z": "206420c3420ca147",
+        "name": "Process Weather Data",
+        "func": "var temperature = msg.payload.main.temp;\nvar humidity = msg.payload.main.humidity;\nvar pressure = msg.payload.main.pressure;\n\n// Dostosowanie wartości\nvar adjustedTemperature = 25 - temperature;\ntemperature += adjustedTemperature;\n//var adjustedHumidity = humidity;\nvar adjustedHumidity = 0;\nif (humidity < 50) {\n    adjustedHumidity = 50 - humidity;\n} else if (humidity > 80) {\n    adjustedHumidity = 80 - humidity;\n}\nhumidity += adjustedHumidity\n//var adjustedPressure = pressure;\n//msg.topic = \"adjustedTemperature\";\n//msg.topic = \"adjustedHumidity\";\n//msg.topic = \"adjustedPressure\";\n\n// Przygotowanie wiadomości MQTT\nmsg.payload = [\n    { topic: \"PIR/L1/condition/temperature\", payload: temperature },\n    { topic: \"PIR/L1/condition/humidity\", payload: humidity },\n    { topic: \"PIR/L1/condition/pressure\", payload: pressure }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 1200,
+        "wires": [
+            [
+                "640bb9a2c788bf69",
+                "cf723064b3afa7d1",
+                "5c78e6ee8d5a06dd"
+            ]
+        ]
+    },
+    {
+        "id": "45ace36aa8e92cdb",
+        "type": "inject",
+        "z": "206420c3420ca147",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 70,
+        "y": 1060,
+        "wires": [
+            [
+                "7ef835b1.a0e8f8"
+            ]
+        ]
+    },
+    {
+        "id": "f4cf6d11f046fcca",
+        "type": "debug",
+        "z": "206420c3420ca147",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1e94f9ad9b588d46",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/temperature",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 800,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "2b70fddbdbbf8996",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/humidity",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 790,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "e32473cb661b23a0",
+        "type": "mqtt out",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/condition/pressure",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 790,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "640bb9a2c788bf69",
+        "type": "change",
+        "z": "206420c3420ca147",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1020,
+        "wires": [
+            [
+                "1e94f9ad9b588d46"
+            ]
+        ]
+    },
+    {
+        "id": "cf723064b3afa7d1",
+        "type": "change",
+        "z": "206420c3420ca147",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[1].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1120,
+        "wires": [
+            [
+                "2b70fddbdbbf8996"
+            ]
+        ]
+    },
+    {
+        "id": "5c78e6ee8d5a06dd",
+        "type": "change",
+        "z": "206420c3420ca147",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[2].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1220,
+        "wires": [
+            [
+                "e32473cb661b23a0"
+            ]
+        ]
+    },
+    {
+        "id": "c1b5a429.d73ee8",
+        "type": "ui_clock",
+        "z": "206420c3420ca147",
+        "name": "",
+        "group": "c61389669e9ed80e",
+        "order": 2,
+        "width": "4",
+        "height": "4",
+        "x": 590,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "845bc11ea8d6c28e",
+        "type": "inject",
+        "z": "206420c3420ca147",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "c1b5a429.d73ee8",
+                "480fc2a0f916ccb2"
+            ]
+        ]
+    },
+    {
+        "id": "480fc2a0f916ccb2",
+        "type": "ui_digital_clock",
+        "z": "206420c3420ca147",
+        "name": "",
+        "group": "c61389669e9ed80e",
+        "order": 1,
+        "width": "2",
+        "height": "2",
+        "x": 550,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "28da4c9efb68f564",
+        "type": "ui_gauge",
+        "z": "206420c3420ca147",
+        "name": "",
+        "group": "415ff655.a1d8f8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 450,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "198dfc515c700616",
+        "type": "mqtt in",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/Z3/temperature",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 200,
+        "wires": [
+            [
+                "28da4c9efb68f564",
+                "e0f793b3e1bb981b"
+            ]
+        ]
+    },
+    {
+        "id": "197f6948194f8ccd",
+        "type": "ui_gauge",
+        "z": "206420c3420ca147",
+        "name": "",
+        "group": "3a8dd3b0727a141b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "moilSoilture",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "2400",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 530,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e0f793b3e1bb981b",
+        "type": "ui_chart",
+        "z": "206420c3420ca147",
+        "name": "",
+        "group": "c61389669e9ed80e",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "40",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 330,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6af54bf0b295ff1",
+        "type": "mqtt in",
+        "z": "206420c3420ca147",
+        "name": "",
+        "topic": "PIR/L1/Z3/moilSoilture",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "197f6948194f8ccd"
+            ]
+        ]
+    },
+    {
+        "id": "6e84bc277f489a24",
+        "type": "debug",
+        "z": "206420c3420ca147",
+        "name": "debug 20",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "39182ffe06e07502",
+        "type": "ui_spacer",
+        "z": "206420c3420ca147",
+        "name": "spacer",
+        "group": "7487194a517faf42",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": "",
+        "credentials": {}
+    },
+    {
+        "id": "415ff655.a1d8f8",
+        "type": "ui_group",
+        "name": "waterButton",
+        "tab": "622a3108.4411e",
+        "order": 2,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "357d373a.2d1478",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "3a8dd3b0727a141b",
+        "type": "ui_group",
+        "name": "plantConditions",
+        "tab": "622a3108.4411e",
+        "order": 3,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "c61389669e9ed80e",
+        "type": "ui_group",
+        "name": "Clock",
+        "tab": "622a3108.4411e",
+        "order": 1,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "622a3108.4411e",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1
+    }
+]

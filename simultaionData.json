@@ -1,0 +1,341 @@
+[
+    {
+        "id": "8f0af3e7dc721ee7",
+        "type": "tab",
+        "label": "simulationData",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "693291513de0d810",
+        "type": "ui_gauge",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "group": "1b2232c550d07b46",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "60",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 620,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "1c4074bd.e3bf8b",
+        "type": "function",
+        "z": "8f0af3e7dc721ee7",
+        "name": "loop",
+        "func": "function getRandomInt(min, max) {\n  return Math.floor(Math.random() * (max - min +1)) + min;\n}\n\ncontext.loop = context.loop || \"stop\";\ncontext.loops = context.loops || 0;\n\nswitch (msg.payload) {\n\tcase \"stop\":\n\t\tcontext.loops = context.loops + 1;\n\t\tmsg.payload = \"stopped\";\n\t\tcontext.loop = \"stop\";\n\t\treturn [msg,null];\n\tcase \"toggle\":\n\t\tif (context.loop == \"start\") {\n\t\t\tmsg.payload = \"stopped\";\n\t\t\tcontext.loop = \"stop\";\n\t\t\treturn [msg,null];\n\t\t} else {\n\t\t\tmsg.payload = \"started\";\n\t\t\tcontext.loop = \"loop\";\n\t\t\tcontext.loops = 1;\n\t\t\treturn [msg,msg];\n\t\t}\n\tcase \"start\":\n\t\tmsg.payload = 20;\n\t\tcontext.loop = \"loop\";\n\t\tcontext.loops = 1;\n\t\treturn [msg,msg];\n\tdefault:\n\t\tif (context.loop == \"loop\") {\n\t\t\tcontext.loops = context.loops + 1;\n\t\t\tif (msg.payload > 40) {\n\t\t\t    msg.payload = msg.payload + getRandomInt(-4, 0)\n\t\t\t}\n\t\t\telse if (msg.payload < -20) {\n\t\t\t    msg.payload = msg.payload + getRandomInt(-4, 0)\n\t\t\t}\n\t\t\telse {\n\t\t\t    msg.payload = msg.payload + getRandomInt(-3, 3);\n\t\t\t}\n\t\t\treturn [msg,msg];\n\t\t} else {\n\t\t\treturn [null,null]; \n\t\t}\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 140,
+        "wires": [
+            [
+                "57021c30710b7fb1",
+                "3a23bc6dd32e0888"
+            ],
+            [
+                "a380b8b5.5c7f48"
+            ]
+        ]
+    },
+    {
+        "id": "a380b8b5.5c7f48",
+        "type": "delay",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 320,
+        "y": 340,
+        "wires": [
+            [
+                "1c4074bd.e3bf8b"
+            ]
+        ]
+    },
+    {
+        "id": "8cf655a0.7309a8",
+        "type": "inject",
+        "z": "8f0af3e7dc721ee7",
+        "name": "start Sensor",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "topic": "home/temperature",
+        "payload": "start",
+        "payloadType": "str",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "1c4074bd.e3bf8b",
+                "91acb686e7116ce2"
+            ]
+        ]
+    },
+    {
+        "id": "c59c9644.3a6368",
+        "type": "inject",
+        "z": "8f0af3e7dc721ee7",
+        "name": "stop Sensor",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "home/temperature",
+        "payload": "stop",
+        "payloadType": "str",
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "1c4074bd.e3bf8b",
+                "91acb686e7116ce2"
+            ]
+        ]
+    },
+    {
+        "id": "91acb686e7116ce2",
+        "type": "function",
+        "z": "8f0af3e7dc721ee7",
+        "name": "loop",
+        "func": "function getRandomInt(min, max) {\n\treturn Math.floor(Math.random() * (max - min + 1)) + min;\n}\n\ncontext.loop = context.loop || \"stop\";\ncontext.loops = context.loops || 0;\n\nswitch (msg.payload) {\n\tcase \"stop\":\n\t\tcontext.loops = context.loops + 1;\n\t\tmsg.payload = \"stopped\";\n\t\tcontext.loop = \"stop\";\n\t\treturn [msg, null];\n\tcase \"toggle\":\n\t\tif (context.loop == \"start\") {\n\t\t\tmsg.payload = \"stopped\";\n\t\t\tcontext.loop = \"stop\";\n\t\t\treturn [msg, null];\n\t\t} else {\n\t\t\tmsg.payload = \"started\";\n\t\t\tcontext.loop = \"loop\";\n\t\t\tcontext.loops = 1;\n\t\t\treturn [msg, msg];\n\t\t}\n\tcase \"start\":\n\t\tmsg.payload = 33;\n\t\tcontext.loop = \"loop\";\n\t\tcontext.loops = 1;\n\t\treturn [msg, msg];\n\tdefault:\n\t\tif (context.loop == \"loop\") {\n\t\t\tcontext.loops = context.loops + 1;\n\t\t\tif (msg.payload > 45) {\n\t\t\t\tmsg.payload = msg.payload + getRandomInt(-4, 0)\n\t\t\t}\n\t\t\telse if (msg.payload < 13) {\n\t\t\t\tmsg.payload = msg.payload + getRandomInt(-4, 8)\n\t\t\t}\n\t\t\telse {\n\t\t\t\tmsg.payload = msg.payload + getRandomInt(-5, 5);\n\t\t\t}\n\t\t\treturn [msg, msg];\n\t\t} else {\n\t\t\treturn [null, null];\n\t\t}\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 460,
+        "wires": [
+            [
+                "693291513de0d810",
+                "7174e40df5b4310a"
+            ],
+            [
+                "c4038de2997b3a0b"
+            ]
+        ]
+    },
+    {
+        "id": "c4038de2997b3a0b",
+        "type": "delay",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 640,
+        "wires": [
+            [
+                "91acb686e7116ce2"
+            ]
+        ]
+    },
+    {
+        "id": "7174e40df5b4310a",
+        "type": "ui_chart",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "group": "1b2232c550d07b46",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "chartHumidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 620,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "57021c30710b7fb1",
+        "type": "ui_gauge",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "group": "a2a8fbacbc59a0b5",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "3a23bc6dd32e0888",
+        "type": "ui_chart",
+        "z": "8f0af3e7dc721ee7",
+        "name": "",
+        "group": "a2a8fbacbc59a0b5",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "temperatureChart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 750,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1b2232c550d07b46",
+        "type": "ui_group",
+        "name": "gaugeSimulationPM",
+        "tab": "6403c04b1c87b3f2",
+        "order": 2,
+        "disp": false,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a2a8fbacbc59a0b5",
+        "type": "ui_group",
+        "name": "gaugeSimulationTH",
+        "tab": "6403c04b1c87b3f2",
+        "order": 1,
+        "disp": false,
+        "width": "8",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "6403c04b1c87b3f2",
+        "type": "ui_tab",
+        "name": "simulationData",
+        "icon": "fa-database",
+        "order": 6,
+        "disabled": false,
+        "hidden": false
+    }
+]

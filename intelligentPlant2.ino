@@ -126,14 +126,14 @@ void ltClick(Event& e) {
   M5.Lcd.setCursor(145, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("Comfort T: %d", temperatureT);
-  
+
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d",humidityT);
+  M5.Lcd.printf("comfort % : %d", humidityT);
 
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d",pressureT);
+  M5.Lcd.printf("comfort P: %d", pressureT);
 
   M5.Lcd.setCursor(154, 153);
   M5.Lcd.print("description:");
@@ -174,14 +174,14 @@ void lbClick(Event& e) {
   M5.Lcd.setCursor(145, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("Comfort T: %d", temperatureT);
-  
+
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d",humidityT);
+  M5.Lcd.printf("comfort % : %d", humidityT);
 
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d",pressureT);
+  M5.Lcd.printf("comfort P: %d", pressureT);
 
   M5.Lcd.setCursor(154, 153);
   M5.Lcd.print("description:");
@@ -282,10 +282,10 @@ void reConnect() {
   }
 }
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
-  for (int i = 0; i < length; i++) { Serial.println((char)payload[i]); }  
-  int n,k,l,m;
+  for (int i = 0; i < length; i++) { Serial.println((char)payload[i]); }
+  int n, k, l, m;
   int tmpVal;
-  int t,t1,t2;
+  int t, t1, t2;
   if (strcmp(topic, "PIR/L1/Z3/buttB") == 0) {
     n = sscanf((char*)payload, "%d", &tmpVal);
     //    if (n > 0) {
@@ -300,20 +300,16 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
         //pumpRunning = false;          // ustawiamy flagę, że pompa jest wyłączona
       }
     }
-  } 
-  else if (strcmp(topic, "PIR/L1/condition/temperature") == 0) {
+  } else if (strcmp(topic, "PIR/L1/condition/temperature") == 0) {
     k = sscanf((char*)payload, "%d", &t);
     if (k > 0) temperatureT = t;
-  }
-  else if (strcmp(topic, "PIR/L1/condition/humidity") == 0) {
+  } else if (strcmp(topic, "PIR/L1/condition/humidity") == 0) {
     l = sscanf((char*)payload, "%d", &t1);
     if (l > 0) humidityT = t1;
-  }
-    else if (strcmp(topic, "PIR/L1/condition/pressure") == 0) {
+  } else if (strcmp(topic, "PIR/L1/condition/pressure") == 0) {
     m = sscanf((char*)payload, "%d", &t2);
     if (m > 0) pressureT = t2;
   }
-
 }
 void loop() {
   M5.update();
@@ -472,14 +468,14 @@ void page1a() {
   M5.Lcd.setCursor(145, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("Comfort T: %d", temperatureT);
-  
+
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d",humidityT);
+  M5.Lcd.printf("comfort % : %d", humidityT);
 
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d",pressureT);
+  M5.Lcd.printf("comfort P: %d", pressureT);
 
   M5.Lcd.setCursor(154, 153);
   M5.Lcd.setTextColor(WHITE, BLACK);
@@ -516,14 +512,14 @@ void page1b() {
 
   M5.Lcd.print("Cactus");
   M5.Lcd.setCursor(145, 76);
-  M5.Lcd.setTextColor(WHITE, BLACK);  
+  M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("Comfort T: %d", temperatureT);
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d",humidityT);
+  M5.Lcd.printf("comfort % : %d", humidityT);
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d",pressureT);
+  M5.Lcd.printf("comfort P: %d", pressureT);
 
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(154, 153);
@@ -808,3 +804,4 @@ void odczytajIZapiszSrednia() {
   } else {
     Serial.println("Brak danych do obliczenia średniej");
   }
+}

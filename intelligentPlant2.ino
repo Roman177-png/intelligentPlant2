@@ -591,7 +591,7 @@ void page3() {
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.setCursor(24, 24);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.print("Last water");
+  M5.Lcd.print("Last watering");
   M5.Lcd.setTextSize(3);
   M5.Lcd.setCursor(84, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
@@ -631,33 +631,32 @@ void page3() {
   draw_switch_button();
 }
 void page4() {
-
   clearScreen();
+  M5.Lcd.fillScreen(WHITE)
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(BLACK, WHITE);
   M5.Lcd.drawLine(14, 118, 313, 119, BLACK);
   M5.Lcd.drawLine(150, 237, 150, 5, BLACK);
 
-  M5.Lcd.drawJpgFile(SD, "/a1.jpg", 43, 11);
+  M5.Lcd.drawJpgFile(SD, "/a1.jpg", 43, 11, 40, 50);
   M5.Lcd.setTextSize(2);              // Ustaw rozmiar czcionki
   M5.Lcd.setCursor(10, 53);           // Ustaw pozycję kursora
   M5.Lcd.setTextColor(BLACK, WHITE);  // Ustaw kolor tekstu na biały
 
   int intTempAvg = int(tempAvg);
-  M5.Lcd.print(intTempAvg);
+  M5.Lcd.print("%d *C", intTempAvg);
   //  M5.Lcd.printf("%.1f", tempAvg);
 
-
-  M5.Lcd.drawJpgFile(SD, "/b1.jpg", 156, 11);
+  M5.Lcd.drawJpgFile(SD, "/b1.jpg", 156, 11, 40, 50);
   M5.Lcd.setTextColor(BLACK, WHITE);  // Ustaw kolor tekstu na biały
   M5.Lcd.setTextSize(2);              // Ustaw rozmiar czcionki
   M5.Lcd.setCursor(254, 52);          // Ustaw pozycję kursora
   M5.Lcd.setTextColor(BLACK, WHITE);  // Ustaw kolor tekstu na biały
   //M5.Lcd.print(avg_soil_moisture);
   int iSoilHumAvg = int(soilHumAvg);
-  M5.Lcd.print(iSoilHumAvg);
+  M5.Lcd.printf("%d %", iSoilHumAvg);
   //M5.Lcd.printf("%.1f", soilHumAvg);
-  M5.Lcd.drawJpgFile(SD, "/c1.jpg", 43, 123);
+  M5.Lcd.drawJpgFile(SD, "/c1.jpg", 43, 123, 40, 50);
   M5.Lcd.setTextSize(2);     // Ustaw rozmiar czcionki
   M5.Lcd.setCursor(7, 165);  // Ustaw pozycję kursora
 
@@ -666,14 +665,14 @@ void page4() {
   //M5.Lcd.print(avg_pressure);
   int iPressAvg = int(pressAvg);
   //M5.Lcd.printf("%.1f", pressAvg);
-  M5.Lcd.print(iPressAvg);
-  M5.Lcd.drawJpgFile(SD, "/d1.jpg", 156, 123);
+  M5.Lcd.printf("%d hPa", iPressAvg);
+  M5.Lcd.drawJpgFile(SD, "/d1.jpg", 156, 123, 40, 50);
   M5.Lcd.setTextColor(BLACK, WHITE);  // Ustaw kolor tekstu na biały
   M5.Lcd.setTextSize(2);              // Ustaw rozmiar czcionki
   M5.Lcd.setCursor(258, 165);         // Ustaw pozycję kursora
   //M5.Lcd.print(avg_humidity);
   int intHumAvg = int(humAvg);
-  M5.Lcd.print(intHumAvg);
+  M5.Lcd.printf("%d %", intHumAvg);
   //M5.Lcd.printf("%.1f", humAvg);
 }
 void page5() {

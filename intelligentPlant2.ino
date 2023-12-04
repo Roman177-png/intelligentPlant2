@@ -633,11 +633,10 @@ void page3() {
 
 void page4() {
   clearScreen();
-  M5.Lcd.fillScreen(WHITE);
+
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(BLACK, WHITE);
-  M5.Lcd.setCursor(55, 10);
-  M5.Lcd.print("Average readings");
+
   M5.Lcd.drawLine(14, 118, 313, 119, BLACK);
   M5.Lcd.drawLine(150, 237, 150, 5, BLACK);
 
@@ -669,6 +668,8 @@ void page4() {
   M5.Lcd.setCursor(258, 205);
   int intHumAvg = int(humAvg);
   M5.Lcd.printf("%d %%", intHumAvg);
+  M5.Lcd.setCursor(55, 10);
+  M5.Lcd.print("Average readings");
 }
 
 void page5() {

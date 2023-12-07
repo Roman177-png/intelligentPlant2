@@ -4,6 +4,7 @@
 #include <EEPROM.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <string.h>
 unsigned long sTim3 = 0, pTim3 = 0, cycleTime3 = 0, now4 = 0, last4 = 0;
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -31,6 +32,7 @@ const int SOIL_MOISTURE_THRESHOLD = 2100;
 
 void page1a();
 void page1b();
+void page1c();
 void page2();
 void page3();
 void page4();
@@ -66,6 +68,7 @@ bool pumpRunning = false;
 
 Button lt(14, 42, 110, 30, "left-top");
 Button lb(177, 42, 110, 30, "left-bottom");
+Button op(310 / 2, 200, 110, 30, "other-plant");
 
 boolean isButtonPressed = false;
 
@@ -74,7 +77,7 @@ float avg_temperature = 0, avg_pressure = 0, avg_humidity = 0, avg_soil_moisture
 unsigned long lastWateringTime = 0;
 int lastWateringDay = 0;
 
-
+char* other_Plant[7];
 
 
 void flushTime() {
@@ -151,6 +154,7 @@ void ltClick(Event& e) {
   // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
   lt.delHandlers();
   lb.delHandlers();
+  op.delHandlers();
   buttonsEnabled = true;
 }
 
@@ -198,9 +202,53 @@ void lbClick(Event& e) {
   // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lb
   lt.delHandlers();
   lb.delHandlers();
+  op.delHandlers();
   buttonsEnabled = true;
 }
 
+void otherPlant(Event& e) {
+  choose = 3;
+
+  M5.Lcd.fillScreen(BLACK);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextColor(WHITE);
+  String filePath = "/";
+  filePath += other_Plant[0];
+  filePath += ".jpg";
+  M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
+  M5.Lcd.setCursor(203, 50);
+  M5.Lcd.print(other_Plant[0]);
+  M5.Lcd.setCursor(145, 76);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+
+  M5.Lcd.setCursor(145, 102);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+
+  M5.Lcd.setCursor(145, 128);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+
+  M5.Lcd.setCursor(154, 153);
+  M5.Lcd.print("description:");
+
+  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.printf("%s", other_Plant[4]);
+
+  M5.Lcd.setCursor(154, 193);
+  M5.Lcd.printf("%s", other_Plant[5]);
+
+
+  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.printf("%s", other_Plant[6]);
+
+  // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
+  lt.delHandlers();
+  lb.delHandlers();
+  op.delHandlers();
+  buttonsEnabled = true;
+}
 
 void setup() {
   Serial.begin(9600);
@@ -227,7 +275,7 @@ void setup() {
   client.subscribe("PIR/L1/condition/temperature");
   client.subscribe("PIR/L1/condition/humidity");
   client.subscribe("PIR/L1/condition/pressure");
-
+  client.subscribe("PIR/L1/otherPlant");
 
   pinMode(INPUT_PIN, INPUT);
   pinMode(PUMP_PIN, OUTPUT);
@@ -235,9 +283,11 @@ void setup() {
   digitalWrite(25, 0);
   lb.addHandler(lbClick, E_CLICK);
   lt.addHandler(ltClick, E_CLICK);
+  op.addHandler(otherPlant, E_CLICK);
   M5.Lcd.drawString("Choose plant", 100, 16);
   M5.Lcd.drawString("Ficus", 47, 47);
   M5.Lcd.drawString("Cactus", 210, 49);
+  M5.Lcd.drawString("Other plant", 310 / 2, 200);
   M5.Lcd.drawJpgFile(SD, "/cactus.jpg", 187, 102);
   M5.Lcd.drawJpgFile(SD, "/ficus.jpg", 24, 102);
 }
@@ -272,6 +322,7 @@ void reConnect() {
       client.subscribe("PIR/L1/condition/temperature");
       client.subscribe("PIR/L1/condition/humidity");
       client.subscribe("PIR/L1/condition/pressure");
+      client.subscribe("PIR/L1/otherPlant");
 
     } else {
       Serial.println("failed, rc=");
@@ -286,6 +337,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   int n, k, l, m;
   int tmpVal;
   int t, t1, t2;
+  char* wiadomosc;
   if (strcmp(topic, "PIR/L1/Z3/buttB") == 0) {
     n = sscanf((char*)payload, "%d", &tmpVal);
     //    if (n > 0) {
@@ -309,6 +361,24 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   } else if (strcmp(topic, "PIR/L1/condition/pressure") == 0) {
     m = sscanf((char*)payload, "%d", &t2);
     if (m > 0) pressureT = t2;
+  } else if (strcmp(topic, "PIR/L1/otherPlant") == 0) {
+    m = sscanf((char*)payload, "%s", &wiadomosc);
+    if (m > 0) {
+      char* token = strtok(wiadomosc, ";");
+      int i = 0;
+
+      while (token != NULL && i < 7) {
+        // Alokacja pamięci dla wyrazu
+        other_Plant[i] = (char*)malloc(strlen(token) + 1);
+
+        // Kopiowanie wyrazu do nowo alokowanej pamięci
+        strcpy(other_Plant[i], token);
+
+        // Przechodzenie do kolejnego tokenu
+        token = strtok(NULL, ";");
+        i++;
+      }
+    }
   }
 }
 void loop() {
@@ -420,6 +490,8 @@ void loop() {
           page1a();
         } else if (choose = 2) {
           page1b();
+        } else if (choose = 3) {
+          page1c();
         }
         break;
       case 1:
@@ -536,6 +608,52 @@ void page1b() {
   M5.Lcd.setCursor(153, 215);
   M5.Lcd.print("stem is thick");
 }
+
+void page1c() {
+
+  clearScreen();
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+
+  String filePath = "/";
+  filePath += other_Plant[0];
+  filePath += ".jpg";
+
+  M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
+
+  M5.Lcd.setCursor(203, 50);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.print(other_Plant[0]);
+  M5.Lcd.setCursor(145, 76);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+
+  M5.Lcd.setCursor(145, 102);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+
+  M5.Lcd.setCursor(145, 128);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+
+  M5.Lcd.setCursor(154, 153);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.print("description:");
+
+  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[4]);
+
+  M5.Lcd.setCursor(154, 193);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[5]);
+
+
+  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[6]);
+}
+
 void page2() {
 
   clearScreen();

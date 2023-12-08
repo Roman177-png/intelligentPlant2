@@ -1,14 +1,6 @@
 [
     {
-        "id": "1ed1fb286c711ae3",
-        "type": "tab",
-        "label": "sendEmail",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "b7a3c4df8028f4a2",
+        "id": "16c9bbf8ca9c6094",
         "type": "e-mail",
         "z": "1ed1fb286c711ae3",
         "server": "smtp.gmail.com",
@@ -18,120 +10,11 @@
         "token": "oauth2Response.access_token",
         "secure": true,
         "tls": true,
-        "name": "miron-2002@ukr.net",
+        "name": "akuzma503@gmail.com",
         "dname": "",
-        "x": 640,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "4c7d4f3a.29a6c8",
-        "type": "switch",
-        "z": "1ed1fb286c711ae3",
-        "name": "Temperature Threshold",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gte",
-                "v": "30",
-                "vt": "num"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 1,
-        "x": 310,
-        "y": 180,
-        "wires": [
-            [
-                "e1c0a7f5013d8ec8"
-            ]
-        ]
-    },
-    {
-        "id": "e1c0a7f5013d8ec8",
-        "type": "template",
-        "z": "1ed1fb286c711ae3",
-        "name": "Notification",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "Dear user!\nPlease note that the temperature is exceeded: {{payload}}.\nTake measures!\n",
-        "output": "str",
-        "x": 490,
-        "y": 260,
-        "wires": [
-            [
-                "b7a3c4df8028f4a2",
-                "2a624dded572e26d"
-            ]
-        ]
-    },
-    {
-        "id": "2a624dded572e26d",
-        "type": "debug",
-        "z": "1ed1fb286c711ae3",
-        "name": "debug 12",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 680,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "955dbcc3e43b746c",
-        "type": "mqtt in",
-        "z": "1ed1fb286c711ae3",
-        "name": "",
-        "topic": "PIR/L1/Z3/temperature",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "1658dccaf854d8ce",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 140,
-        "y": 120,
-        "wires": [
-            [
-                "4c7d4f3a.29a6c8"
-            ]
-        ]
-    },
-    {
-        "id": "1658dccaf854d8ce",
-        "type": "mqtt-broker",
-        "name": "",
-        "broker": "test.mosquitto.org",
-        "port": "1883",
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
+        "x": 990,
+        "y": 420,
+        "wires": [],
+        "info": "# Wiadomośc email"
     }
 ]

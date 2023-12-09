@@ -68,7 +68,7 @@ bool pumpRunning = false;
 
 Button lt(14, 42, 110, 30, "left-top");
 Button lb(177, 42, 110, 30, "left-bottom");
-Button op(310 / 2, 200, 110, 30, "other-plant");
+Button op(310 / 4, 220, 110, 30, "other-plant");
 
 boolean isButtonPressed = false;
 
@@ -287,7 +287,7 @@ void setup() {
   M5.Lcd.drawString("Choose plant", 100, 16);
   M5.Lcd.drawString("Ficus", 47, 47);
   M5.Lcd.drawString("Cactus", 210, 49);
-  M5.Lcd.drawString("Other plant", 310 / 2, 200);
+  M5.Lcd.drawString("Other plant", 310 / 4, 220);
   M5.Lcd.drawJpgFile(SD, "/cactus.jpg", 187, 102);
   M5.Lcd.drawJpgFile(SD, "/ficus.jpg", 24, 102);
 }
@@ -332,24 +332,32 @@ void reConnect() {
     }
   }
 }
+
+void freeOtherPlantMemory() {
+  // Zwolnienie pamięci dla other_Plant
+  for (int j = 0; j < 7; j++) {
+    free(other_Plant[j]);
+  }
+}
+
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
-  for (int i = 0; i < length; i++) { Serial.println((char)payload[i]); }
+  for (int i = 0; i < length; i++) {
+    Serial.println((char)payload[i]);
+  }
   int n, k, l, m;
   int tmpVal;
   int t, t1, t2;
-  char* wiadomosc;
+  char wiadomosc[100];  // Przykładowa maksymalna długość wiadomości, dostosuj do potrzeb
+
   if (strcmp(topic, "PIR/L1/Z3/buttB") == 0) {
     n = sscanf((char*)payload, "%d", &tmpVal);
-    //    if (n > 0) {
     if (n == 1) {
       if (tmpVal == 1) {
         Serial.println(tmpVal);
         digitalWrite(PUMP_PIN, HIGH);
-        //pumpRunning = true;
       } else if (tmpVal == 0) {
         Serial.println(tmpVal);
-        digitalWrite(PUMP_PIN, LOW);  // wyłączamy pompę
-        //pumpRunning = false;          // ustawiamy flagę, że pompa jest wyłączona
+        digitalWrite(PUMP_PIN, LOW);
       }
     }
   } else if (strcmp(topic, "PIR/L1/condition/temperature") == 0) {
@@ -362,8 +370,12 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     m = sscanf((char*)payload, "%d", &t2);
     if (m > 0) pressureT = t2;
   } else if (strcmp(topic, "PIR/L1/otherPlant") == 0) {
-    m = sscanf((char*)payload, "%s", &wiadomosc);
-    if (m > 0) {
+    m = sscanf((char*)payload, "%s", wiadomosc);
+    Serial.println("\nOdebrano nową roślinę\n");
+    Serial.printf("%s", wiadomosc);
+    if (m >= 7) {
+      freeOtherPlantMemory();  // Zwolnienie pamięci przed przypisaniem nowych wartości
+
       char* token = strtok(wiadomosc, ";");
       int i = 0;
 
@@ -378,9 +390,13 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
         token = strtok(NULL, ";");
         i++;
       }
+    } else {
+      Serial.println("\nBłędne dane dla nowej rośliny\n");
+      freeOtherPlantMemory();  // Zwolnienie pamięci w przypadku błędu
     }
   }
 }
+
 void loop() {
   M5.update();
   if (!client.connected()) { reConnect(); }  // Reconnect after disconnection

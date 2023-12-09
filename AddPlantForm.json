@@ -1,0 +1,29 @@
+[
+    {
+        "id": "01fda7a41513a679",
+        "type": "change",
+        "z": "50f5f9419e9c4a2f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "name",
+                "pt": "flow",
+                "to": "undefined",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 420,
+        "wires": [
+            [
+                "c4479b9c94f009bb"
+            ]
+        ]
+    }
+]

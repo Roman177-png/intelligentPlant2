@@ -41,7 +41,7 @@
         "z": "cd4381bdd1c9fd91",
         "name": "",
         "group": "059c46883c7dab2f",
-        "order": 0,
+        "order": 1,
         "width": 0,
         "height": 0,
         "gtype": "donut",
@@ -69,7 +69,7 @@
         "z": "cd4381bdd1c9fd91",
         "name": "",
         "group": "9d051d72db20d0d6",
-        "order": 0,
+        "order": 1,
         "width": 0,
         "height": 0,
         "gtype": "gage",
@@ -97,7 +97,7 @@
         "z": "cd4381bdd1c9fd91",
         "name": "",
         "group": "9d051d72db20d0d6",
-        "order": 0,
+        "order": 2,
         "width": 0,
         "height": 0,
         "gtype": "wave",
@@ -204,172 +204,6 @@
         ]
     },
     {
-        "id": "467e9c6ed438ab4f",
-        "type": "ui_media",
-        "z": "cd4381bdd1c9fd91",
-        "group": "7ccfe2f3.3fd12c",
-        "name": "",
-        "width": "2",
-        "height": "2",
-        "order": 2,
-        "category": " nmbnb",
-        "file": "217632-200.png",
-        "layout": "expand",
-        "showcontrols": true,
-        "loop": true,
-        "onstart": false,
-        "scope": "local",
-        "tooltip": "",
-        "x": 530,
-        "y": 720,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "3dc82b87292cf758",
-        "type": "ui_media",
-        "z": "cd4381bdd1c9fd91",
-        "group": "7ccfe2f3.3fd12c",
-        "name": "",
-        "width": "2",
-        "height": "2",
-        "order": 2,
-        "category": "downT",
-        "file": "2162651-200.png",
-        "layout": "center",
-        "showcontrols": true,
-        "loop": true,
-        "onstart": false,
-        "scope": "local",
-        "tooltip": "",
-        "x": 530,
-        "y": 840,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "9b61e6f7c2e94760",
-        "type": "switch",
-        "z": "cd4381bdd1c9fd91",
-        "name": "",
-        "property": "image",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": " nmbnb/217632-200.png",
-                "vt": "str"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 310,
-        "y": 820,
-        "wires": [
-            [
-                "467e9c6ed438ab4f"
-            ],
-            [
-                "3dc82b87292cf758"
-            ]
-        ]
-    },
-    {
-        "id": "9bc1ec8114119629",
-        "type": "mqtt in",
-        "z": "cd4381bdd1c9fd91",
-        "name": "",
-        "topic": "PIR/L1/Z3/temperature",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "1658dccaf854d8ce",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 140,
-        "y": 900,
-        "wires": [
-            [
-                "4535aac3e4837c0a"
-            ]
-        ]
-    },
-    {
-        "id": "4535aac3e4837c0a",
-        "type": "function",
-        "z": "cd4381bdd1c9fd91",
-        "name": "Porównanie wartości",
-        "func": "// Odczytaj poprzednią wartość z kontekstu\nvar previousValue = context.get('previousValue') || 0;\n\n// Odczytaj aktualną wartość z wiadomości MQTT\nvar currentValue = msg.payload;\n\n// Porównaj wartości\nif (currentValue > previousValue) {\n    // W przypadku większej aktualnej wartości\n    // Wyświetl obrazek 1\n    msg.image = ' nmbnb/217632-200.png';\n} else {\n    // W przypadku większej poprzedniej wartości lub równej wartości\n    // Wyświetl obrazek 2\n    msg.image = 'downT/2162651-200.png';\n}\n\n// Zaktualizuj poprzednią wartość w kontekście\ncontext.set('previousValue', currentValue);\n\n// Prześlij wiadomość dalej\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 250,
-        "y": 980,
-        "wires": [
-            [
-                "9b61e6f7c2e94760",
-                "89698602cd6adb7d"
-            ]
-        ]
-    },
-    {
-        "id": "89698602cd6adb7d",
-        "type": "debug",
-        "z": "cd4381bdd1c9fd91",
-        "name": "debug 19",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "image",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 520,
-        "y": 920,
-        "wires": []
-    },
-    {
-        "id": "cb57598de835de18",
-        "type": "comment",
-        "z": "cd4381bdd1c9fd91",
-        "name": "poprawa",
-        "info": "poprawa",
-        "x": 140,
-        "y": 700,
-        "wires": []
-    },
-    {
-        "id": "ebeee85bd5930f08",
-        "type": "ui_template",
-        "z": "cd4381bdd1c9fd91",
-        "group": "7ccfe2f3.3fd12c",
-        "name": "Second needle",
-        "order": 2,
-        "width": "6",
-        "height": "6",
-        "format": "<div id=\"{{'gauge_'+$id}}\" class=\"g-container\" style=\"--gauge-value:0; --gauge-value-second:80; --container-size:6; --gn-distance:14; --ga-tick-count:10; --ga-subtick-count:100; --g-unit:'°C'\">\n    <div id=\"bgr\" class=\"g-body\">\n        <div class=\"g-ring\">\n            <div class=\"g-rivets\">\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n                <div class=g-rivet></div>\n            </div>\n            <div class=\"g-plate\">\n                <div class=\"g-ticks\">\n                    <div class=\"g-tick\" style=\"--ga-tick:1;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:10;\"></div>\n                    <div class=\"g-tick\" style=\"--ga-tick:11;\"></div>\n                </div>\n                <div class=\"g-ticks\">\n                    <div class=\"g-subtick\" style=\"--ga-tick:2;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:3;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:4;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:5;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:6;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:7;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:8;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:9;\"></div>\n                    <div class=\"g-subtick\" style=\"--ga-tick:10;\"></div>\n                </div>\n            </div>\n            <div id=\"nl\" class=\"g-needle\"></div>\n            <div id=\"nl-second\" class=\"g-needle g-needle-second\" style=\"transform: rotate(0deg);\"></div>\n        </div>\n        <div class=\"g-label\">\n            <div class=\"g-value\">\n                <div class=\"g-value-text\">{{msg.payload}}</div>\n            </div>\n            <div class=\"g-value-sub\">Second Needle</div>\n        </div>\n    </div>\n</div>\n",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": true,
-        "templateScope": "local",
-        "className": "",
-        "x": 680,
-        "y": 220,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "e3db52067f1be475",
         "type": "ui_group",
         "name": "gaugeTemperature",
@@ -430,30 +264,11 @@
         "sessionExpiry": ""
     },
     {
-        "id": "7ccfe2f3.3fd12c",
-        "type": "ui_group",
-        "name": "Group 1",
-        "tab": "477b3e43.1d624",
-        "order": 1,
-        "disp": false,
-        "width": "6",
-        "collapse": false
-    },
-    {
         "id": "1997c58e601d7141",
         "type": "ui_tab",
         "name": "Gauge",
         "icon": "donut_large",
         "order": 3,
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "477b3e43.1d624",
-        "type": "ui_tab",
-        "name": "Ohh",
-        "icon": "dashboard",
-        "order": 1,
         "disabled": false,
         "hidden": false
     }

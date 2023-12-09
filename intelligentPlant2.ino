@@ -15,6 +15,7 @@ const char* mqtt_server = "test.mosquitto.org";  // Adres brokera MQTT
 #define MSG_BUFFER_SIZE (50)
 int temperatureT = 0, pressureT = 0, humidityT = 0;
 char msg[MSG_BUFFER_SIZE];
+char msg2[300];
 int value = 0;
 void setupWifi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
@@ -370,6 +371,10 @@ void loop() {
     sprintf(msg, "%.1f", pressure / 100);
     // Setpoint value
     client.publish("PIR/L1/Z3/pressure", msg);  // Publication of message
+    
+    sprintf(msg2, "{\"name\":\"%s\", \"timeWatering\":\"%s\", \"moilSoilture\":%d, \"temperature\":%.1f, \"humidity\":%.1f, \"pressure\":%.1f}",
+    "ficus", "2023-09-12 12:23:12", rawADC, temperature, humidity, pressure / 100);
+    client.publish("PIR/L1/Z3/jsonData", msg);
   }
   // Przechodzenie do następnego ekranu za pomocą przycisku A
   if (buttonsEnabled) {

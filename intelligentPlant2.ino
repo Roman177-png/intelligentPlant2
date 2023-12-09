@@ -78,7 +78,7 @@ unsigned long lastWateringTime = 0;
 int lastWateringDay = 0;
 
 char* other_Plant[7];
-
+boolean other_Plant_set = false;
 
 void flushTime() {
   M5.Rtc.GetTime(&RTCtime);
@@ -207,47 +207,49 @@ void lbClick(Event& e) {
 }
 
 void otherPlant(Event& e) {
-  choose = 3;
+  if (other_Plant_set) {
+    choose = 3;
 
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setTextColor(WHITE);
-  String filePath = "/";
-  filePath += other_Plant[0];
-  filePath += ".jpg";
-  M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
-  M5.Lcd.setCursor(203, 50);
-  M5.Lcd.print(other_Plant[0]);
-  M5.Lcd.setCursor(145, 76);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(WHITE);
+    String filePath = "/";
+    filePath += other_Plant[0];
+    filePath += ".jpg";
+    M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
+    M5.Lcd.setCursor(203, 50);
+    M5.Lcd.print(other_Plant[0]);
+    M5.Lcd.setCursor(145, 76);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
 
-  M5.Lcd.setCursor(145, 102);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+    M5.Lcd.setCursor(145, 102);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort % : %s", other_Plant[2]);
 
-  M5.Lcd.setCursor(145, 128);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+    M5.Lcd.setCursor(145, 128);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort P: %s", other_Plant[3]);
 
-  M5.Lcd.setCursor(154, 153);
-  M5.Lcd.print("description:");
+    M5.Lcd.setCursor(154, 153);
+    M5.Lcd.print("description:");
 
-  M5.Lcd.setCursor(157, 175);
-  M5.Lcd.printf("%s", other_Plant[4]);
+    M5.Lcd.setCursor(157, 175);
+    M5.Lcd.printf("%s", other_Plant[4]);
 
-  M5.Lcd.setCursor(154, 193);
-  M5.Lcd.printf("%s", other_Plant[5]);
+    M5.Lcd.setCursor(154, 193);
+    M5.Lcd.printf("%s", other_Plant[5]);
 
 
-  M5.Lcd.setCursor(153, 215);
-  M5.Lcd.printf("%s", other_Plant[6]);
+    M5.Lcd.setCursor(153, 215);
+    M5.Lcd.printf("%s", other_Plant[6]);
 
-  // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
-  lt.delHandlers();
-  lb.delHandlers();
-  op.delHandlers();
-  buttonsEnabled = true;
+    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
+    lt.delHandlers();
+    lb.delHandlers();
+    op.delHandlers();
+    buttonsEnabled = true;
+  } else Serial.println("Nie ustawiono rosliny");
 }
 
 void setup() {
@@ -372,10 +374,10 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   } else if (strcmp(topic, "PIR/L1/otherPlant") == 0) {
     m = sscanf((char*)payload, "%s", wiadomosc);
     Serial.println("\nOdebrano nową roślinę\n");
-    Serial.printf("%s", wiadomosc);
-    if (m >= 7) {
+    Serial.printf("%s\n", wiadomosc);
+    if (m > 0) {
       freeOtherPlantMemory();  // Zwolnienie pamięci przed przypisaniem nowych wartości
-
+      other_Plant_set = true;
       char* token = strtok(wiadomosc, ";");
       int i = 0;
 
@@ -388,10 +390,12 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
         // Przechodzenie do kolejnego tokenu
         token = strtok(NULL, ";");
+        Serial.printf("%s", other_Plant[i]);
         i++;
       }
     } else {
       Serial.println("\nBłędne dane dla nowej rośliny\n");
+      Serial.printf("%d", m);
       freeOtherPlantMemory();  // Zwolnienie pamięci w przypadku błędu
     }
   }
@@ -504,9 +508,9 @@ void loop() {
       case 0:
         if (choose == 1) {
           page1a();
-        } else if (choose = 2) {
+        } else if (choose == 2) {
           page1b();
-        } else if (choose = 3) {
+        } else if (choose == 3) {
           page1c();
         }
         break;
@@ -631,11 +635,18 @@ void page1c() {
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(WHITE, BLACK);
 
-  String filePath = "/";
-  filePath += other_Plant[0];
-  filePath += ".jpg";
-
-  M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
+  if (strcmp(other_Plant[0], "grudnik") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/grudnik.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Amarylis") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Amarylis.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Skrzydlokwiat") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Skrzydlokwiat.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Storczyk") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Storczyk.jpg", 31, 84);
+  } else {
+    M5.Lcd.setCursor(31, 84);
+    M5.Lcd.printf("brak zdjecia dla: %s", other_Plant[0]);
+  }
 
   M5.Lcd.setCursor(203, 50);
   M5.Lcd.setTextColor(WHITE, BLACK);
@@ -648,7 +659,7 @@ void page1c() {
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("comfort % : %s", other_Plant[2]);
 
-  M5.Lcd.setCursor(145, 128);
+  M5.Lcd.setCursor(140, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("comfort P: %s", other_Plant[3]);
 

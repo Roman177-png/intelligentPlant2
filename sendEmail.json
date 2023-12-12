@@ -20,7 +20,7 @@
         "finalize": "",
         "libs": [],
         "x": 800,
-        "y": 100,
+        "y": 140,
         "wires": [
             [
                 "4923228dc438077c"
@@ -40,8 +40,8 @@
         "tls": true,
         "name": "akuzma503@gmail.com",
         "dname": "",
-        "x": 870,
-        "y": 220,
+        "x": 890,
+        "y": 280,
         "wires": [],
         "info": "# Wiadomośc email"
     },
@@ -56,8 +56,8 @@
         "syntax": "mustache",
         "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month}}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 100px;\">{{payload}}&#176;C</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Temperatura za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
         "output": "str",
-        "x": 560,
-        "y": 240,
+        "x": 700,
+        "y": 280,
         "wires": [
             [
                 "16c9bbf8ca9c6094"
@@ -77,12 +77,11 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 140,
-        "y": 60,
+        "x": 120,
+        "y": 100,
         "wires": [
             [
-                "1158f9e4ac4f283c",
-                "198f80d157d013f6"
+                "78432d2578ed871d"
             ]
         ]
     },
@@ -103,12 +102,11 @@
         "topic": "",
         "payload": "31",
         "payloadType": "num",
-        "x": 130,
+        "x": 90,
         "y": 160,
         "wires": [
             [
-                "198f80d157d013f6",
-                "1158f9e4ac4f283c"
+                "78432d2578ed871d"
             ]
         ]
     },
@@ -129,8 +127,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 430,
-        "y": 60,
+        "x": 510,
+        "y": 100,
         "wires": [
             [
                 "5ae9c9a4abfd5f52"
@@ -154,7 +152,7 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 390,
+        "x": 510,
         "y": 180,
         "wires": [
             [
@@ -179,8 +177,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 410,
-        "y": 320,
+        "x": 470,
+        "y": 380,
         "wires": [
             [
                 "8d812cc8098683f5"
@@ -204,8 +202,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 410,
-        "y": 420,
+        "x": 470,
+        "y": 460,
         "wires": [
             [
                 "8d812cc8098683f5"
@@ -229,12 +227,11 @@
         "topic": "",
         "payload": "31",
         "payloadType": "num",
-        "x": 150,
+        "x": 110,
         "y": 480,
         "wires": [
             [
-                "13d4e620356ea32f",
-                "52e1cd45492788c6"
+                "d0df5e47701cd6a8"
             ]
         ]
     },
@@ -250,8 +247,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 340,
+        "x": 680,
+        "y": 420,
         "wires": [
             [
                 "f5ecb9fccbba59c0"
@@ -269,8 +266,8 @@
         "syntax": "mustache",
         "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month }}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 100px;\">{{payload}}%</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Wilgotność za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
         "output": "str",
-        "x": 720,
-        "y": 380,
+        "x": 820,
+        "y": 420,
         "wires": [
             [
                 "644a1d7134ef870e"
@@ -290,8 +287,8 @@
         "tls": true,
         "name": "akuzma503@gmail.com",
         "dname": "",
-        "x": 901.2000122070312,
-        "y": 359.1999816894531,
+        "x": 1010,
+        "y": 380,
         "wires": [],
         "info": "# Wiadomośc email"
     },
@@ -311,7 +308,9 @@
         "x": 110,
         "y": 560,
         "wires": [
-            []
+            [
+                "a94795caf3ef0224"
+            ]
         ]
     },
     {
@@ -331,8 +330,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 445.1999816894531,
-        "y": 515.2000122070312,
+        "x": 490,
+        "y": 540,
         "wires": [
             [
                 "b8af74162da4eefc"
@@ -356,8 +355,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 452.1999816894531,
-        "y": 601.2000122070312,
+        "x": 510,
+        "y": 620,
         "wires": [
             [
                 "b8af74162da4eefc"
@@ -385,8 +384,7 @@
         "y": 620,
         "wires": [
             [
-                "ab05f4442fcb1865",
-                "9206d68165083215"
+                "a94795caf3ef0224"
             ]
         ]
     },
@@ -402,8 +400,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 640,
-        "y": 500,
+        "x": 700,
+        "y": 580,
         "wires": [
             [
                 "66a10af066f80b96"
@@ -421,8 +419,8 @@
         "syntax": "mustache",
         "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month }}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 50px;\">{{payload}} hPa</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Ciśnienie za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
         "output": "str",
-        "x": 791.2000122070312,
-        "y": 509.1999816894531,
+        "x": 860,
+        "y": 580,
         "wires": [
             [
                 "3abcb0b4f8e4c8a7"
@@ -442,8 +440,8 @@
         "tls": true,
         "name": "akuzma503@gmail.com",
         "dname": "",
-        "x": 930,
-        "y": 440,
+        "x": 990,
+        "y": 520,
         "wires": [],
         "info": "# Wiadomośc email"
     },
@@ -460,10 +458,90 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 110,
-        "y": 360,
+        "x": 90,
+        "y": 400,
         "wires": [
-            []
+            [
+                "d0df5e47701cd6a8"
+            ]
+        ]
+    },
+    {
+        "id": "a94795caf3ef0224",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 580,
+        "wires": [
+            [
+                "ab05f4442fcb1865",
+                "9206d68165083215"
+            ]
+        ]
+    },
+    {
+        "id": "d0df5e47701cd6a8",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 420,
+        "wires": [
+            [
+                "52e1cd45492788c6",
+                "13d4e620356ea32f"
+            ]
+        ]
+    },
+    {
+        "id": "78432d2578ed871d",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "1158f9e4ac4f283c",
+                "198f80d157d013f6"
+            ]
         ]
     },
     {

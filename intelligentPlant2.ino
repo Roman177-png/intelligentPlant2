@@ -4,7 +4,9 @@
 #include <EEPROM.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <Preferences.h>
 #include <string.h>
+
 unsigned long sTim3 = 0, pTim3 = 0, cycleTime3 = 0, now4 = 0, last4 = 0;
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -20,11 +22,11 @@ int value = 0;
 void setupWifi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void reConnect();
-
+String lastWatering;
 RTC_TimeTypeDef RTCtime;
 RTC_DateTypeDef RTCDate;
 char timeStrbuff[64];
-
+Preferences preferences;
 
 float tempAvg = 0, humAvg = 0, soilHumAvg = 0, pressAvg = 0;
 const unsigned long SOIL_MOISTURE_INTERVAL = 1000;
@@ -255,6 +257,8 @@ void otherPlant(Event& e) {
 void setup() {
   Serial.begin(9600);
   M5.begin();
+  preferences.begin("my-app", false);
+  lastWatering = preferences.getString("watering","2023-01-01 00:00:00");
   setupTime();
 
   M5.Lcd.setTextSize(2);
@@ -357,6 +361,20 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
       if (tmpVal == 1) {
         Serial.println(tmpVal);
         digitalWrite(PUMP_PIN, HIGH);
+
+        M5.Rtc.GetTime(&RTCtime);
+        M5.Rtc.GetDate(&RTCDate);
+        lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+        preferences.putString("watering", lastWatering);
+        Serial.print("Watering time saved: ");
+        Serial.print(lastWatering);
+        //pumpRunning = true;
+
       } else if (tmpVal == 0) {
         Serial.println(tmpVal);
         digitalWrite(PUMP_PIN, LOW);
@@ -421,15 +439,28 @@ void loop() {
     // if (rawADC < SOIL_MOISTURE_THRESHOLD) {
     if (rawADC > SOIL_MOISTURE_THRESHOLD) {
       digitalWrite(PUMP_PIN, HIGH);
+      
+      M5.Rtc.GetTime(&RTCtime);
+      M5.Rtc.GetDate(&RTCDate);
+      lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+      preferences.putString("watering", lastWatering);
+      Serial.print("Watering time saved: ");
+      Serial.print(lastWatering);
+      
       lastWateringDay = RTCDate.Date;
       lastWateringTime = millis();
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-      Serial.print("Watering time saved: ");
-      Serial.print(lastWateringDay);
-      Serial.print(", ");
-      Serial.println(lastWateringTime);
+//      Serial.print("Watering time saved: ");
+//      Serial.print(lastWateringDay);
+//      Serial.print(", ");
+//      Serial.println(lastWateringTime);
       pumpStartTime = millis();
       pumpRunning = true;
     }
@@ -465,15 +496,28 @@ void loop() {
   if (buttonsEnabled) {
     if (M5.BtnB.wasPressed()) {
       digitalWrite(PUMP_PIN, flag);
+
+      M5.Rtc.GetTime(&RTCtime);
+      M5.Rtc.GetDate(&RTCDate);
+      lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+      preferences.putString("watering", lastWatering);
+      Serial.print("Watering time saved: ");
+      Serial.print(lastWatering);
+      
       lastWateringDay = RTCDate.Date;
       lastWateringTime = millis();
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-      Serial.print("Watering time saved: ");
-      Serial.print(lastWateringDay);
-      Serial.print(", ");
-      Serial.println(lastWateringTime);
+//      Serial.print("Watering time saved: ");
+//      Serial.print(lastWateringDay);
+//      Serial.print(", ");
+//      Serial.println(lastWateringTime);
       flag = !flag;
     }
     // nowPump = millis();

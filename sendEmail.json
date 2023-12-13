@@ -1,16 +1,36 @@
 [
     {
-        "id": "1ed1fb286c711ae3",
+        "id": "0b9505c398787473",
         "type": "tab",
-        "label": "sendEmail",
+        "label": "Flow 2",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "b7a3c4df8028f4a2",
+        "id": "5ae9c9a4abfd5f52",
+        "type": "function",
+        "z": "0b9505c398787473",
+        "name": "function 1",
+        "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysoka\" : \"niska\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert temperatury\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 140,
+        "wires": [
+            [
+                "4923228dc438077c"
+            ]
+        ]
+    },
+    {
+        "id": "16c9bbf8ca9c6094",
         "type": "e-mail",
-        "z": "1ed1fb286c711ae3",
+        "z": "0b9505c398787473",
         "server": "smtp.gmail.com",
         "port": "465",
         "authtype": "BASIC",
@@ -18,16 +38,107 @@
         "token": "oauth2Response.access_token",
         "secure": true,
         "tls": true,
-        "name": "miron-2002@ukr.net",
+        "name": "akuzma503@gmail.com",
         "dname": "",
-        "x": 640,
-        "y": 180,
-        "wires": []
+        "x": 890,
+        "y": 280,
+        "wires": [],
+        "info": "# Wiadomośc email"
     },
     {
-        "id": "4c7d4f3a.29a6c8",
+        "id": "4923228dc438077c",
+        "type": "template",
+        "z": "0b9505c398787473",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month}}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 100px;\">{{payload}}&#176;C</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Temperatura za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
+        "output": "str",
+        "x": 700,
+        "y": 280,
+        "wires": [
+            [
+                "16c9bbf8ca9c6094"
+            ]
+        ]
+    },
+    {
+        "id": "4d04ddd25a51d172",
+        "type": "mqtt in",
+        "z": "0b9505c398787473",
+        "name": "",
+        "topic": "PIR/L1/Z3/temperature",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "78432d2578ed871d"
+            ]
+        ]
+    },
+    {
+        "id": "9d5ec8891ce22ff5",
+        "type": "inject",
+        "z": "0b9505c398787473",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "31",
+        "payloadType": "num",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "78432d2578ed871d"
+            ]
+        ]
+    },
+    {
+        "id": "1158f9e4ac4f283c",
         "type": "switch",
-        "z": "1ed1fb286c711ae3",
+        "z": "0b9505c398787473",
+        "name": "Temperature Threshold",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "20",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 510,
+        "y": 100,
+        "wires": [
+            [
+                "5ae9c9a4abfd5f52"
+            ]
+        ]
+    },
+    {
+        "id": "198f80d157d013f6",
+        "type": "switch",
+        "z": "0b9505c398787473",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
@@ -41,57 +152,152 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 310,
+        "x": 510,
         "y": 180,
         "wires": [
             [
-                "e1c0a7f5013d8ec8"
+                "5ae9c9a4abfd5f52"
             ]
         ]
     },
     {
-        "id": "e1c0a7f5013d8ec8",
-        "type": "template",
-        "z": "1ed1fb286c711ae3",
-        "name": "Notification",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "Dear user!\nPlease note that the temperature is exceeded: {{payload}}.\nTake measures!\n",
-        "output": "str",
-        "x": 490,
-        "y": 260,
+        "id": "13d4e620356ea32f",
+        "type": "switch",
+        "z": "0b9505c398787473",
+        "name": "Temperature Threshold",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "20",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 470,
+        "y": 380,
         "wires": [
             [
-                "b7a3c4df8028f4a2",
-                "2a624dded572e26d"
+                "8d812cc8098683f5"
             ]
         ]
     },
     {
-        "id": "2a624dded572e26d",
-        "type": "debug",
-        "z": "1ed1fb286c711ae3",
-        "name": "debug 12",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 680,
-        "y": 340,
-        "wires": []
+        "id": "52e1cd45492788c6",
+        "type": "switch",
+        "z": "0b9505c398787473",
+        "name": "Temperature Threshold",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "30",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 470,
+        "y": 460,
+        "wires": [
+            [
+                "8d812cc8098683f5"
+            ]
+        ]
     },
     {
-        "id": "955dbcc3e43b746c",
-        "type": "mqtt in",
-        "z": "1ed1fb286c711ae3",
+        "id": "ec877d9a96bb9806",
+        "type": "inject",
+        "z": "0b9505c398787473",
         "name": "",
-        "topic": "PIR/L1/Z3/temperature",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "31",
+        "payloadType": "num",
+        "x": 110,
+        "y": 480,
+        "wires": [
+            [
+                "d0df5e47701cd6a8"
+            ]
+        ]
+    },
+    {
+        "id": "8d812cc8098683f5",
+        "type": "function",
+        "z": "0b9505c398787473",
+        "name": "function 6",
+        "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysoka\" : \"niska\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert wilgotności\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 420,
+        "wires": [
+            [
+                "f5ecb9fccbba59c0"
+            ]
+        ]
+    },
+    {
+        "id": "f5ecb9fccbba59c0",
+        "type": "template",
+        "z": "0b9505c398787473",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month }}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 100px;\">{{payload}}%</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Wilgotność za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
+        "output": "str",
+        "x": 820,
+        "y": 420,
+        "wires": [
+            [
+                "644a1d7134ef870e"
+            ]
+        ]
+    },
+    {
+        "id": "644a1d7134ef870e",
+        "type": "e-mail",
+        "z": "0b9505c398787473",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "akuzma503@gmail.com",
+        "dname": "",
+        "x": 1010,
+        "y": 380,
+        "wires": [],
+        "info": "# Wiadomośc email"
+    },
+    {
+        "id": "8b75b2518e139861",
+        "type": "mqtt in",
+        "z": "0b9505c398787473",
+        "name": "",
+        "topic": "PIR/L1/Z3/pressure",
         "qos": "0",
         "datatype": "auto-detect",
         "broker": "1658dccaf854d8ce",
@@ -99,11 +305,242 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 140,
-        "y": 120,
+        "x": 110,
+        "y": 560,
         "wires": [
             [
-                "4c7d4f3a.29a6c8"
+                "a94795caf3ef0224"
+            ]
+        ]
+    },
+    {
+        "id": "ab05f4442fcb1865",
+        "type": "switch",
+        "z": "0b9505c398787473",
+        "name": "Temperature Threshold",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "20",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 490,
+        "y": 540,
+        "wires": [
+            [
+                "b8af74162da4eefc"
+            ]
+        ]
+    },
+    {
+        "id": "9206d68165083215",
+        "type": "switch",
+        "z": "0b9505c398787473",
+        "name": "Temperature Threshold",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "30",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 510,
+        "y": 620,
+        "wires": [
+            [
+                "b8af74162da4eefc"
+            ]
+        ]
+    },
+    {
+        "id": "9c9ad59f6d377f58",
+        "type": "inject",
+        "z": "0b9505c398787473",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "31",
+        "payloadType": "num",
+        "x": 110,
+        "y": 620,
+        "wires": [
+            [
+                "a94795caf3ef0224"
+            ]
+        ]
+    },
+    {
+        "id": "b8af74162da4eefc",
+        "type": "function",
+        "z": "0b9505c398787473",
+        "name": "function 7",
+        "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysokie\" : \"niskie\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert ciśnienia\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 580,
+        "wires": [
+            [
+                "66a10af066f80b96"
+            ]
+        ]
+    },
+    {
+        "id": "66a10af066f80b96",
+        "type": "template",
+        "z": "0b9505c398787473",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Your Weather App</title>\n    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>\n</head>\n\n<body style=\"padding: 5px; margin: 5px; text-align: center; background-color: #4B515D;\">\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n    <div\n        style=\"height: 500px; padding: 20px; margin: 0px auto; background-color: #4B515D; width: 300px; border-radius: 35px; background-color: white;\">\n        <div style=\"display: flex; margin-bottom: 10px;\">\n            <div style=\"width: 90%; display: flex; align-items: start;\">{{day}}.{{month }}.{{year}}</div>\n            <div>{{hours}}:{{minutes}}</div>\n        </div>\n        <div style=\"font-size: 1.5em;  margin-bottom: 10px; color:{{color}};\">{{topic}}</div>\n        <div style=\"width: 100%; max-width: 100px; height: 100px; margin-left: 90px;\">\n            <img src={{imageSrc}} alt=\"icon\" style=\"width: 100%; height: 100%; object-fit: contain;\">\n        </div>\n        <div style=\"height: 130px; line-height: 130px; font-size: 50px;\">{{payload}} hPa</div>\n        <div style=\"font-size: 1.5em; margin-bottom: 10px;  color:{{color}}\">Ciśnienie za {{text}}</div>\n        <div\n            style=\"display: flex; align-items: center; justify-content: center; width: 150%; max-width: 150px; margin-top:-10px; height: 165px; margin-left: 70px;\">\n            <img src=\"https://st4.depositphotos.com/32986944/38957/v/450/depositphotos_389579716-stock-illustration-green-tree-growing-in-hand.jpg\" alt=\"icon\" style=\"width: 100%; height: 95%; object-fit: contain;\">\n        </div>\n    </div>\n    <div style=\"height: 5px; background-color: #4B515D;\">\n    </div>\n</body>\n\n</html>",
+        "output": "str",
+        "x": 860,
+        "y": 580,
+        "wires": [
+            [
+                "3abcb0b4f8e4c8a7"
+            ]
+        ]
+    },
+    {
+        "id": "3abcb0b4f8e4c8a7",
+        "type": "e-mail",
+        "z": "0b9505c398787473",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "akuzma503@gmail.com",
+        "dname": "",
+        "x": 990,
+        "y": 520,
+        "wires": [],
+        "info": "# Wiadomośc email"
+    },
+    {
+        "id": "d941d31963aea00b",
+        "type": "mqtt in",
+        "z": "0b9505c398787473",
+        "name": "",
+        "topic": "PIR/L1/Z3/humidity",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "d0df5e47701cd6a8"
+            ]
+        ]
+    },
+    {
+        "id": "a94795caf3ef0224",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 580,
+        "wires": [
+            [
+                "ab05f4442fcb1865",
+                "9206d68165083215"
+            ]
+        ]
+    },
+    {
+        "id": "d0df5e47701cd6a8",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 420,
+        "wires": [
+            [
+                "52e1cd45492788c6",
+                "13d4e620356ea32f"
+            ]
+        ]
+    },
+    {
+        "id": "78432d2578ed871d",
+        "type": "delay",
+        "z": "0b9505c398787473",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "hour",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "1158f9e4ac4f283c",
+                "198f80d157d013f6"
             ]
         ]
     },
@@ -119,6 +556,7 @@
         "protocolVersion": "4",
         "keepalive": "60",
         "cleansession": true,
+        "autoUnsubscribe": true,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",

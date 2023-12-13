@@ -10,13 +10,14 @@
 unsigned long sTim3 = 0, pTim3 = 0, cycleTime3 = 0, now4 = 0, last4 = 0;
 WiFiClient espClient;
 PubSubClient client(espClient);
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "User";
+const char* password = "12435678";
 String value3;
 const char* mqtt_server = "test.mosquitto.org";  // Adres brokera MQTT
 // const char* mqtt_server = "broker.mqttdashboard.com";  // Adres brokera MQTT
 #define MSG_BUFFER_SIZE (50)
 int temperatureT = 0, pressureT = 0, humidityT = 0;
+int lastTemp = 0, curentTemp = 0;
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
 void setupWifi();
@@ -39,6 +40,8 @@ void page2();
 void page3();
 void page4();
 void page5();
+void page6();
+void pageInfo();
 void clearScreen();
 
 void draw_switch_button();
@@ -52,13 +55,14 @@ File dataFile;
 char fileName[] = "/data2.txt";
 SHT3X sht30;
 QMP6988 qmp6988;
-unsigned long now = 0, last = 0, nowPump = 0, pumpStartTime = 0, lastPump = 0, avrNow = 0, avrLast = 0;
+unsigned long now = 0, last = 0, nowPump = 0, pumpStartTime = 0, lastPump = 0, avrNow = 0, avrLast = 0, lastInfo = 0;
 float temperature = 0.0;
 float humidity = 0.0;
 float pressure = 0.0;
 
 char refresh = 1;
-int screenNum = 0;
+int screenNum = 0, screenNumPrev = 0;
+bool isFirstInfo = true;
 
 #define INPUT_PIN 36
 #define PUMP_PIN 26
@@ -71,6 +75,8 @@ bool pumpRunning = false;
 Button lt(14, 42, 110, 30, "left-top");
 Button lb(177, 42, 110, 30, "left-bottom");
 Button op(310 / 4, 220, 110, 30, "other-plant");
+
+Button confirmationInfo(110, 200, 100, 35, "confirmationInfo");
 
 boolean isButtonPressed = false;
 
@@ -120,92 +126,101 @@ bool flag = true;
 int rawADC = 0;
 
 void ltClick(Event& e) {
-  choose = 1;
+  if (screenNum != 5) {
+    choose = 1;
 
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.drawJpgFile(SD, "/ficus.jpg", 31, 84);
-  M5.Lcd.setCursor(203, 50);
-  M5.Lcd.print("Ficus");
-  M5.Lcd.setCursor(145, 76);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("Comfort T: %d", temperatureT);
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.drawJpgFile(SD, "/ficus.jpg", 31, 84);
+    M5.Lcd.setCursor(203, 50);
+    M5.Lcd.print("Ficus");
+    M5.Lcd.setCursor(145, 76);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("Comfort T: %d", temperatureT);
 
-  M5.Lcd.setCursor(145, 102);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d", humidityT);
+    M5.Lcd.setCursor(145, 102);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort % : %d", humidityT);
 
-  M5.Lcd.setCursor(145, 128);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d", pressureT);
+    M5.Lcd.setCursor(145, 128);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort P: %d", pressureT);
 
-  M5.Lcd.setCursor(154, 153);
-  M5.Lcd.print("description:");
+    M5.Lcd.setCursor(154, 153);
+    M5.Lcd.print("description:");
 
-  M5.Lcd.setCursor(157, 175);
-  M5.Lcd.print("likes humidit");
+    M5.Lcd.setCursor(157, 175);
+    M5.Lcd.print("likes humidit");
 
-  M5.Lcd.setCursor(154, 193);
-  M5.Lcd.print("good lighting");
+    M5.Lcd.setCursor(154, 193);
+    M5.Lcd.print("good lighting");
 
 
-  M5.Lcd.setCursor(153, 215);
-  M5.Lcd.print("shiny leaves");
-
-  // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
-  lt.delHandlers();
-  lb.delHandlers();
-  op.delHandlers();
-  buttonsEnabled = true;
+    M5.Lcd.setCursor(153, 215);
+    M5.Lcd.print("shiny leaves");
+    
+    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
+    lt.delHandlers();
+    lb.delHandlers();
+    op.delHandlers();
+    buttonsEnabled = true;
+  }
 }
 
 void lbClick(Event& e) {
+  if (screenNum != 5) {
+    choose = 2;
 
-  choose = 2;
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.fillRect(66, 96, 20, 120, GREEN);
+    M5.Lcd.fillCircle(75, 91, 15, GREEN);
+    M5.Lcd.fillRect(122, 96, 15, 50, GREEN);
+    M5.Lcd.fillRect(87, 141, 35, 24, GREEN);
+    M5.Lcd.fillCircle(129, 154, 10, GREEN);
+    M5.Lcd.fillRect(27, 141, 15, 40, GREEN);
+    M5.Lcd.fillCircle(32, 171, 10, GREEN);
+    M5.Lcd.fillRect(40, 163, 30, 20, GREEN);
+    M5.Lcd.setCursor(203, 50);
+    M5.Lcd.print("Cactus");
+    M5.Lcd.setCursor(145, 76);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("Comfort T: %d", temperatureT);
 
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.fillRect(66, 96, 20, 120, GREEN);
-  M5.Lcd.fillCircle(75, 91, 15, GREEN);
-  M5.Lcd.fillRect(122, 96, 15, 50, GREEN);
-  M5.Lcd.fillRect(87, 141, 35, 24, GREEN);
-  M5.Lcd.fillCircle(129, 154, 10, GREEN);
-  M5.Lcd.fillRect(27, 141, 15, 40, GREEN);
-  M5.Lcd.fillCircle(32, 171, 10, GREEN);
-  M5.Lcd.fillRect(40, 163, 30, 20, GREEN);
-  M5.Lcd.setCursor(203, 50);
-  M5.Lcd.print("Cactus");
-  M5.Lcd.setCursor(145, 76);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("Comfort T: %d", temperatureT);
+    M5.Lcd.setCursor(145, 102);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort % : %d", humidityT);
 
-  M5.Lcd.setCursor(145, 102);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d", humidityT);
+    M5.Lcd.setCursor(145, 128);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort P: %d", pressureT);
 
-  M5.Lcd.setCursor(145, 128);
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d", pressureT);
+    M5.Lcd.setCursor(154, 153);
+    M5.Lcd.print("description:");
 
-  M5.Lcd.setCursor(154, 153);
-  M5.Lcd.print("description:");
+    M5.Lcd.setCursor(157, 175);
+    M5.Lcd.print("long roots;");
 
-  M5.Lcd.setCursor(157, 175);
-  M5.Lcd.print("long roots;");
+    M5.Lcd.setCursor(154, 193);
+    M5.Lcd.print("spines");
 
-  M5.Lcd.setCursor(154, 193);
-  M5.Lcd.print("spines");
+    M5.Lcd.setCursor(153, 215);
+    M5.Lcd.print("stem is thick");
+    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lb
+    lt.delHandlers();
+    lb.delHandlers();
+    op.delHandlers();
+    buttonsEnabled = true;
+  }
+}
 
-
-  M5.Lcd.setCursor(153, 215);
-  M5.Lcd.print("stem is thick");
-  // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lb
-  lt.delHandlers();
-  lb.delHandlers();
-  op.delHandlers();
-  buttonsEnabled = true;
+void confirmationInfoClick(Event& e) {
+  if (screenNum == 5) {
+    screenNum = screenNumPrev;
+    refresh = 1;
+  }
 }
 
 void otherPlant(Event& e) {
@@ -290,6 +305,8 @@ void setup() {
   lb.addHandler(lbClick, E_CLICK);
   lt.addHandler(ltClick, E_CLICK);
   op.addHandler(otherPlant, E_CLICK);
+  confirmationInfo.addHandler(confirmationInfoClick, E_CLICK);
+
   M5.Lcd.drawString("Choose plant", 100, 16);
   M5.Lcd.drawString("Ficus", 47, 47);
   M5.Lcd.drawString("Cactus", 210, 49);
@@ -492,6 +509,25 @@ void loop() {
     // Setpoint value
     client.publish("PIR/L1/Z3/pressure", msg);  // Publication of message
   }
+  if ((temperature != 0.00 && isFirstInfo == true) || (isFirstInfo == false))
+    if (temperature > 30 || temperature < 20) {
+      Serial.print("temperature");
+      Serial.print(temperature);
+      Serial.print(isFirstInfo);
+      Serial.print(screenNum);
+      if (now - lastInfo > 360000 || isFirstInfo == true) {
+        Serial.print("warunek");
+        isFirstInfo = false;
+        lastInfo = now;
+        screenNumPrev = screenNum;
+        screenNum = 5;
+        refresh = 1;
+      }
+    } else if ((now - lastInfo > 20000 && screenNum == 5) || (temperature < 30 && temperature > 20 && screenNum == 5)) {
+      screenNum = screenNumPrev;
+      refresh = 1;
+    }
+
   // Przechodzenie do następnego ekranu za pomocą przycisku A
   if (buttonsEnabled) {
     if (M5.BtnB.wasPressed()) {
@@ -570,8 +606,11 @@ void loop() {
       case 4:
         page5();
         break;
+      case 5:
+        page6();
+        break;
     }
-    if (M5.BtnA.wasPressed()) {
+    if (M5.BtnA.wasPressed() && screenNum != 5) {
       screenNum++;
       if (screenNum > 4) {
         screenNum = 0;
@@ -580,7 +619,7 @@ void loop() {
     }
 
     // Przechodzenie do poprzedniego ekranu za pomocą przycisku C
-    if (M5.BtnC.wasPressed()) {
+    if (M5.BtnC.wasPressed() && screenNum != 5) {
       screenNum--;
       if (screenNum < 0) {
         screenNum = 4;
@@ -861,57 +900,98 @@ void page4() {
   M5.Lcd.print("Average readings");
 }
 
-void page5() {
-  clearScreen();
-  if (temperature >= 10 && temperature <= 20) {
-    M5.Lcd.drawRoundRect(45, 70, 255, 120, 20, WHITE);  // rysowanie przycisku z zielonym kolorem
-    M5.Lcd.setTextColor(BLACK, GREEN);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.setCursor(100, 86);
-    M5.Lcd.print("Temperatura");
-    M5.Lcd.setCursor(50, 106);
-    M5.Lcd.print(" w normie:");
-    M5.Lcd.setTextSize(4);
-    M5.Lcd.setCursor(113, 143);
-    M5.Lcd.printf("%.1fC", temperature);
-  } else if (temperature >= 21 && temperature <= 27) {
-    M5.Lcd.drawRoundRect(45, 70, 255, 120, 20, WHITE);  // rysowanie przycisku z zielonym kolorem
-    M5.Lcd.setTextColor(BLACK, ORANGE);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.setCursor(100, 86);
-    M5.Lcd.print("Temperatura");
-    M5.Lcd.setCursor(50, 106);
-    M5.Lcd.print(" lekko przekroczona:");
-    M5.Lcd.setTextSize(4);
-    M5.Lcd.setCursor(113, 143);
-    M5.Lcd.printf("%.1fC", temperature);
+
+void pageInfo() {
+  if (temperature <= 20) {
+    curentTemp = 0;
+  } else if (temperature >= 30) {
+    curentTemp = 1;
   } else {
+    curentTemp = 2;
+  }
+
+  if (curentTemp != lastTemp) {
+    refresh = 1;
+    clearScreen();
+  }
+
+  if (temperature <= 20) {
+    M5.Lcd.drawRoundRect(45, 70, 255, 120, 20, WHITE);  // rysowanie przycisku z zielonym kolorem
+    M5.Lcd.setTextColor(BLACK, BLUE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(100, 86);
+    M5.Lcd.print("Temperatura");
+    M5.Lcd.setCursor(125, 106);
+    M5.Lcd.print(" za mala:");
+    M5.Lcd.setTextSize(4);
+    M5.Lcd.setCursor(113, 143);
+    M5.Lcd.printf("%.1fC", temperature);
+    lastTemp = 0;
+  } else if (temperature >= 30) {
     M5.Lcd.drawRoundRect(45, 70, 255, 120, 20, WHITE);  // rysowanie przycisku z zielonym kolorem
     M5.Lcd.setTextColor(BLACK, RED);
     M5.Lcd.setTextSize(2);
     M5.Lcd.setCursor(100, 86);
     M5.Lcd.print("Temperatura");
-    M5.Lcd.setCursor(50, 106);
-    M5.Lcd.print("bardzo wysoka:");
+    M5.Lcd.setCursor(125, 106);
+    M5.Lcd.print("za wysoka:");
     M5.Lcd.setTextSize(4);
     M5.Lcd.setCursor(113, 143);
     // M5.Lcd.setTextSize(3);
     // M5.Lcd.setCursor(5, 100);
     M5.Lcd.printf("%.1fC", temperature);
+    lastTemp = 1;
+  } else {
+    M5.Lcd.drawRoundRect(45, 70, 255, 120, 20, WHITE);  // rysowanie przycisku z zielonym kolorem
+    M5.Lcd.setTextColor(BLACK, GREEN);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(100, 86);
+    M5.Lcd.print("Temperatura");
+    M5.Lcd.setCursor(127, 106);
+    M5.Lcd.print("dobra:");
+    M5.Lcd.setTextSize(4);
+    M5.Lcd.setCursor(113, 143);
+    // M5.Lcd.setTextSize(3);
+    // M5.Lcd.setCursor(5, 100);
+    M5.Lcd.printf("%.1fC", temperature);
+    lastTemp = 2;
   }
 }
+
+void page5() {
+  clearScreen();
+  pageInfo();
+}
+
+void page6() {
+  clearScreen();
+  M5.Lcd.drawRect(110, 200, 100, 35, WHITE);
+
+  if (temperature <= 20) {
+    M5.Lcd.setTextColor(BLACK, BLUE);
+  } else {
+    M5.Lcd.setTextColor(BLACK, RED);
+  }
+
+  M5.Lcd.setTextSize(2);
+  //M5.Lcd.setCursor(304, 204);
+  M5.Lcd.setCursor(157, 207);
+  M5.Lcd.print("OK");
+  pageInfo();
+}
+
+
 void clearScreen() {
   if (refresh == 1) {
     if (screenNum == 3) {
       M5.Lcd.fillScreen(WHITE);
-    } else if (screenNum == 4) {
-      if (temperature >= 10 && temperature <= 20) {
-        M5.Lcd.fillScreen(GREEN);
-      } else if (temperature >= 21 && temperature <= 27) {
-        M5.Lcd.fillScreen(ORANGE);
-
-      } else {
+    } else if (screenNum == 4 || screenNum == 5) {
+      if (temperature <= 20) {
+        M5.Lcd.fillScreen(BLUE);
+      } else if (temperature >= 30) {
         M5.Lcd.fillScreen(RED);
+      } else {
+        M5.Lcd.fillScreen(GREEN);
       }
     } else {
       M5.Lcd.clear();

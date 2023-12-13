@@ -1437,7 +1437,7 @@
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "Nazwa: {{payload.nazwa}},\nwymagana Temperatura: {{payload.pozadanaTemperatura}}°C,\nwymagana Wilgotność: {{payload.wymaganaWilgotnosc}}%,\nwymagane Cisnienie: {{payload.wymaganeCisnienie}}hPa,\nOpis: \n        {{payload.wlasciwosc1}},\n        {{payload.wlasciwosc2}},\n        {{payload.wlasciwosc3}}",
+        "template": "Nazwa: {{payload.nazwa}},\nwymagana Temperatura: {{payload.pozadanaTemperatura}},\nwymagana Wilgotność: {{payload.wymaganaWilgotnosc}},\nwymagane Cisnienie: {{payload.wymaganeCisnienie}},\nOpis: \n        {{payload.wlasciwosc1}},\n        {{payload.wlasciwosc2}},\n        {{payload.wlasciwosc3}}",
         "output": "str",
         "x": 1140,
         "y": 620,

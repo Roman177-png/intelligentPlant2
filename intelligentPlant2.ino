@@ -4,6 +4,9 @@
 #include <EEPROM.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <Preferences.h>
+#include <string.h>
+
 unsigned long sTim3 = 0, pTim3 = 0, cycleTime3 = 0, now4 = 0, last4 = 0;
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -20,11 +23,11 @@ int value = 0;
 void setupWifi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void reConnect();
-
+String lastWatering;
 RTC_TimeTypeDef RTCtime;
 RTC_DateTypeDef RTCDate;
 char timeStrbuff[64];
-
+Preferences preferences;
 
 float tempAvg = 0, humAvg = 0, soilHumAvg = 0, pressAvg = 0;
 const unsigned long SOIL_MOISTURE_INTERVAL = 1000;
@@ -32,6 +35,7 @@ const int SOIL_MOISTURE_THRESHOLD = 2100;
 
 void page1a();
 void page1b();
+void page1c();
 void page2();
 void page3();
 void page4();
@@ -70,6 +74,7 @@ bool pumpRunning = false;
 
 Button lt(14, 42, 110, 30, "left-top");
 Button lb(177, 42, 110, 30, "left-bottom");
+Button op(310 / 4, 220, 110, 30, "other-plant");
 
 Button confirmationInfo(110, 200, 100, 35, "confirmationInfo");
 
@@ -80,8 +85,8 @@ float avg_temperature = 0, avg_pressure = 0, avg_humidity = 0, avg_soil_moisture
 unsigned long lastWateringTime = 0;
 int lastWateringDay = 0;
 
-
-
+char* other_Plant[7];
+boolean other_Plant_set = false;
 
 void flushTime() {
   M5.Rtc.GetTime(&RTCtime);
@@ -154,10 +159,11 @@ void ltClick(Event& e) {
 
     M5.Lcd.setCursor(153, 215);
     M5.Lcd.print("shiny leaves");
-
+    
     // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
     lt.delHandlers();
     lb.delHandlers();
+    op.delHandlers();
     buttonsEnabled = true;
   }
 }
@@ -200,12 +206,12 @@ void lbClick(Event& e) {
     M5.Lcd.setCursor(154, 193);
     M5.Lcd.print("spines");
 
-
     M5.Lcd.setCursor(153, 215);
     M5.Lcd.print("stem is thick");
     // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lb
     lt.delHandlers();
     lb.delHandlers();
+    op.delHandlers();
     buttonsEnabled = true;
   }
 }
@@ -217,9 +223,57 @@ void confirmationInfoClick(Event& e) {
   }
 }
 
+void otherPlant(Event& e) {
+  if (other_Plant_set) {
+    choose = 3;
+
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(WHITE);
+    String filePath = "/";
+    filePath += other_Plant[0];
+    filePath += ".jpg";
+    M5.Lcd.drawJpgFile(SD, filePath.c_str(), 31, 84);
+    M5.Lcd.setCursor(203, 50);
+    M5.Lcd.print(other_Plant[0]);
+    M5.Lcd.setCursor(145, 76);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+
+    M5.Lcd.setCursor(145, 102);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+
+    M5.Lcd.setCursor(145, 128);
+    M5.Lcd.setTextColor(WHITE, BLACK);
+    M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+
+    M5.Lcd.setCursor(154, 153);
+    M5.Lcd.print("description:");
+
+    M5.Lcd.setCursor(157, 175);
+    M5.Lcd.printf("%s", other_Plant[4]);
+
+    M5.Lcd.setCursor(154, 193);
+    M5.Lcd.printf("%s", other_Plant[5]);
+
+
+    M5.Lcd.setCursor(153, 215);
+    M5.Lcd.printf("%s", other_Plant[6]);
+
+    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
+    lt.delHandlers();
+    lb.delHandlers();
+    op.delHandlers();
+    buttonsEnabled = true;
+  } else Serial.println("Nie ustawiono rosliny");
+}
+
 void setup() {
   Serial.begin(9600);
   M5.begin();
+  preferences.begin("my-app", false);
+  lastWatering = preferences.getString("watering","2023-01-01 00:00:00");
   setupTime();
 
   M5.Lcd.setTextSize(2);
@@ -242,7 +296,7 @@ void setup() {
   client.subscribe("PIR/L1/condition/temperature");
   client.subscribe("PIR/L1/condition/humidity");
   client.subscribe("PIR/L1/condition/pressure");
-
+  client.subscribe("PIR/L1/otherPlant");
 
   pinMode(INPUT_PIN, INPUT);
   pinMode(PUMP_PIN, OUTPUT);
@@ -250,10 +304,13 @@ void setup() {
   digitalWrite(25, 0);
   lb.addHandler(lbClick, E_CLICK);
   lt.addHandler(ltClick, E_CLICK);
+  op.addHandler(otherPlant, E_CLICK);
   confirmationInfo.addHandler(confirmationInfoClick, E_CLICK);
+
   M5.Lcd.drawString("Choose plant", 100, 16);
   M5.Lcd.drawString("Ficus", 47, 47);
   M5.Lcd.drawString("Cactus", 210, 49);
+  M5.Lcd.drawString("Other plant", 310 / 4, 220);
   M5.Lcd.drawJpgFile(SD, "/cactus.jpg", 187, 102);
   M5.Lcd.drawJpgFile(SD, "/ficus.jpg", 24, 102);
 }
@@ -288,6 +345,7 @@ void reConnect() {
       client.subscribe("PIR/L1/condition/temperature");
       client.subscribe("PIR/L1/condition/humidity");
       client.subscribe("PIR/L1/condition/pressure");
+      client.subscribe("PIR/L1/otherPlant");
 
     } else {
       Serial.println("failed, rc=");
@@ -297,23 +355,46 @@ void reConnect() {
     }
   }
 }
+
+void freeOtherPlantMemory() {
+  // Zwolnienie pamięci dla other_Plant
+  for (int j = 0; j < 7; j++) {
+    free(other_Plant[j]);
+  }
+}
+
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
-  for (int i = 0; i < length; i++) { Serial.println((char)payload[i]); }
+  for (int i = 0; i < length; i++) {
+    Serial.println((char)payload[i]);
+  }
   int n, k, l, m;
   int tmpVal;
   int t, t1, t2;
+  char wiadomosc[100];  // Przykładowa maksymalna długość wiadomości, dostosuj do potrzeb
+
   if (strcmp(topic, "PIR/L1/Z3/buttB") == 0) {
     n = sscanf((char*)payload, "%d", &tmpVal);
-    //    if (n > 0) {
     if (n == 1) {
       if (tmpVal == 1) {
         Serial.println(tmpVal);
         digitalWrite(PUMP_PIN, HIGH);
+
+        M5.Rtc.GetTime(&RTCtime);
+        M5.Rtc.GetDate(&RTCDate);
+        lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+        preferences.putString("watering", lastWatering);
+        Serial.print("Watering time saved: ");
+        Serial.print(lastWatering);
         //pumpRunning = true;
+
       } else if (tmpVal == 0) {
         Serial.println(tmpVal);
-        digitalWrite(PUMP_PIN, LOW);  // wyłączamy pompę
-        //pumpRunning = false;          // ustawiamy flagę, że pompa jest wyłączona
+        digitalWrite(PUMP_PIN, LOW);
       }
     }
   } else if (strcmp(topic, "PIR/L1/condition/temperature") == 0) {
@@ -325,8 +406,36 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   } else if (strcmp(topic, "PIR/L1/condition/pressure") == 0) {
     m = sscanf((char*)payload, "%d", &t2);
     if (m > 0) pressureT = t2;
+  } else if (strcmp(topic, "PIR/L1/otherPlant") == 0) {
+    m = sscanf((char*)payload, "%s", wiadomosc);
+    Serial.println("\nOdebrano nową roślinę\n");
+    Serial.printf("%s\n", wiadomosc);
+    if (m > 0) {
+      freeOtherPlantMemory();  // Zwolnienie pamięci przed przypisaniem nowych wartości
+      other_Plant_set = true;
+      char* token = strtok(wiadomosc, ";");
+      int i = 0;
+
+      while (token != NULL && i < 7) {
+        // Alokacja pamięci dla wyrazu
+        other_Plant[i] = (char*)malloc(strlen(token) + 1);
+
+        // Kopiowanie wyrazu do nowo alokowanej pamięci
+        strcpy(other_Plant[i], token);
+
+        // Przechodzenie do kolejnego tokenu
+        token = strtok(NULL, ";");
+        Serial.printf("%s", other_Plant[i]);
+        i++;
+      }
+    } else {
+      Serial.println("\nBłędne dane dla nowej rośliny\n");
+      Serial.printf("%d", m);
+      freeOtherPlantMemory();  // Zwolnienie pamięci w przypadku błędu
+    }
   }
 }
+
 void loop() {
   M5.update();
   if (!client.connected()) { reConnect(); }  // Reconnect after disconnection
@@ -347,15 +456,28 @@ void loop() {
     // if (rawADC < SOIL_MOISTURE_THRESHOLD) {
     if (rawADC > SOIL_MOISTURE_THRESHOLD) {
       digitalWrite(PUMP_PIN, HIGH);
+      
+      M5.Rtc.GetTime(&RTCtime);
+      M5.Rtc.GetDate(&RTCDate);
+      lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+      preferences.putString("watering", lastWatering);
+      Serial.print("Watering time saved: ");
+      Serial.print(lastWatering);
+      
       lastWateringDay = RTCDate.Date;
       lastWateringTime = millis();
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-      Serial.print("Watering time saved: ");
-      Serial.print(lastWateringDay);
-      Serial.print(", ");
-      Serial.println(lastWateringTime);
+//      Serial.print("Watering time saved: ");
+//      Serial.print(lastWateringDay);
+//      Serial.print(", ");
+//      Serial.println(lastWateringTime);
       pumpStartTime = millis();
       pumpRunning = true;
     }
@@ -410,15 +532,28 @@ void loop() {
   if (buttonsEnabled) {
     if (M5.BtnB.wasPressed()) {
       digitalWrite(PUMP_PIN, flag);
+
+      M5.Rtc.GetTime(&RTCtime);
+      M5.Rtc.GetDate(&RTCDate);
+      lastWatering = String(RTCDate.Year) + "-" +
+                          String(RTCDate.Month) + "-" +
+                          String(RTCDate.Date) + " " +
+                          String(RTCtime.Hours) + ":" +
+                          String(RTCtime.Minutes) + ":" +
+                          String(RTCtime.Seconds);
+      preferences.putString("watering", lastWatering);
+      Serial.print("Watering time saved: ");
+      Serial.print(lastWatering);
+      
       lastWateringDay = RTCDate.Date;
       lastWateringTime = millis();
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-      Serial.print("Watering time saved: ");
-      Serial.print(lastWateringDay);
-      Serial.print(", ");
-      Serial.println(lastWateringTime);
+//      Serial.print("Watering time saved: ");
+//      Serial.print(lastWateringDay);
+//      Serial.print(", ");
+//      Serial.println(lastWateringTime);
       flag = !flag;
     }
     // nowPump = millis();
@@ -453,8 +588,10 @@ void loop() {
       case 0:
         if (choose == 1) {
           page1a();
-        } else if (choose = 2) {
+        } else if (choose == 2) {
           page1b();
+        } else if (choose == 3) {
+          page1c();
         }
         break;
       case 1:
@@ -574,6 +711,59 @@ void page1b() {
   M5.Lcd.setCursor(153, 215);
   M5.Lcd.print("stem is thick");
 }
+
+void page1c() {
+
+  clearScreen();
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+
+  if (strcmp(other_Plant[0], "grudnik") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/grudnik.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Amarylis") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Amarylis.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Skrzydlokwiat") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Skrzydlokwiat.jpg", 31, 84);
+  } else if (strcmp(other_Plant[0], "Storczyk") == 0) {
+    M5.Lcd.drawJpgFile(SD, "/Storczyk.jpg", 31, 84);
+  } else {
+    M5.Lcd.setCursor(31, 84);
+    M5.Lcd.printf("brak zdjecia dla: %s", other_Plant[0]);
+  }
+
+  M5.Lcd.setCursor(203, 50);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.print(other_Plant[0]);
+  M5.Lcd.setCursor(145, 76);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+
+  M5.Lcd.setCursor(145, 102);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+
+  M5.Lcd.setCursor(140, 128);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+
+  M5.Lcd.setCursor(154, 153);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.print("description:");
+
+  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[4]);
+
+  M5.Lcd.setCursor(154, 193);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[5]);
+
+
+  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.printf("%s", other_Plant[6]);
+}
+
 void page2() {
 
   clearScreen();

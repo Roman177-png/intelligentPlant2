@@ -374,7 +374,7 @@ void loop() {
     
     sprintf(msg2, "{\"name\":\"%s\", \"timeWatering\":\"%s\", \"moilSoilture\":%d, \"temperature\":%.1f, \"humidity\":%.1f, \"pressure\":%.1f}",
     "ficus", "2023-09-12 12:23:12", rawADC, temperature, humidity, pressure / 100);
-    client.publish("PIR/L1/Z3/jsonData", msg);
+    client.publish("PIR/L1/Z3/jsonData", msg2);
   }
   // Przechodzenie do następnego ekranu za pomocą przycisku A
   if (buttonsEnabled) {

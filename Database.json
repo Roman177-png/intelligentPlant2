@@ -1,79 +1,48 @@
 [
     {
-        "id": "9e05157fc7392e03",
-        "type": "tab",
-        "label": "Database",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "053580ba9787d546",
+        "id": "bcc897168fd1a696",
         "type": "mysql",
-        "z": "9e05157fc7392e03",
+        "z": "17a32eb80983d8c1",
         "mydb": "a94c2155e352c42e",
         "name": "",
-        "x": 600,
+        "x": 570,
         "y": 220,
         "wires": [
             []
         ]
     },
     {
-        "id": "3f91a15b4eb26282",
-        "type": "mqtt in",
-        "z": "9e05157fc7392e03",
+        "id": "f9e8df806ba2e746",
+        "type": "json",
+        "z": "17a32eb80983d8c1",
         "name": "",
-        "topic": "PIR/L1/Z3/#",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "1658dccaf854d8ce",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 90,
-        "y": 260,
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 270,
+        "y": 400,
         "wires": [
             [
-                "789dd77ca650d118"
+                "45778a7e5d114076"
             ]
         ]
     },
     {
-        "id": "6da06b173935ac03",
-        "type": "debug",
-        "z": "9e05157fc7392e03",
-        "name": "debug 17",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 380,
-        "y": 400,
-        "wires": []
-    },
-    {
-        "id": "789dd77ca650d118",
+        "id": "45778a7e5d114076",
         "type": "function",
-        "z": "9e05157fc7392e03",
-        "name": "function 10",
-        "func": "// Pobierz dane z MQTT i przetwórz je\nif (msg.topic === \"PIR/L1/Z3/temperature\" && msg.payload !== undefined) {\n    context.set('temperature', msg.payload);\n    // context.set('temperature', parseFloat(msg.payload));\n} else if (msg.topic === \"PIR/L1/Z3/pressure\" && msg.payload !== undefined) {\n    // context.set('pressure', parseFloat(msg.payload));\n    context.set('pressure', msg.payload);\n\n} else if (msg.topic === \"PIR/L1/Z3/humidity\" && msg.payload !== undefined) {\n    // context.set('humidity', parseFloat(msg.payload));\n    context.set('humidity', msg.payload);\n} else if (msg.topic === \"PIR/L1/Z3/moilSoilture\" && msg.payload !== undefined) {\n    // context.set('soilMoisture', parseFloat(msg.payload));\n    context.set('soilMoisture', msg.payload);\n}\n\n// Sprawdź, czy wszystkie dane są dostępne i zapisz je do bazy danych\nvar temperature = context.get('temperature');\nvar pressure = context.get('pressure');\nvar humidity = context.get('humidity');\nvar soilMoisture = context.get('soilMoisture');\n\nif (temperature !== undefined && pressure !== undefined && humidity !== undefined && soilMoisture !== undefined) {\n    // Wykonaj operację zapisu do bazy danych za pomocą węzła bazy danych w Node-RED\n    var date = getCurrentDateTime();\n    var query = 'INSERT INTO plant_data(moilSoilture, temperature, humidity, pressure,date) VALUES (?, ?, ?, ?,?)';\n    var params = [soilMoisture, temperature, humidity, pressure, date];\n\n    msg.topic = query;\n    msg.payload = params;\n\n    // Wyzeruj dane w kontekście węzła\n    context.set('temperature', undefined);\n    context.set('pressure', undefined);\n    context.set('humidity', undefined);\n    context.set('soilMoisture', undefined);\n\n    return msg;\n}\n\n// Jeśli dane nie są jeszcze gotowe lub brakuje wartości, nie wykonuj żadnej operacji\nreturn null;\nfunction getCurrentDateTime() {\n    var now = new Date();\n    var year = now.getFullYear();\n    var month = padNumber(now.getMonth() + 1);\n    var day = padNumber(now.getDate());\n    var hours = padNumber(now.getHours());\n    var minutes = padNumber(now.getMinutes());\n    var seconds = padNumber(now.getSeconds());\n\n    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;\n}\n\nfunction padNumber(num) {\n    return (num < 10 ? '0' : '') + num;\n}",
+        "z": "17a32eb80983d8c1",
+        "name": "Parsowanie JSON",
+        "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\nvar timeWatering = data.timeWatering;\nvar moilSoilture = data.moilSoilture;\nvar temperature = data.temperature;\nvar humidity = data.humidity;\nvar pressure = data.pressure;\n\n\nvar extractedData = {\n    \"Name\": name,\n    \"Time Watering\": timeWatering,\n    \"Soil Moisture\": moilSoilture,\n    \"Temperature\": temperature,\n    \"Humidity\": humidity,\n    \"Pressure\": pressure\n};\n\nnode.warn(JSON.stringify(extractedData));\n\ncontext.set('name', undefined);\ncontext.set('timeWatering', undefined);\ncontext.set('temperature', undefined);\ncontext.set('pressure', undefined);\ncontext.set('humidity', undefined);\ncontext.set('moilSoilture', undefined);\n\nvar date = getCurrentDateTime();\nvar query = 'INSERT INTO plant_data(moilSoilture, temperature, humidity, pressure, date, timeWatering, name) VALUES (?,?,?,?,?,?,?)';\nvar params = [moilSoilture, temperature, humidity, pressure, date, timeWatering, name];\n\nmsg.topic = query;\nmsg.payload = params;\n\nreturn msg;\n\nfunction getCurrentDateTime() {\n    var now = new Date();\n    var year = now.getFullYear();\n    var month = padNumber(now.getMonth() + 1);\n    var day = padNumber(now.getDate());\n    var hours = padNumber(now.getHours());\n    var minutes = padNumber(now.getMinutes());\n    var seconds = padNumber(now.getSeconds());\n\n    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;\n}\n\nfunction padNumber(num) {\n    return (num < 10 ? '0' : '') + num;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
-        "y": 260,
+        "x": 370,
+        "y": 160,
         "wires": [
             [
-                "053580ba9787d546",
-                "6da06b173935ac03"
+                "bcc897168fd1a696"
             ]
         ]
     },
@@ -83,35 +52,8 @@
         "name": "",
         "host": "127.0.0.1",
         "port": "3306",
-        "db": "internetofthings",
+        "db": "csp",
         "tz": "",
         "charset": "UTF8"
-    },
-    {
-        "id": "1658dccaf854d8ce",
-        "type": "mqtt-broker",
-        "name": "",
-        "broker": "test.mosquitto.org",
-        "port": "1883",
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
     }
 ]

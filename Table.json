@@ -1,6 +1,6 @@
 [
     {
-        "id": "3ab6dfd56fd59205",
+        "id": "b52ade56e6a76df6",
         "type": "tab",
         "label": "Table",
         "disabled": false,
@@ -8,52 +8,54 @@
         "env": []
     },
     {
-        "id": "465277580dac1475",
+        "id": "05c88fe0ab029bc3",
         "type": "mysql",
-        "z": "3ab6dfd56fd59205",
-        "mydb": "a94c2155e352c42e",
+        "z": "b52ade56e6a76df6",
+        "mydb": "11f58f0bffa47384",
         "name": "MySQL Database",
-        "x": 550,
-        "y": 200,
+        "x": 650,
+        "y": 280,
         "wires": [
             [
-                "7a80c512340862b5"
+                "8940c3f442bf93b9",
+                "09366d60c438be1f"
             ]
         ]
     },
     {
-        "id": "72c1a23117bd02a7",
-        "type": "function",
-        "z": "3ab6dfd56fd59205",
-        "name": "Prepare SQL Query",
-        "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"SELECT temperature, pressure, humidity, moilSoilture, date FROM plant_data\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 260,
-        "y": 200,
-        "wires": [
-            [
-                "465277580dac1475"
-            ]
-        ]
-    },
-    {
-        "id": "7a80c512340862b5",
+        "id": "8940c3f442bf93b9",
         "type": "ui_table",
-        "z": "3ab6dfd56fd59205",
-        "group": "eac793334bdbe5ed",
+        "z": "b52ade56e6a76df6",
+        "group": "b2d6a9c5afcba662",
         "name": "",
         "order": 1,
-        "width": "11",
-        "height": "5",
+        "width": 18,
+        "height": 12,
         "columns": [
+            {
+                "field": "name",
+                "title": "Name",
+                "width": "90",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "timeWatering",
+                "title": "lastWatering",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
             {
                 "field": "temperature",
                 "title": "Temperature",
-                "width": "",
+                "width": "140",
                 "align": "center",
                 "formatter": "plaintext",
                 "formatterParams": {
@@ -63,7 +65,7 @@
             {
                 "field": "pressure",
                 "title": "Pressure",
-                "width": "",
+                "width": "110",
                 "align": "center",
                 "formatter": "plaintext",
                 "formatterParams": {
@@ -73,7 +75,7 @@
             {
                 "field": "humidity",
                 "title": "Humidity",
-                "width": "",
+                "width": "110",
                 "align": "center",
                 "formatter": "plaintext",
                 "formatterParams": {
@@ -82,8 +84,8 @@
             },
             {
                 "field": "moilSoilture",
-                "title": "moilSoilture",
-                "width": "",
+                "title": "SoilMoilture",
+                "width": "140",
                 "align": "center",
                 "formatter": "plaintext",
                 "formatterParams": {
@@ -93,7 +95,7 @@
             {
                 "field": "date",
                 "title": "Date",
-                "width": "200",
+                "width": "180",
                 "align": "center",
                 "formatter": "plaintext",
                 "formatterParams": {
@@ -103,23 +105,23 @@
         ],
         "outputs": 0,
         "cts": false,
-        "x": 710,
-        "y": 100,
+        "x": 810,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "c90c9627271e02d1",
+        "id": "d5b97ea79a47d48d",
         "type": "inject",
-        "z": "3ab6dfd56fd59205",
+        "z": "b52ade56e6a76df6",
         "name": "",
         "props": [
             {
                 "p": "payload"
             }
         ],
-        "repeat": "60",
+        "repeat": "120",
         "crontab": "",
-        "once": false,
+        "once": true,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "1",
@@ -128,33 +130,850 @@
         "y": 160,
         "wires": [
             [
-                "72c1a23117bd02a7"
+                "17a40872b4f4d794"
             ]
         ]
     },
     {
-        "id": "a94c2155e352c42e",
-        "type": "MySQLdatabase",
+        "id": "17a40872b4f4d794",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "Prepare SQL Query",
+        "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 220,
+        "wires": [
+            [
+                "05c88fe0ab029bc3"
+            ]
+        ]
+    },
+    {
+        "id": "88c1d77af935e088",
+        "type": "inject",
+        "z": "b52ade56e6a76df6",
         "name": "",
-        "host": "127.0.0.1",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 70,
+        "y": 320,
+        "wires": [
+            [
+                "601643a3042acffd"
+            ]
+        ]
+    },
+    {
+        "id": "601643a3042acffd",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "Prepare SQL Query",
+        "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"ALTER TABLE plant_data ADD COLUMN timeWatering TEXT\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 380,
+        "wires": [
+            [
+                "05c88fe0ab029bc3"
+            ]
+        ]
+    },
+    {
+        "id": "ae8b4b106f1c2657",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "Prepare SQL Query",
+        "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\n\nmsg.topic = \"UPDATE plant_data SET timeWatering = '2023-09-12 16:45:48' WHERE timeWatering IS NULL\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 480,
+        "wires": [
+            [
+                "05c88fe0ab029bc3"
+            ]
+        ]
+    },
+    {
+        "id": "253e773336f550d9",
+        "type": "inject",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 90,
+        "y": 480,
+        "wires": [
+            [
+                "ae8b4b106f1c2657"
+            ]
+        ]
+    },
+    {
+        "id": "4eaabeea839b8115",
+        "type": "comment",
+        "z": "b52ade56e6a76df6",
+        "name": "Ustawienie wartości domyślnych",
+        "info": "",
+        "x": 130,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "ee1f76a8bb56aed2",
+        "type": "comment",
+        "z": "b52ade56e6a76df6",
+        "name": "Dodanie nowej kolumny",
+        "info": "",
+        "x": 100,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "3233259130633441",
+        "type": "ui_button",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "group": "b2d6a9c5afcba662",
+        "order": 25,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "refresh",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 150,
+        "y": 80,
+        "wires": [
+            [
+                "17a40872b4f4d794"
+            ]
+        ]
+    },
+    {
+        "id": "e6a0ebfcad18eb2e",
+        "type": "ui_dropdown",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "label": "Measurement",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "b2d6a9c5afcba662",
+        "order": 2,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "temperature",
+                "value": "temperature",
+                "type": "str"
+            },
+            {
+                "label": "humidity",
+                "value": "humidity",
+                "type": "str"
+            },
+            {
+                "label": "pressure",
+                "value": "pressure",
+                "type": "str"
+            },
+            {
+                "label": "soilMoisture",
+                "value": "moilSoisture",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "dropdown",
+        "topicType": "str",
+        "className": "",
+        "x": 200,
+        "y": 20,
+        "wires": [
+            [
+                "c770613f436be6ae"
+            ]
+        ]
+    },
+    {
+        "id": "67423ba34b721f10",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "Filter query",
+        "func": "// Odczytaj wartości zmiennych kontekstu przepływu\nvar dropdown = flow.get('dropdown');\nvar maxValue = flow.get('maxValue');\nvar operator = flow.get('operator');\n\n// Sprawdź, czy zmienne są zdefiniowane\nif (dropdown !== undefined && maxValue !== undefined) {\n    msg.topic = \"SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE \" + dropdown + operator + maxValue.toString();\n    msg.payload = [msg.payload];\n    return msg;\n\n    return msg;\n} else {\n    // Jedna zmienna lub obie są niezdefiniowane\n    node.error(\"One or both variables are not defined!\");\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 40,
+        "wires": [
+            [
+                "05c88fe0ab029bc3"
+            ]
+        ]
+    },
+    {
+        "id": "eb55b91abba4504e",
+        "type": "ui_text_input",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "label": "",
+        "tooltip": "",
+        "group": "b2d6a9c5afcba662",
+        "order": 7,
+        "width": 3,
+        "height": 1,
+        "passthru": true,
+        "mode": "number",
+        "delay": 300,
+        "topic": "text",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "83dc7a73a8c01da0"
+            ]
+        ]
+    },
+    {
+        "id": "5d3ff043fe2adb71",
+        "type": "ui_button",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "group": "b2d6a9c5afcba662",
+        "order": 10,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "Filter",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "fa fa-filter",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 690,
+        "y": 40,
+        "wires": [
+            [
+                "67423ba34b721f10"
+            ]
+        ]
+    },
+    {
+        "id": "c770613f436be6ae",
+        "type": "change",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "dropdown",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "83dc7a73a8c01da0",
+        "type": "change",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxValue",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e165888368408e31",
+        "type": "ui_dropdown",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "label": "Operator",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "b2d6a9c5afcba662",
+        "order": 4,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": ">",
+                "value": ">",
+                "type": "str"
+            },
+            {
+                "label": "<",
+                "value": "<",
+                "type": "str"
+            },
+            {
+                "label": "=",
+                "value": "=",
+                "type": "str"
+            },
+            {
+                "label": ">=",
+                "value": ">=",
+                "type": "str"
+            },
+            {
+                "label": "<=",
+                "value": "<=",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "operator",
+        "topicType": "str",
+        "className": "",
+        "x": 300,
+        "y": 80,
+        "wires": [
+            [
+                "14680e09fce8111b"
+            ]
+        ]
+    },
+    {
+        "id": "14680e09fce8111b",
+        "type": "change",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "operator",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e51cdb2e8859d505",
+        "type": "ui_text",
+        "z": "b52ade56e6a76df6",
+        "group": "b2d6a9c5afcba662",
+        "order": 6,
+        "width": 2,
+        "height": 1,
+        "name": "",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 750,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "eda73f7ccee8db6f",
+        "type": "inject",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Value",
+        "payloadType": "str",
+        "x": 550,
+        "y": 420,
+        "wires": [
+            [
+                "e51cdb2e8859d505"
+            ]
+        ]
+    },
+    {
+        "id": "09366d60c438be1f",
+        "type": "debug",
+        "z": "b52ade56e6a76df6",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "e3bc738a3c2d378f",
+        "type": "ui_date_picker",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "label": "Pick date",
+        "group": "b2d6a9c5afcba662",
+        "order": 15,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 180,
+        "y": 620,
+        "wires": [
+            [
+                "5af26532d5f43680"
+            ]
+        ]
+    },
+    {
+        "id": "5af26532d5f43680",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "function 12",
+        "func": "var test = msg.payload\nconst dateObject = new Date(test);\n\n// Uzyskanie poszczególnych komponentów daty\nconst year = dateObject.getFullYear();\nconst month = dateObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst day = dateObject.getDate();\n\n// Sformatowanie daty w oczekiwanym formacie\nconst formattedDate = `${year}.${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day}`;\nmsg.payload = formattedDate\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 600,
+        "wires": [
+            [
+                "2eb77e443624a89d"
+            ]
+        ]
+    },
+    {
+        "id": "2eb77e443624a89d",
+        "type": "change",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "date",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "63b8500b90150323",
+        "type": "ui_button",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "group": "b2d6a9c5afcba662",
+        "order": 20,
+        "width": 2,
+        "height": 2,
+        "passthru": false,
+        "label": "Filter date",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "fa fa-filter",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 640,
+        "y": 520,
+        "wires": [
+            [
+                "f796ae30a13991cf"
+            ]
+        ]
+    },
+    {
+        "id": "f796ae30a13991cf",
+        "type": "function",
+        "z": "b52ade56e6a76df6",
+        "name": "Filter query",
+        "func": "// Odczytaj wartości zmiennych kontekstu przepływu\nvar date = flow.get('date')\ndate= date.split('.')\ndate = date[0] + '-' + date[1] + '-' + date[2]\nvar operator = flow.get('operator2');\n\n// Sprawdź, czy zmienne są zdefiniowane\nif (date !== undefined && operator !== undefined) {\n    var fullDate = date + ' 00:00:00'\n    node.warn(\"Date: \" + fullDate);\n    node.warn(\"Operator: \" + operator);\n    \n    msg.topic = \"SELECT * FROM plant_data WHERE STR_TO_DATE(date, '%Y-%m-%d %H:%i:%s') \" + operator + \" STR_TO_DATE('\" + fullDate + \"', '%Y-%m-%d %H:%i:%s')\";\n    \n    msg.payload = [msg.payload];\n    return msg;\n\n    \n} else {\n    // Jedna zmienna lub obie są niezdefiniowane\n    node.error(\"One or both variables are not defined!\");\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 540,
+        "wires": [
+            [
+                "05c88fe0ab029bc3"
+            ]
+        ]
+    },
+    {
+        "id": "d79118c55c8f8107",
+        "type": "ui_dropdown",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "label": "Operator",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "b2d6a9c5afcba662",
+        "order": 17,
+        "width": 5,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": ">",
+                "value": ">",
+                "type": "str"
+            },
+            {
+                "label": "<",
+                "value": "<",
+                "type": "str"
+            },
+            {
+                "label": "=",
+                "value": "=",
+                "type": "str"
+            },
+            {
+                "label": ">=",
+                "value": ">=",
+                "type": "str"
+            },
+            {
+                "label": "<=",
+                "value": "<=",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "operator",
+        "topicType": "str",
+        "className": "",
+        "x": 540,
+        "y": 660,
+        "wires": [
+            [
+                "572eb0cc3e95801e"
+            ]
+        ]
+    },
+    {
+        "id": "572eb0cc3e95801e",
+        "type": "change",
+        "z": "b52ade56e6a76df6",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "operator2",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "50d5e9c37c8c7d11",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 3,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "7e14a0250b3fbd2f",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 5,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "da772118938a37cd",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 8,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "95a7bca664bdfd62",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 9,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "2865d2f08c76e229",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 11,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "d86a0cad83a617d6",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 12,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "c6ca1ddae4aad563",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 13,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "d29f80d31cfcb02a",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 14,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "8f8f49e1d897d3ec",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 16,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "37bfdbe5571f0a1c",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 18,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "77d3477381d4d8b8",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 19,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "578a3a9edd0e934e",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 21,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "d13c07d09f7aeef7",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 22,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "47be5fb45af62492",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 23,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "4464cc10229da2c8",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 24,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "570d8e524c7010ed",
+        "type": "ui_spacer",
+        "z": "b52ade56e6a76df6",
+        "name": "spacer",
+        "group": "b2d6a9c5afcba662",
+        "order": 26,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "11f58f0bffa47384",
+        "type": "MySQLdatabase",
+        "name": "SQL database",
+        "host": "sql11.freesqldatabase.com",
         "port": "3306",
-        "db": "internetofthings",
+        "db": "sql11667495",
         "tz": "",
         "charset": "UTF8"
     },
     {
-        "id": "eac793334bdbe5ed",
+        "id": "b2d6a9c5afcba662",
         "type": "ui_group",
         "name": "DataTable",
-        "tab": "5b044158fe22bff6",
+        "tab": "b61e80c244cad97c",
         "order": 1,
         "disp": true,
-        "width": "11",
+        "width": "26",
         "collapse": false,
         "className": ""
     },
     {
-        "id": "5b044158fe22bff6",
+        "id": "b61e80c244cad97c",
         "type": "ui_tab",
         "name": "Table",
         "icon": "fa-table",

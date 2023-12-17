@@ -10,9 +10,11 @@
 unsigned long sTim3 = 0, pTim3 = 0, cycleTime3 = 0, now4 = 0, last4 = 0;
 WiFiClient espClient;
 PubSubClient client(espClient);
-const char* ssid = "User";
-const char* password = "12435678";
+const char* ssid = "";
+const char* password = "";
 String value3;
+char shortText[11];
+String yearStr, monthStr, dayStr, hourStr, minStr, secStr;
 const char* mqtt_server = "test.mosquitto.org";  // Adres brokera MQTT
 // const char* mqtt_server = "broker.mqttdashboard.com";  // Adres brokera MQTT
 #define MSG_BUFFER_SIZE (50)
@@ -24,15 +26,19 @@ int value = 0;
 void setupWifi();
 void mqtt_callback(char* topic, byte* payload, unsigned int length);
 void reConnect();
-String lastWatering;
+String lastWatering = "YYYY-MM-DD HH:MM:SS";
 RTC_TimeTypeDef RTCtime;
 RTC_DateTypeDef RTCDate;
 char timeStrbuff[64];
 Preferences preferences;
 
+String currentPlant = "";
+
 float tempAvg = 0, humAvg = 0, soilHumAvg = 0, pressAvg = 0;
 const unsigned long SOIL_MOISTURE_INTERVAL = 1000;
-const int SOIL_MOISTURE_THRESHOLD = 2100;
+const float SOIL_MOISTURE_THRESHOLD = 44.5;
+
+//const int SOIL_MOISTURE_THRESHOLD = 2100;
 
 void page1a();
 void page1b();
@@ -100,13 +106,13 @@ void flushTime() {
 }
 
 void setupTime() {
-  RTCtime.Hours = 01;
-  RTCtime.Minutes = 00;
+  RTCtime.Hours = 20;
+  RTCtime.Minutes = 59;
   RTCtime.Seconds = 20;
   if (!M5.Rtc.SetTime(&RTCtime)) Serial.println("wrong time set!");
   RTCDate.Year = 2023;
-  RTCDate.Month = 05;
-  RTCDate.Date = 02;
+  RTCDate.Month = 12;
+  RTCDate.Date = 17;
   if (!M5.Rtc.SetDate(&RTCDate)) Serial.println("wrong date set!");
 }
 
@@ -125,6 +131,11 @@ int choose = 0;
 
 bool flag = true;
 int rawADC = 0;
+int maxMoisture = 2700; // Maksymalna wartość odczytu wilgotności
+int minMoisture = 1000;    // Minimalna wartość odczytu wilgotności
+
+float moisturePercentage = 0.0;
+
 
 void ltClick(Event& e) {
   if (screenNum != 5) {
@@ -152,7 +163,7 @@ void ltClick(Event& e) {
     M5.Lcd.print("description:");
 
     M5.Lcd.setCursor(157, 175);
-    M5.Lcd.print("likes humidit");
+    M5.Lcd.print("likes humidity;");
 
     M5.Lcd.setCursor(154, 193);
     M5.Lcd.print("good lighting");
@@ -161,7 +172,6 @@ void ltClick(Event& e) {
     M5.Lcd.setCursor(153, 215);
     M5.Lcd.print("shiny leaves");
     
-    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
     lt.delHandlers();
     lb.delHandlers();
     op.delHandlers();
@@ -209,7 +219,6 @@ void lbClick(Event& e) {
 
     M5.Lcd.setCursor(153, 215);
     M5.Lcd.print("stem is thick");
-    // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lb
     lt.delHandlers();
     lb.delHandlers();
     op.delHandlers();
@@ -258,10 +267,10 @@ void otherPlant(Event& e) {
     M5.Lcd.setCursor(154, 193);
     M5.Lcd.printf("%s", other_Plant[5]);
 
-
     M5.Lcd.setCursor(153, 215);
-    M5.Lcd.printf("%s", other_Plant[6]);
-
+    //M5.Lcd.printf("%s", other_Plant[6]);
+    snprintf(shortText, sizeof(shortText), "%.10s", other_Plant[6]);
+    M5.Lcd.printf("%s", shortText);  
     // usunięcie wszystkich zarejestrowanych funkcji dla przycisku lt
     lt.delHandlers();
     lb.delHandlers();
@@ -382,12 +391,21 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
         M5.Rtc.GetTime(&RTCtime);
         M5.Rtc.GetDate(&RTCDate);
-        lastWatering = String(RTCDate.Year) + "-" +
-                          String(RTCDate.Month) + "-" +
-                          String(RTCDate.Date) + " " +
-                          String(RTCtime.Hours) + ":" +
-                          String(RTCtime.Minutes) + ":" +
-                          String(RTCtime.Seconds);
+        // lastWatering = String(RTCDate.Year) + "-" +
+        //                   String(RTCDate.Month) + "-" +
+        //                   String(RTCDate.Date) + " " +
+        //                   String(RTCtime.Hours) + ":" +
+        //                   String(RTCtime.Minutes) + ":" +
+        //                   String(RTCtime.Seconds);
+      yearStr = String(RTCDate.Year);
+      monthStr = (RTCDate.Month < 10) ? "0" + String(RTCDate.Month) : String(RTCDate.Month);
+      dayStr = (RTCDate.Date < 10) ? "0" + String(RTCDate.Date) : String(RTCDate.Date);
+      hourStr = (RTCtime.Hours < 10) ? "0" + String(RTCtime.Hours) : String(RTCtime.Hours);
+      minStr = (RTCtime.Minutes < 10) ? "0" + String(RTCtime.Minutes) : String(RTCtime.Minutes);
+      secStr = (RTCtime.Seconds < 10) ? "0" + String(RTCtime.Seconds) : String(RTCtime.Seconds);
+
+      lastWatering = yearStr + "-" + monthStr + "-" + dayStr + " " + hourStr + ":" + minStr + ":" + secStr;
+
         preferences.putString("watering", lastWatering);
         Serial.print("Watering time saved: ");
         Serial.print(lastWatering);
@@ -451,21 +469,24 @@ void loop() {
     } else {
       temperature = 0.0, humidity = 0.0;
     }
-
-
     rawADC = analogRead(INPUT_PIN);
+    // moisturePercentage = ((float)(rawADC - minMoisture) / (float)(maxMoisture - minMoisture)) * 100.0;
+    moisturePercentage = 100.0 - (((float)(rawADC - minMoisture) / (float)(maxMoisture - minMoisture)) * 100.0);
     // if (rawADC < SOIL_MOISTURE_THRESHOLD) {
-    if (rawADC > SOIL_MOISTURE_THRESHOLD) {
+    if (moisturePercentage < SOIL_MOISTURE_THRESHOLD) {
       digitalWrite(PUMP_PIN, HIGH);
       
       M5.Rtc.GetTime(&RTCtime);
       M5.Rtc.GetDate(&RTCDate);
-      lastWatering = String(RTCDate.Year) + "-" +
-                          String(RTCDate.Month) + "-" +
-                          String(RTCDate.Date) + " " +
-                          String(RTCtime.Hours) + ":" +
-                          String(RTCtime.Minutes) + ":" +
-                          String(RTCtime.Seconds);
+      yearStr = String(RTCDate.Year);
+      monthStr = (RTCDate.Month < 10) ? "0" + String(RTCDate.Month) : String(RTCDate.Month);
+      dayStr = (RTCDate.Date < 10) ? "0" + String(RTCDate.Date) : String(RTCDate.Date);
+      hourStr = (RTCtime.Hours < 10) ? "0" + String(RTCtime.Hours) : String(RTCtime.Hours);
+      minStr = (RTCtime.Minutes < 10) ? "0" + String(RTCtime.Minutes) : String(RTCtime.Minutes);
+      secStr = (RTCtime.Seconds < 10) ? "0" + String(RTCtime.Seconds) : String(RTCtime.Seconds);
+
+      lastWatering = yearStr + "-" + monthStr + "-" + dayStr + " " + hourStr + ":" + minStr + ":" + secStr;
+
       preferences.putString("watering", lastWatering);
       Serial.print("Watering time saved: ");
       Serial.print(lastWatering);
@@ -475,30 +496,26 @@ void loop() {
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-//      Serial.print("Watering time saved: ");
-//      Serial.print(lastWateringDay);
-//      Serial.print(", ");
-//      Serial.println(lastWateringTime);
       pumpStartTime = millis();
       pumpRunning = true;
     }
 
     //zapis do pliku
-    dataFile = SD.open("/daneToday2.txt", FILE_WRITE);
+    dataFile = SD.open("/daneToday3.txt", FILE_WRITE);
 
     if (dataFile) {
       dataFile.print(temperature);
       dataFile.print(",");
       dataFile.print(humidity);
       dataFile.print(",");
-      dataFile.print(rawADC);
+      dataFile.print(moisturePercentage);
       dataFile.print(",");
       dataFile.println(pressure / 100);
       dataFile.close();
     } else {
       Serial.println("Błąd otwarcia pliku!");
     }
-    sprintf(msg, "%d", rawADC);  // Control variable
+    sprintf(msg, "%.1f", moisturePercentage);  // Control variable
     client.publish("PIR/L1/Z3/moilSoilture", msg);
     sprintf(msg, "%.1f", temperature);
     // Setpoint value
@@ -510,8 +527,8 @@ void loop() {
     // Setpoint value
     client.publish("PIR/L1/Z3/pressure", msg);  // Publication of message
     
-    sprintf(msg2, "{\"name\":\"%s\", \"timeWatering\":\"%s\", \"moilSoilture\":%d, \"temperature\":%.1f, \"humidity\":%.1f, \"pressure\":%.1f}",
-    "ficus", "2023-09-12 12:23:12", rawADC, temperature, humidity, pressure / 100);
+    sprintf(msg2, "{\"name\":\"%s\", \"timeWatering\":\"%s\", \"moilSoilture\":%.1f, \"temperature\":%.1f, \"humidity\":%.1f, \"pressure\":%.1f}",
+    currentPlant, lastWatering.c_str(), moisturePercentage, temperature, humidity, pressure / 100);
     client.publish("PIR/L1/Z3/jsonData", msg2);
   }
   if ((temperature != 0.00 && isFirstInfo == true) || (isFirstInfo == false))
@@ -540,12 +557,15 @@ void loop() {
 
       M5.Rtc.GetTime(&RTCtime);
       M5.Rtc.GetDate(&RTCDate);
-      lastWatering = String(RTCDate.Year) + "-" +
-                          String(RTCDate.Month) + "-" +
-                          String(RTCDate.Date) + " " +
-                          String(RTCtime.Hours) + ":" +
-                          String(RTCtime.Minutes) + ":" +
-                          String(RTCtime.Seconds);
+      yearStr = String(RTCDate.Year);
+      monthStr = (RTCDate.Month < 10) ? "0" + String(RTCDate.Month) : String(RTCDate.Month);
+      dayStr = (RTCDate.Date < 10) ? "0" + String(RTCDate.Date) : String(RTCDate.Date);
+      hourStr = (RTCtime.Hours < 10) ? "0" + String(RTCtime.Hours) : String(RTCtime.Hours);
+      minStr = (RTCtime.Minutes < 10) ? "0" + String(RTCtime.Minutes) : String(RTCtime.Minutes);
+      secStr = (RTCtime.Seconds < 10) ? "0" + String(RTCtime.Seconds) : String(RTCtime.Seconds);
+
+      lastWatering = yearStr + "-" + monthStr + "-" + dayStr + " " + hourStr + ":" + minStr + ":" + secStr;
+
       preferences.putString("watering", lastWatering);
       Serial.print("Watering time saved: ");
       Serial.print(lastWatering);
@@ -555,36 +575,8 @@ void loop() {
       EEPROM.write(0, lastWateringDay);
       EEPROM.put(1, lastWateringTime);
       EEPROM.commit();
-//      Serial.print("Watering time saved: ");
-//      Serial.print(lastWateringDay);
-//      Serial.print(", ");
-//      Serial.println(lastWateringTime);
       flag = !flag;
     }
-    // nowPump = millis();
-    // if (nowPump - lastPump > SOIL_MOISTURE_INTERVAL) {
-    //   rawADC = analogRead(INPUT_PIN);
-    //   if (rawADC < SOIL_MOISTURE_THRESHOLD) {
-    //     digitalWrite(PUMP_PIN, HIGH);
-    //     lastWateringDay = RTCDate.Date;
-    //     lastWateringTime = millis();
-    //     EEPROM.write(0, lastWateringDay);
-    //     EEPROM.put(1, lastWateringTime);
-    //     EEPROM.commit();
-    //     Serial.print("Watering time saved: ");
-    //     Serial.print(lastWateringDay);
-    //     Serial.print(", ");
-    //     Serial.println(lastWateringTime);
-    //     pumpStartTime = millis();
-    //     pumpRunning = true;
-    //   }
-    //   lastPump = nowPump;
-    //   dataFile.print("Wilgotnosc gleby: ");
-    //   dataFile.print(rawADC);
-    //   dataFile.print(" %\n");
-    //   dataFile.close();
-    // }
-    // if (pumpRunning && millis() - pumpStartTime >= 10000) {
     if (pumpRunning && millis() - pumpStartTime >= 5000) {
       digitalWrite(PUMP_PIN, LOW);  // wyłączamy pompę
       pumpRunning = false;          // ustawiamy flagę, że pompa jest wyłączona
@@ -637,6 +629,7 @@ void loop() {
 void page1a() {
 
   clearScreen();
+  currentPlant = "ficus";
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(WHITE, BLACK);
 
@@ -651,26 +644,26 @@ void page1a() {
 
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d", humidityT);
+  M5.Lcd.printf("comfort H : %d", humidityT);
 
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("comfort P: %d", pressureT);
 
-  M5.Lcd.setCursor(154, 153);
+  M5.Lcd.setCursor(145, 153);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.print("description:");
 
-  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.setCursor(145, 175);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.print("likes humidit");
+  M5.Lcd.print("likes humidit;");
 
-  M5.Lcd.setCursor(154, 193);
+  M5.Lcd.setCursor(145, 193);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.print("good lighting");
+  M5.Lcd.print("good lighting;");
 
 
-  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.setCursor(145, 215);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.print("shiny leaves");
 }
@@ -678,6 +671,7 @@ void page1a() {
 void page1b() {
 
   clearScreen();
+  currentPlant = "cactus";
   M5.Lcd.setTextSize(2);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.fillRect(66, 96, 20, 120, GREEN);
@@ -696,24 +690,24 @@ void page1b() {
   M5.Lcd.printf("Comfort T: %d", temperatureT);
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %d", humidityT);
+  M5.Lcd.printf("Comfort H : %d", humidityT);
   M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %d", pressureT);
+  M5.Lcd.printf("Comfort P: %d", pressureT);
 
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.setCursor(154, 153);
-  M5.Lcd.print("description:");
+  M5.Lcd.setCursor(145, 153);
+  M5.Lcd.print("Description:");
 
-  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.setCursor(145, 175);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.print("long roots;");
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.setCursor(154, 193);
-  M5.Lcd.print("spines");
+  M5.Lcd.setCursor(145, 193);
+  M5.Lcd.print("spines;");
 
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.setCursor(145, 215);
   M5.Lcd.print("stem is thick");
 }
 
@@ -724,12 +718,16 @@ void page1c() {
   M5.Lcd.setTextColor(WHITE, BLACK);
 
   if (strcmp(other_Plant[0], "grudnik") == 0) {
+    currentPlant = "grudnik";
     M5.Lcd.drawJpgFile(SD, "/grudnik.jpg", 31, 84);
   } else if (strcmp(other_Plant[0], "Amarylis") == 0) {
+    currentPlant = "amarylis";
     M5.Lcd.drawJpgFile(SD, "/Amarylis.jpg", 31, 84);
   } else if (strcmp(other_Plant[0], "Skrzydlokwiat") == 0) {
+    currentPlant = "Skrzydlokwiat";
     M5.Lcd.drawJpgFile(SD, "/Skrzydlokwiat.jpg", 31, 84);
   } else if (strcmp(other_Plant[0], "Storczyk") == 0) {
+    currentPlant = "Storczyk";
     M5.Lcd.drawJpgFile(SD, "/Storczyk.jpg", 31, 84);
   } else {
     M5.Lcd.setCursor(31, 84);
@@ -741,32 +739,34 @@ void page1c() {
   M5.Lcd.print(other_Plant[0]);
   M5.Lcd.setCursor(145, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("Comfort T: %s", other_Plant[1]);
+  M5.Lcd.printf("Comfort T:%s", other_Plant[1]);
 
   M5.Lcd.setCursor(145, 102);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort % : %s", other_Plant[2]);
+  M5.Lcd.printf("comfort H:%s", other_Plant[2]);
 
-  M5.Lcd.setCursor(140, 128);
+  M5.Lcd.setCursor(145, 128);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("comfort P: %s", other_Plant[3]);
+  M5.Lcd.printf("comfort P:%s", other_Plant[3]);
 
-  M5.Lcd.setCursor(154, 153);
+  M5.Lcd.setCursor(145, 153);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.print("description:");
 
-  M5.Lcd.setCursor(157, 175);
+  M5.Lcd.setCursor(145, 175);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("%s", other_Plant[4]);
 
-  M5.Lcd.setCursor(154, 193);
+  M5.Lcd.setCursor(145, 193);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.printf("%s", other_Plant[5]);
 
 
-  M5.Lcd.setCursor(153, 215);
+  M5.Lcd.setCursor(145, 215);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.printf("%s", other_Plant[6]);
+  //M5.Lcd.printf("%s", other_Plant[6]);
+  snprintf(shortText, sizeof(shortText), "%.10s", other_Plant[6]);
+  M5.Lcd.printf("%s", shortText);
 }
 
 void page2() {
@@ -825,28 +825,12 @@ void page3() {
   M5.Lcd.setCursor(24, 24);
   M5.Lcd.setTextColor(WHITE, BLACK);
   M5.Lcd.print("Last watering");
-  M5.Lcd.setTextSize(3);
-  M5.Lcd.setCursor(84, 76);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setCursor(80, 76);
   M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.print(lastWatering);
 
-  M5.Lcd.print(lastWateringDay);
-  M5.Lcd.print("/");
   M5.Lcd.setTextColor(WHITE, BLACK);
-
-  M5.Lcd.print(RTCDate.Month);
-  M5.Lcd.print("/");
-  M5.Lcd.setTextColor(WHITE, BLACK);
-
-  M5.Lcd.print(RTCDate.Year);
-  M5.Lcd.print(" ");
-  M5.Lcd.setTextColor(WHITE, BLACK);
-
-  //M5.Lcd.print(lastWateringTime / 1000 / 60 / 60);
-  //  M5.Lcd.print(":");
-  M5.Lcd.setTextColor(WHITE, BLACK);
-
-  //M5.Lcd.print((lastWateringTime / 1000 / 60) % 60);
-
   M5.Lcd.fillCircle(39, 91, 15, BLUE);
   M5.Lcd.fillRect(31, 52, 15, 30, BLUE);
   M5.Lcd.fillRect(23, 156, 30, 30, GREEN);
@@ -858,7 +842,7 @@ void page3() {
   M5.Lcd.setTextSize(3);
   M5.Lcd.setCursor(76, 175);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.print(String(rawADC));
+  M5.Lcd.print(String(moisturePercentage));
   M5.Lcd.fillRect(24, 180, 10, 30, BLUE);
   M5.Lcd.fillRect(44, 180, 10, 30, YELLOW);
   draw_switch_button();
@@ -901,8 +885,6 @@ void page4() {
   M5.Lcd.setCursor(258, 205);
   int intHumAvg = int(humAvg);
   M5.Lcd.printf("%d %%", intHumAvg);
-  M5.Lcd.setCursor(55, 10);
-  M5.Lcd.print("Average readings");
 }
 
 
@@ -942,8 +924,6 @@ void pageInfo() {
     M5.Lcd.print("za wysoka:");
     M5.Lcd.setTextSize(4);
     M5.Lcd.setCursor(113, 143);
-    // M5.Lcd.setTextSize(3);
-    // M5.Lcd.setCursor(5, 100);
     M5.Lcd.printf("%.1fC", temperature);
     lastTemp = 1;
   } else {
@@ -956,8 +936,6 @@ void pageInfo() {
     M5.Lcd.print("dobra:");
     M5.Lcd.setTextSize(4);
     M5.Lcd.setCursor(113, 143);
-    // M5.Lcd.setTextSize(3);
-    // M5.Lcd.setCursor(5, 100);
     M5.Lcd.printf("%.1fC", temperature);
     lastTemp = 2;
   }
@@ -967,7 +945,6 @@ void page5() {
   clearScreen();
   pageInfo();
 }
-
 void page6() {
   clearScreen();
   M5.Lcd.drawRect(110, 200, 100, 35, WHITE);
@@ -977,9 +954,7 @@ void page6() {
   } else {
     M5.Lcd.setTextColor(BLACK, RED);
   }
-
   M5.Lcd.setTextSize(2);
-  //M5.Lcd.setCursor(304, 204);
   M5.Lcd.setCursor(157, 207);
   M5.Lcd.print("OK");
   pageInfo();
@@ -1005,22 +980,18 @@ void clearScreen() {
   }
 }
 void draw_switch_button() {
-  //M5.Lcd.fillScreen(BLACK); // wypełnienie ekranu na czarno
   M5.Lcd.setCursor(242, 165);  // ustawienie kursora
   M5.Lcd.setTextColor(WHITE);  // ustawienie koloru tekstu na biały
   M5.Lcd.setTextSize(2);       // ustawienie rozmiaru tekstu na 1
   M5.Lcd.print("PUMP");        // wyświetlenie napisu "Switch" na przycisku
   if (flag == 1) {
-    //M5.Lcd.drawRoundRect(100, 80, 80, 40, 10, GREEN); // rysowanie przycisku z zielonym kolorem
     M5.Lcd.drawRoundRect(224, 188, 80, 40, 20, RED);  // rysowanie przycisku z zielonym kolorem
-    //M5.Lcd.drawRoundRect(100, 80, 80, 40, 10, RED); // rysowanie przycisku z czerwonym kolorem
     M5.Lcd.setCursor(242, 200);         // ustawienie kursora
     M5.Lcd.setTextColor(WHITE, BLACK);  // ustawienie koloru tekstu na biały
     M5.Lcd.setTextSize(3);              // ustawienie rozmiaru tekstu na 1
     M5.Lcd.print("OFF");                // wyświetlenie napisu "Switch" na przycisku
   } else {
     M5.Lcd.drawRoundRect(224, 188, 80, 40, 20, GREEN);  // rysowanie przycisku z zielonym kolorem
-    //M5.Lcd.drawRoundRect(100, 80, 80, 40, 10, RED); // rysowanie przycisku z czerwonym kolorem
     M5.Lcd.setCursor(242, 200);         // ustawienie kursora
     M5.Lcd.setTextColor(WHITE, BLACK);  // ustawienie koloru tekstu na biały
     M5.Lcd.setTextSize(3);              // ustawienie rozmiaru tekstu na 1
@@ -1028,7 +999,7 @@ void draw_switch_button() {
   }
 }
 void odczytajIZapiszSrednia() {
-  File myFile = SD.open("/daneToday2.txt", FILE_READ);
+  File myFile = SD.open("/daneToday3.txt", FILE_READ);
   if (!myFile) {
     Serial.println("Nie można otworzyć pliku");
     return;
@@ -1066,10 +1037,6 @@ void odczytajIZapiszSrednia() {
       humAvg = humSum / count;
       soilHumAvg = soilHumSum / count;
       pressAvg = pressSum / count;
-      //Serial.printf("Średnia temperatura: %.2f C\n", tempAvg);
-      //Serial.printf("Średnia wilgotność: %.2f %%\n", humAvg);
-      //Serial.printf("Średnia wilgotność gleby: %.2f %%\n", soilHumAvg);
-      //Serial.printf("Średnie ciśnienie: %.2f hPa\n", pressAvg);
     }
   } else {
     Serial.println("Brak danych do obliczenia średniej");

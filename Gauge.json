@@ -1,6 +1,6 @@
 [
     {
-        "id": "cd4381bdd1c9fd91",
+        "id": "c5dae5066cc4772a",
         "type": "tab",
         "label": "Gauge",
         "disabled": false,
@@ -8,11 +8,11 @@
         "env": []
     },
     {
-        "id": "b3f7c5859de00ebd",
+        "id": "7826be65880cd8de",
         "type": "ui_gauge",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
-        "group": "e3db52067f1be475",
+        "group": "d780bf07e6ea39f9",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -36,11 +36,11 @@
         "wires": []
     },
     {
-        "id": "8b0ba39a2400fe32",
+        "id": "77565301a15d8aad",
         "type": "ui_gauge",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
-        "group": "059c46883c7dab2f",
+        "group": "bfbc8bc649887f32",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -64,11 +64,11 @@
         "wires": []
     },
     {
-        "id": "c1cb4deb685d8b90",
+        "id": "5466420ec83a2a06",
         "type": "ui_gauge",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
-        "group": "9d051d72db20d0d6",
+        "group": "bfbc8bc649887f32",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -92,11 +92,11 @@
         "wires": []
     },
     {
-        "id": "f3524914cddad5f9",
+        "id": "50cf792eae4fe311",
         "type": "ui_gauge",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
-        "group": "9d051d72db20d0d6",
+        "group": "6d2fbdf5a3ef6195",
         "order": 2,
         "width": 0,
         "height": 0,
@@ -120,9 +120,9 @@
         "wires": []
     },
     {
-        "id": "f94264fc9b579fe3",
+        "id": "30c2eb67ca76ce22",
         "type": "mqtt in",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
         "topic": "PIR/L1/Z3/temperature",
         "qos": "0",
@@ -136,14 +136,14 @@
         "y": 80,
         "wires": [
             [
-                "b3f7c5859de00ebd"
+                "7826be65880cd8de"
             ]
         ]
     },
     {
-        "id": "1bc460d29302adbb",
+        "id": "413b826756c1ea41",
         "type": "mqtt in",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
         "topic": "PIR/L1/Z3/pressure",
         "qos": "0",
@@ -157,14 +157,14 @@
         "y": 160,
         "wires": [
             [
-                "8b0ba39a2400fe32"
+                "77565301a15d8aad"
             ]
         ]
     },
     {
-        "id": "612e7c7b6fcf63ac",
+        "id": "6e43a347845e00da",
         "type": "mqtt in",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
         "topic": "PIR/L1/Z3/humidity",
         "qos": "2",
@@ -178,14 +178,14 @@
         "y": 240,
         "wires": [
             [
-                "c1cb4deb685d8b90"
+                "5466420ec83a2a06"
             ]
         ]
     },
     {
-        "id": "2e36cbfb56424bbc",
+        "id": "c632bc075845938e",
         "type": "mqtt in",
-        "z": "cd4381bdd1c9fd91",
+        "z": "c5dae5066cc4772a",
         "name": "",
         "topic": "PIR/L1/Z3/moilSoilture",
         "qos": "0",
@@ -199,15 +199,15 @@
         "y": 320,
         "wires": [
             [
-                "f3524914cddad5f9"
+                "50cf792eae4fe311"
             ]
         ]
     },
     {
-        "id": "e3db52067f1be475",
+        "id": "d780bf07e6ea39f9",
         "type": "ui_group",
-        "name": "gaugeTemperature",
-        "tab": "1997c58e601d7141",
+        "name": "Gauge 1",
+        "tab": "377666dda3772f9b",
         "order": 1,
         "disp": false,
         "width": "6",
@@ -215,10 +215,10 @@
         "className": ""
     },
     {
-        "id": "059c46883c7dab2f",
+        "id": "bfbc8bc649887f32",
         "type": "ui_group",
-        "name": "gaugePressure",
-        "tab": "1997c58e601d7141",
+        "name": "Gauge 2",
+        "tab": "377666dda3772f9b",
         "order": 2,
         "disp": false,
         "width": "6",
@@ -226,11 +226,11 @@
         "className": ""
     },
     {
-        "id": "9d051d72db20d0d6",
+        "id": "6d2fbdf5a3ef6195",
         "type": "ui_group",
-        "name": "gaugeHumidity",
-        "tab": "1997c58e601d7141",
-        "order": 3,
+        "name": "Gauge4",
+        "tab": "377666dda3772f9b",
+        "order": 4,
         "disp": false,
         "width": "6",
         "collapse": false,
@@ -264,7 +264,7 @@
         "sessionExpiry": ""
     },
     {
-        "id": "1997c58e601d7141",
+        "id": "377666dda3772f9b",
         "type": "ui_tab",
         "name": "Gauge",
         "icon": "donut_large",

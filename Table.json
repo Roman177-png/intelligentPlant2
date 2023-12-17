@@ -1,6 +1,6 @@
 [
     {
-        "id": "b52ade56e6a76df6",
+        "id": "37cb5efec3cb066e",
         "type": "tab",
         "label": "Table",
         "disabled": false,
@@ -8,25 +8,24 @@
         "env": []
     },
     {
-        "id": "05c88fe0ab029bc3",
+        "id": "9735ab560d115009",
         "type": "mysql",
-        "z": "b52ade56e6a76df6",
-        "mydb": "11f58f0bffa47384",
+        "z": "37cb5efec3cb066e",
+        "mydb": "a94c2155e352c42e",
         "name": "MySQL Database",
         "x": 650,
         "y": 280,
         "wires": [
             [
-                "8940c3f442bf93b9",
-                "09366d60c438be1f"
+                "359986354008195a"
             ]
         ]
     },
     {
-        "id": "8940c3f442bf93b9",
+        "id": "359986354008195a",
         "type": "ui_table",
-        "z": "b52ade56e6a76df6",
-        "group": "b2d6a9c5afcba662",
+        "z": "37cb5efec3cb066e",
+        "group": "2632a0ecd6051959",
         "name": "",
         "order": 1,
         "width": 18,
@@ -110,9 +109,9 @@
         "wires": []
     },
     {
-        "id": "d5b97ea79a47d48d",
+        "id": "1ddd3bf5025e9e1d",
         "type": "inject",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "props": [
             {
@@ -130,14 +129,14 @@
         "y": 160,
         "wires": [
             [
-                "17a40872b4f4d794"
+                "28b8f767915b856d"
             ]
         ]
     },
     {
-        "id": "17a40872b4f4d794",
+        "id": "28b8f767915b856d",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Prepare SQL Query",
         "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
         "outputs": 1,
@@ -149,14 +148,14 @@
         "y": 220,
         "wires": [
             [
-                "05c88fe0ab029bc3"
+                "9735ab560d115009"
             ]
         ]
     },
     {
-        "id": "88c1d77af935e088",
+        "id": "cbe54d427c55ef5d",
         "type": "inject",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "props": [
             {
@@ -174,14 +173,14 @@
         "y": 320,
         "wires": [
             [
-                "601643a3042acffd"
+                "82f9dcee42a43ab5"
             ]
         ]
     },
     {
-        "id": "601643a3042acffd",
+        "id": "82f9dcee42a43ab5",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Prepare SQL Query",
         "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\nmsg.topic = \"ALTER TABLE plant_data ADD COLUMN timeWatering TEXT\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
         "outputs": 1,
@@ -193,14 +192,14 @@
         "y": 380,
         "wires": [
             [
-                "05c88fe0ab029bc3"
+                "9735ab560d115009"
             ]
         ]
     },
     {
-        "id": "ae8b4b106f1c2657",
+        "id": "cef51c8157bacccf",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Prepare SQL Query",
         "func": "//var pol = 'SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data';\n//return pol;\n\nmsg.topic = \"UPDATE plant_data SET timeWatering = '2023-09-12 16:45:48' WHERE timeWatering IS NULL\";\nmsg.payload = [msg.payload];\nreturn msg;\n//return { \"topic\": \"SELECT temperature, pressure, humidity, soil_moisture, date FROM plant_data\", \"payload\": null };\n",
         "outputs": 1,
@@ -212,14 +211,14 @@
         "y": 480,
         "wires": [
             [
-                "05c88fe0ab029bc3"
+                "9735ab560d115009"
             ]
         ]
     },
     {
-        "id": "253e773336f550d9",
+        "id": "569e8e210353b37f",
         "type": "inject",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "props": [
             {
@@ -237,14 +236,14 @@
         "y": 480,
         "wires": [
             [
-                "ae8b4b106f1c2657"
+                "cef51c8157bacccf"
             ]
         ]
     },
     {
-        "id": "4eaabeea839b8115",
+        "id": "deaa729e3029ca60",
         "type": "comment",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Ustawienie wartości domyślnych",
         "info": "",
         "x": 130,
@@ -252,9 +251,9 @@
         "wires": []
     },
     {
-        "id": "ee1f76a8bb56aed2",
+        "id": "4a78f73d1f03df06",
         "type": "comment",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Dodanie nowej kolumny",
         "info": "",
         "x": 100,
@@ -262,11 +261,11 @@
         "wires": []
     },
     {
-        "id": "3233259130633441",
+        "id": "00f84fa766e5677e",
         "type": "ui_button",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 25,
         "width": 2,
         "height": 2,
@@ -285,19 +284,19 @@
         "y": 80,
         "wires": [
             [
-                "17a40872b4f4d794"
+                "28b8f767915b856d"
             ]
         ]
     },
     {
-        "id": "e6a0ebfcad18eb2e",
+        "id": "f59d7776341ca522",
         "type": "ui_dropdown",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "label": "Measurement",
         "tooltip": "",
         "place": "Select option",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 2,
         "width": 5,
         "height": 1,
@@ -333,14 +332,14 @@
         "y": 20,
         "wires": [
             [
-                "c770613f436be6ae"
+                "9a1bfd265a91ae2c"
             ]
         ]
     },
     {
-        "id": "67423ba34b721f10",
+        "id": "e5e459465493a1ce",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Filter query",
         "func": "// Odczytaj wartości zmiennych kontekstu przepływu\nvar dropdown = flow.get('dropdown');\nvar maxValue = flow.get('maxValue');\nvar operator = flow.get('operator');\n\n// Sprawdź, czy zmienne są zdefiniowane\nif (dropdown !== undefined && maxValue !== undefined) {\n    msg.topic = \"SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE \" + dropdown + operator + maxValue.toString();\n    msg.payload = [msg.payload];\n    return msg;\n\n    return msg;\n} else {\n    // Jedna zmienna lub obie są niezdefiniowane\n    node.error(\"One or both variables are not defined!\");\n}",
         "outputs": 1,
@@ -352,18 +351,18 @@
         "y": 40,
         "wires": [
             [
-                "05c88fe0ab029bc3"
+                "9735ab560d115009"
             ]
         ]
     },
     {
-        "id": "eb55b91abba4504e",
+        "id": "6a37d282694d7e89",
         "type": "ui_text_input",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "label": "",
         "tooltip": "",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 7,
         "width": 3,
         "height": 1,
@@ -378,16 +377,16 @@
         "y": 140,
         "wires": [
             [
-                "83dc7a73a8c01da0"
+                "b44ab25916e6576f"
             ]
         ]
     },
     {
-        "id": "5d3ff043fe2adb71",
+        "id": "b571bf885b376776",
         "type": "ui_button",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 10,
         "width": 2,
         "height": 2,
@@ -406,14 +405,14 @@
         "y": 40,
         "wires": [
             [
-                "67423ba34b721f10"
+                "e5e459465493a1ce"
             ]
         ]
     },
     {
-        "id": "c770613f436be6ae",
+        "id": "9a1bfd265a91ae2c",
         "type": "change",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "rules": [
             {
@@ -436,9 +435,9 @@
         ]
     },
     {
-        "id": "83dc7a73a8c01da0",
+        "id": "b44ab25916e6576f",
         "type": "change",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "rules": [
             {
@@ -461,14 +460,14 @@
         ]
     },
     {
-        "id": "e165888368408e31",
+        "id": "9bc214331a53f2e5",
         "type": "ui_dropdown",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "label": "Operator",
         "tooltip": "",
         "place": "Select option",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 4,
         "width": 5,
         "height": 1,
@@ -509,14 +508,14 @@
         "y": 80,
         "wires": [
             [
-                "14680e09fce8111b"
+                "5120671139d67a75"
             ]
         ]
     },
     {
-        "id": "14680e09fce8111b",
+        "id": "5120671139d67a75",
         "type": "change",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "rules": [
             {
@@ -539,10 +538,10 @@
         ]
     },
     {
-        "id": "e51cdb2e8859d505",
+        "id": "72726915408a4bae",
         "type": "ui_text",
-        "z": "b52ade56e6a76df6",
-        "group": "b2d6a9c5afcba662",
+        "z": "37cb5efec3cb066e",
+        "group": "a5c8118fcec9cad4",
         "order": 6,
         "width": 2,
         "height": 1,
@@ -556,9 +555,9 @@
         "wires": []
     },
     {
-        "id": "eda73f7ccee8db6f",
+        "id": "0890aa47ccadf4b1",
         "type": "inject",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "props": [
             {
@@ -580,33 +579,17 @@
         "y": 420,
         "wires": [
             [
-                "e51cdb2e8859d505"
+                "72726915408a4bae"
             ]
         ]
     },
     {
-        "id": "09366d60c438be1f",
-        "type": "debug",
-        "z": "b52ade56e6a76df6",
-        "name": "debug 21",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "e3bc738a3c2d378f",
+        "id": "2299804804e62922",
         "type": "ui_date_picker",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "label": "Pick date",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 15,
         "width": 5,
         "height": 1,
@@ -618,14 +601,14 @@
         "y": 620,
         "wires": [
             [
-                "5af26532d5f43680"
+                "c56a8f53b1e8d033"
             ]
         ]
     },
     {
-        "id": "5af26532d5f43680",
+        "id": "c56a8f53b1e8d033",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "function 12",
         "func": "var test = msg.payload\nconst dateObject = new Date(test);\n\n// Uzyskanie poszczególnych komponentów daty\nconst year = dateObject.getFullYear();\nconst month = dateObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst day = dateObject.getDate();\n\n// Sformatowanie daty w oczekiwanym formacie\nconst formattedDate = `${year}.${month < 10 ? '0' : ''}${month}.${day < 10 ? '0' : ''}${day}`;\nmsg.payload = formattedDate\nreturn msg;",
         "outputs": 1,
@@ -637,14 +620,14 @@
         "y": 600,
         "wires": [
             [
-                "2eb77e443624a89d"
+                "0255ea4e096c1631"
             ]
         ]
     },
     {
-        "id": "2eb77e443624a89d",
+        "id": "0255ea4e096c1631",
         "type": "change",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "rules": [
             {
@@ -667,11 +650,11 @@
         ]
     },
     {
-        "id": "63b8500b90150323",
+        "id": "a09c11e555d9bd41",
         "type": "ui_button",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 20,
         "width": 2,
         "height": 2,
@@ -690,14 +673,14 @@
         "y": 520,
         "wires": [
             [
-                "f796ae30a13991cf"
+                "8f53a336a15a5686"
             ]
         ]
     },
     {
-        "id": "f796ae30a13991cf",
+        "id": "8f53a336a15a5686",
         "type": "function",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "Filter query",
         "func": "// Odczytaj wartości zmiennych kontekstu przepływu\nvar date = flow.get('date')\ndate= date.split('.')\ndate = date[0] + '-' + date[1] + '-' + date[2]\nvar operator = flow.get('operator2');\n\n// Sprawdź, czy zmienne są zdefiniowane\nif (date !== undefined && operator !== undefined) {\n    var fullDate = date + ' 00:00:00'\n    node.warn(\"Date: \" + fullDate);\n    node.warn(\"Operator: \" + operator);\n    \n    msg.topic = \"SELECT * FROM plant_data WHERE STR_TO_DATE(date, '%Y-%m-%d %H:%i:%s') \" + operator + \" STR_TO_DATE('\" + fullDate + \"', '%Y-%m-%d %H:%i:%s')\";\n    \n    msg.payload = [msg.payload];\n    return msg;\n\n    \n} else {\n    // Jedna zmienna lub obie są niezdefiniowane\n    node.error(\"One or both variables are not defined!\");\n}",
         "outputs": 1,
@@ -709,19 +692,19 @@
         "y": 540,
         "wires": [
             [
-                "05c88fe0ab029bc3"
+                "9735ab560d115009"
             ]
         ]
     },
     {
-        "id": "d79118c55c8f8107",
+        "id": "5430638dc8d82c16",
         "type": "ui_dropdown",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "label": "Operator",
         "tooltip": "",
         "place": "Select option",
-        "group": "b2d6a9c5afcba662",
+        "group": "a5c8118fcec9cad4",
         "order": 17,
         "width": 5,
         "height": 1,
@@ -762,14 +745,14 @@
         "y": 660,
         "wires": [
             [
-                "572eb0cc3e95801e"
+                "e5e7c055bdb04899"
             ]
         ]
     },
     {
-        "id": "572eb0cc3e95801e",
+        "id": "e5e7c055bdb04899",
         "type": "change",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "",
         "rules": [
             {
@@ -792,9 +775,9 @@
         ]
     },
     {
-        "id": "50d5e9c37c8c7d11",
+        "id": "04508406080ce308",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 3,
@@ -802,9 +785,9 @@
         "height": 1
     },
     {
-        "id": "7e14a0250b3fbd2f",
+        "id": "401a4b4f0ab8554d",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 5,
@@ -812,9 +795,9 @@
         "height": 1
     },
     {
-        "id": "da772118938a37cd",
+        "id": "8b62408985cd7534",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 8,
@@ -822,9 +805,9 @@
         "height": 1
     },
     {
-        "id": "95a7bca664bdfd62",
+        "id": "becf807fab85c6e1",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 9,
@@ -832,9 +815,9 @@
         "height": 1
     },
     {
-        "id": "2865d2f08c76e229",
+        "id": "628b7c9988e70346",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 11,
@@ -842,9 +825,9 @@
         "height": 1
     },
     {
-        "id": "d86a0cad83a617d6",
+        "id": "f66398c366ec063d",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 12,
@@ -852,9 +835,9 @@
         "height": 1
     },
     {
-        "id": "c6ca1ddae4aad563",
+        "id": "92f97136a94d7aa3",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 13,
@@ -862,9 +845,9 @@
         "height": 1
     },
     {
-        "id": "d29f80d31cfcb02a",
+        "id": "a3eb68f8747c6a37",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 14,
@@ -872,9 +855,9 @@
         "height": 1
     },
     {
-        "id": "8f8f49e1d897d3ec",
+        "id": "cef3e2d2183b39d8",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 16,
@@ -882,9 +865,9 @@
         "height": 1
     },
     {
-        "id": "37bfdbe5571f0a1c",
+        "id": "e16e382209330b03",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 18,
@@ -892,9 +875,9 @@
         "height": 1
     },
     {
-        "id": "77d3477381d4d8b8",
+        "id": "d53740b1d8fedcac",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 19,
@@ -902,9 +885,9 @@
         "height": 1
     },
     {
-        "id": "578a3a9edd0e934e",
+        "id": "2496f75308342571",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 21,
@@ -912,9 +895,9 @@
         "height": 1
     },
     {
-        "id": "d13c07d09f7aeef7",
+        "id": "09201c1a2559078b",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 22,
@@ -922,9 +905,9 @@
         "height": 1
     },
     {
-        "id": "47be5fb45af62492",
+        "id": "b6cafc77e6d37960",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 23,
@@ -932,9 +915,9 @@
         "height": 1
     },
     {
-        "id": "4464cc10229da2c8",
+        "id": "b7f61ba891717746",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 24,
@@ -942,9 +925,9 @@
         "height": 1
     },
     {
-        "id": "570d8e524c7010ed",
+        "id": "9e6e706037b612dc",
         "type": "ui_spacer",
-        "z": "b52ade56e6a76df6",
+        "z": "37cb5efec3cb066e",
         "name": "spacer",
         "group": "b2d6a9c5afcba662",
         "order": 26,
@@ -952,20 +935,42 @@
         "height": 1
     },
     {
-        "id": "11f58f0bffa47384",
+        "id": "a94c2155e352c42e",
         "type": "MySQLdatabase",
-        "name": "SQL database",
-        "host": "sql11.freesqldatabase.com",
+        "name": "",
+        "host": "127.0.0.1",
         "port": "3306",
-        "db": "sql11667495",
+        "db": "csp",
         "tz": "",
         "charset": "UTF8"
+    },
+    {
+        "id": "2632a0ecd6051959",
+        "type": "ui_group",
+        "name": "Table",
+        "tab": "ce3001829f2283f1",
+        "order": 1,
+        "disp": true,
+        "width": "18",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a5c8118fcec9cad4",
+        "type": "ui_group",
+        "name": "Filter",
+        "tab": "ce3001829f2283f1",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "b2d6a9c5afcba662",
         "type": "ui_group",
         "name": "DataTable",
-        "tab": "b61e80c244cad97c",
+        "tab": "",
         "order": 1,
         "disp": true,
         "width": "26",
@@ -973,7 +978,7 @@
         "className": ""
     },
     {
-        "id": "b61e80c244cad97c",
+        "id": "ce3001829f2283f1",
         "type": "ui_tab",
         "name": "Table",
         "icon": "fa-table",

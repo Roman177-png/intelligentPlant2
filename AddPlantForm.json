@@ -1,60 +1,60 @@
 [
     {
-        "id": "50f5f9419e9c4a2f",
+        "id": "1d78f71daf999bb3",
         "type": "tab",
-        "label": "Flow 3",
+        "label": "AddPlantForm",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "e20695ac04576807",
+        "id": "2eb96f59a9ecbd32",
         "type": "ui_form",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "label": "",
-        "group": "17bf600c37454c56",
+        "group": "dd6b6c6fe7d853c7",
         "order": 0,
         "width": 0,
         "height": 0,
         "options": [
             {
-                "label": "Komportowa Temperatura",
+                "label": "Comfortable Temperature",
                 "value": "comfortT",
                 "type": "number",
                 "required": true,
                 "rows": null
             },
             {
-                "label": "Komportowa Wilgotność",
+                "label": "Comfortable Humidity",
                 "value": "comfortH",
                 "type": "number",
                 "required": true,
                 "rows": null
             },
             {
-                "label": "Komportowa Ciśnienie",
+                "label": "Comfortable Pressure",
                 "value": "comfortP",
                 "type": "number",
                 "required": true,
                 "rows": null
             },
             {
-                "label": "Wymagania 1",
+                "label": "Description 1 ",
                 "value": "description1",
                 "type": "text",
                 "required": true,
                 "rows": null
             },
             {
-                "label": "Wymagania 2",
+                "label": "Description 2",
                 "value": "description2",
                 "type": "text",
                 "required": true,
                 "rows": null
             },
             {
-                "label": "Wymagania 3",
+                "label": "Description 3",
                 "value": "description3",
                 "type": "text",
                 "required": true,
@@ -70,41 +70,24 @@
             "description3": ""
         },
         "payload": "",
-        "submit": "Wyślij",
-        "cancel": "Usuń",
+        "submit": "Submit",
+        "cancel": "Clear",
         "topic": "topic",
         "topicType": "msg",
         "splitLayout": "",
         "className": "",
-        "x": 130,
+        "x": 70,
         "y": 260,
         "wires": [
             [
-                "48b79e71879b6235"
+                "9deb85581765f91d"
             ]
         ]
     },
     {
-        "id": "32d6ea322bd9c630",
-        "type": "debug",
-        "z": "50f5f9419e9c4a2f",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 540,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "98f4dd71a3e47337",
+        "id": "df7579c4a4c51688",
         "type": "mqtt out",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "topic": "PIR/L1/otherPlant",
         "qos": "0",
@@ -115,19 +98,19 @@
         "correl": "",
         "expiry": "",
         "broker": "1658dccaf854d8ce",
-        "x": 630,
-        "y": 240,
+        "x": 870,
+        "y": 120,
         "wires": []
     },
     {
-        "id": "c4479b9c94f009bb",
+        "id": "2df955381fc9525e",
         "type": "ui_dropdown",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
-        "label": "Nazwa",
+        "label": "Name",
         "tooltip": "",
-        "place": "Nazwa",
-        "group": "17bf600c37454c56",
+        "place": "Name",
+        "group": "dd6b6c6fe7d853c7",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -159,39 +142,37 @@
         "topic": "",
         "topicType": "str",
         "className": "",
-        "x": 470,
-        "y": 400,
+        "x": 790,
+        "y": 260,
         "wires": [
             [
-                "5a46e59ec717231c"
+                "80dcf96d542ad052"
             ]
         ]
     },
     {
-        "id": "eff1171ebfa0f5fe",
+        "id": "330a06fd87ff8c18",
         "type": "function",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "function 5",
         "func": "const { comfortT, comfortH, comfortP, description1, description2, description3 } = msg.payload\nmsg.payload = `${msg.name};${comfortT};${comfortH};${comfortP};${description1};${description2};${description3}` ;\nreturn msg;",
         "outputs": 1,
-        "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 140,
+        "x": 480,
+        "y": 100,
         "wires": [
             [
-                "32d6ea322bd9c630",
-                "98f4dd71a3e47337"
+                "df7579c4a4c51688"
             ]
         ]
     },
     {
-        "id": "5a46e59ec717231c",
+        "id": "80dcf96d542ad052",
         "type": "change",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "rules": [
             {
@@ -207,16 +188,16 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 680,
-        "y": 400,
+        "x": 1000,
+        "y": 260,
         "wires": [
             []
         ]
     },
     {
-        "id": "48b79e71879b6235",
+        "id": "9deb85581765f91d",
         "type": "change",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "rules": [
             {
@@ -232,19 +213,19 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 320,
+        "x": 260,
         "y": 260,
         "wires": [
             [
-                "f21e19f731ae519d",
-                "01fda7a41513a679"
+                "7d0c5b9657411a69",
+                "033398bc0f4ea780"
             ]
         ]
     },
     {
-        "id": "f21e19f731ae519d",
+        "id": "7d0c5b9657411a69",
         "type": "switch",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "property": "name",
         "propertyType": "msg",
@@ -258,18 +239,18 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 250,
-        "y": 180,
+        "x": 270,
+        "y": 80,
         "wires": [
             [
-                "eff1171ebfa0f5fe"
+                "330a06fd87ff8c18"
             ]
         ]
     },
     {
-        "id": "01fda7a41513a679",
+        "id": "033398bc0f4ea780",
         "type": "change",
-        "z": "50f5f9419e9c4a2f",
+        "z": "1d78f71daf999bb3",
         "name": "",
         "rules": [
             {
@@ -285,19 +266,19 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 200,
-        "y": 420,
+        "x": 500,
+        "y": 260,
         "wires": [
             [
-                "c4479b9c94f009bb"
+                "2df955381fc9525e"
             ]
         ]
     },
     {
-        "id": "17bf600c37454c56",
+        "id": "dd6b6c6fe7d853c7",
         "type": "ui_group",
-        "name": "Dodaj nową roślinę",
-        "tab": "cfa5f27186c8c45f",
+        "name": "Add a new plant",
+        "tab": "f326ba4de42eefac",
         "order": 1,
         "disp": true,
         "width": "6",
@@ -316,7 +297,6 @@
         "protocolVersion": "4",
         "keepalive": "60",
         "cleansession": true,
-        "autoUnsubscribe": true,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",
@@ -333,9 +313,9 @@
         "sessionExpiry": ""
     },
     {
-        "id": "cfa5f27186c8c45f",
+        "id": "f326ba4de42eefac",
         "type": "ui_tab",
-        "name": "Dodaj nową roślinę",
+        "name": "Add a new plant",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false

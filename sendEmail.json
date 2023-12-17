@@ -1,20 +1,19 @@
 [
     {
-        "id": "0b9505c398787473",
+        "id": "7d0873b919f54f73",
         "type": "tab",
-        "label": "Flow 2",
+        "label": "email",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "5ae9c9a4abfd5f52",
+        "id": "57e4b321442b9b8f",
         "type": "function",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "function 1",
         "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysoka\" : \"niska\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert temperatury\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
         "outputs": 1,
-        "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -23,14 +22,14 @@
         "y": 140,
         "wires": [
             [
-                "4923228dc438077c"
+                "ec74360a91b2ee32"
             ]
         ]
     },
     {
-        "id": "16c9bbf8ca9c6094",
+        "id": "89d7977d3a56cccf",
         "type": "e-mail",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "server": "smtp.gmail.com",
         "port": "465",
         "authtype": "BASIC",
@@ -38,17 +37,18 @@
         "token": "oauth2Response.access_token",
         "secure": true,
         "tls": true,
-        "name": "akuzma503@gmail.com",
+        "name": "romanmuron3@gmail.com",
         "dname": "",
-        "x": 890,
+        "credentials": {},
+        "x": 900,
         "y": 280,
         "wires": [],
         "info": "# Wiadomośc email"
     },
     {
-        "id": "4923228dc438077c",
+        "id": "ec74360a91b2ee32",
         "type": "template",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "field": "payload",
         "fieldType": "msg",
@@ -60,14 +60,14 @@
         "y": 280,
         "wires": [
             [
-                "16c9bbf8ca9c6094"
+                "89d7977d3a56cccf"
             ]
         ]
     },
     {
-        "id": "4d04ddd25a51d172",
+        "id": "86c0167550baf03b",
         "type": "mqtt in",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "topic": "PIR/L1/Z3/temperature",
         "qos": "0",
@@ -81,14 +81,14 @@
         "y": 100,
         "wires": [
             [
-                "78432d2578ed871d"
+                "ee8f57a9b6c9ed24"
             ]
         ]
     },
     {
-        "id": "9d5ec8891ce22ff5",
+        "id": "58937a4679d0c510",
         "type": "inject",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "props": [
             {
@@ -106,14 +106,14 @@
         "y": 160,
         "wires": [
             [
-                "78432d2578ed871d"
+                "ee8f57a9b6c9ed24"
             ]
         ]
     },
     {
-        "id": "1158f9e4ac4f283c",
+        "id": "05021bfe4d39061d",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
@@ -131,14 +131,14 @@
         "y": 100,
         "wires": [
             [
-                "5ae9c9a4abfd5f52"
+                "57e4b321442b9b8f"
             ]
         ]
     },
     {
-        "id": "198f80d157d013f6",
+        "id": "b6546f07e619dc90",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
@@ -156,21 +156,21 @@
         "y": 180,
         "wires": [
             [
-                "5ae9c9a4abfd5f52"
+                "57e4b321442b9b8f"
             ]
         ]
     },
     {
-        "id": "13d4e620356ea32f",
+        "id": "61d87ddfacde982f",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
             {
                 "t": "lte",
-                "v": "20",
+                "v": "40",
                 "vt": "num"
             }
         ],
@@ -181,21 +181,21 @@
         "y": 380,
         "wires": [
             [
-                "8d812cc8098683f5"
+                "0cfd710cb63a3fdb"
             ]
         ]
     },
     {
-        "id": "52e1cd45492788c6",
+        "id": "8d0283739b0d03ee",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
             {
                 "t": "gte",
-                "v": "30",
+                "v": "50",
                 "vt": "num"
             }
         ],
@@ -206,14 +206,14 @@
         "y": 460,
         "wires": [
             [
-                "8d812cc8098683f5"
+                "0cfd710cb63a3fdb"
             ]
         ]
     },
     {
-        "id": "ec877d9a96bb9806",
+        "id": "24abef08c138fac6",
         "type": "inject",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "props": [
             {
@@ -231,18 +231,17 @@
         "y": 480,
         "wires": [
             [
-                "d0df5e47701cd6a8"
+                "6162f67b48509722"
             ]
         ]
     },
     {
-        "id": "8d812cc8098683f5",
+        "id": "0cfd710cb63a3fdb",
         "type": "function",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "function 6",
         "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysoka\" : \"niska\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert wilgotności\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
         "outputs": 1,
-        "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -251,14 +250,14 @@
         "y": 420,
         "wires": [
             [
-                "f5ecb9fccbba59c0"
+                "e23831a152ea9ab6"
             ]
         ]
     },
     {
-        "id": "f5ecb9fccbba59c0",
+        "id": "e23831a152ea9ab6",
         "type": "template",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "field": "payload",
         "fieldType": "msg",
@@ -270,14 +269,14 @@
         "y": 420,
         "wires": [
             [
-                "644a1d7134ef870e"
+                "2484bd1165768fc7"
             ]
         ]
     },
     {
-        "id": "644a1d7134ef870e",
+        "id": "2484bd1165768fc7",
         "type": "e-mail",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "server": "smtp.gmail.com",
         "port": "465",
         "authtype": "BASIC",
@@ -285,17 +284,18 @@
         "token": "oauth2Response.access_token",
         "secure": true,
         "tls": true,
-        "name": "akuzma503@gmail.com",
+        "name": "romanmuron3@gmail.com",
         "dname": "",
-        "x": 1010,
+        "credentials": {},
+        "x": 1020,
         "y": 380,
         "wires": [],
         "info": "# Wiadomośc email"
     },
     {
-        "id": "8b75b2518e139861",
+        "id": "da0cf81ff2b5d25e",
         "type": "mqtt in",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "topic": "PIR/L1/Z3/pressure",
         "qos": "0",
@@ -309,21 +309,21 @@
         "y": 560,
         "wires": [
             [
-                "a94795caf3ef0224"
+                "af8b05bbcf649fb4"
             ]
         ]
     },
     {
-        "id": "ab05f4442fcb1865",
+        "id": "ebf1680e947daf7d",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
             {
                 "t": "lte",
-                "v": "20",
+                "v": "1020",
                 "vt": "num"
             }
         ],
@@ -334,21 +334,21 @@
         "y": 540,
         "wires": [
             [
-                "b8af74162da4eefc"
+                "ef19bdb6e1a44267"
             ]
         ]
     },
     {
-        "id": "9206d68165083215",
+        "id": "3a18408946f375a2",
         "type": "switch",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "Temperature Threshold",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
             {
                 "t": "gte",
-                "v": "30",
+                "v": "1100",
                 "vt": "num"
             }
         ],
@@ -359,14 +359,14 @@
         "y": 620,
         "wires": [
             [
-                "b8af74162da4eefc"
+                "ef19bdb6e1a44267"
             ]
         ]
     },
     {
-        "id": "9c9ad59f6d377f58",
+        "id": "1dd584cbc520c737",
         "type": "inject",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "props": [
             {
@@ -384,18 +384,17 @@
         "y": 620,
         "wires": [
             [
-                "a94795caf3ef0224"
+                "af8b05bbcf649fb4"
             ]
         ]
     },
     {
-        "id": "b8af74162da4eefc",
+        "id": "ef19bdb6e1a44267",
         "type": "function",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "function 7",
         "func": "const currentDate = new Date();\n\nmsg.color = msg.payload >= 30 ? \"red\" : \"blue\";\nmsg.text = msg.payload >= 30 ? \"wysokie\" : \"niskie\";\nmsg.imageSrc = msg.payload >= 30 ? \"https://cdn-icons-png.flaticon.com/512/2188/2188140.png\":\n \"https://cdn-icons-png.flaticon.com/512/899/899708.png\";\n\nmsg.year = currentDate.getFullYear();\nmsg.month = (currentDate.getMonth() + 1).toString().padStart(2, '0');\nmsg.day = currentDate.getDate().toString().padStart(2, '0');\n\nmsg.hours = currentDate.getHours().toString().padStart(2, '0');\nmsg.minutes = currentDate.getMinutes().toString().padStart(2, '0');\nmsg.topic = \"Alert ciśnienia\" \nconst seconds = currentDate.getSeconds().toString().padStart(2, '0');\nreturn msg;\n",
         "outputs": 1,
-        "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -404,14 +403,14 @@
         "y": 580,
         "wires": [
             [
-                "66a10af066f80b96"
+                "2fbb5083df625ea8"
             ]
         ]
     },
     {
-        "id": "66a10af066f80b96",
+        "id": "2fbb5083df625ea8",
         "type": "template",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "field": "payload",
         "fieldType": "msg",
@@ -423,14 +422,14 @@
         "y": 580,
         "wires": [
             [
-                "3abcb0b4f8e4c8a7"
+                "d895df8ecf38827d"
             ]
         ]
     },
     {
-        "id": "3abcb0b4f8e4c8a7",
+        "id": "d895df8ecf38827d",
         "type": "e-mail",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "server": "smtp.gmail.com",
         "port": "465",
         "authtype": "BASIC",
@@ -438,17 +437,18 @@
         "token": "oauth2Response.access_token",
         "secure": true,
         "tls": true,
-        "name": "akuzma503@gmail.com",
+        "name": "romanmuron3@gmail.com",
         "dname": "",
-        "x": 990,
+        "credentials": {},
+        "x": 1000,
         "y": 520,
         "wires": [],
         "info": "# Wiadomośc email"
     },
     {
-        "id": "d941d31963aea00b",
+        "id": "e2c2829ecba7eaea",
         "type": "mqtt in",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "topic": "PIR/L1/Z3/humidity",
         "qos": "0",
@@ -462,14 +462,14 @@
         "y": 400,
         "wires": [
             [
-                "d0df5e47701cd6a8"
+                "6162f67b48509722"
             ]
         ]
     },
     {
-        "id": "a94795caf3ef0224",
+        "id": "af8b05bbcf649fb4",
         "type": "delay",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "pauseType": "rate",
         "timeout": "5",
@@ -487,15 +487,15 @@
         "y": 580,
         "wires": [
             [
-                "ab05f4442fcb1865",
-                "9206d68165083215"
+                "ebf1680e947daf7d",
+                "3a18408946f375a2"
             ]
         ]
     },
     {
-        "id": "d0df5e47701cd6a8",
+        "id": "6162f67b48509722",
         "type": "delay",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "pauseType": "rate",
         "timeout": "5",
@@ -513,15 +513,15 @@
         "y": 420,
         "wires": [
             [
-                "52e1cd45492788c6",
-                "13d4e620356ea32f"
+                "8d0283739b0d03ee",
+                "61d87ddfacde982f"
             ]
         ]
     },
     {
-        "id": "78432d2578ed871d",
+        "id": "ee8f57a9b6c9ed24",
         "type": "delay",
-        "z": "0b9505c398787473",
+        "z": "7d0873b919f54f73",
         "name": "",
         "pauseType": "rate",
         "timeout": "5",
@@ -539,8 +539,8 @@
         "y": 140,
         "wires": [
             [
-                "1158f9e4ac4f283c",
-                "198f80d157d013f6"
+                "05021bfe4d39061d",
+                "b6546f07e619dc90"
             ]
         ]
     },
@@ -556,7 +556,6 @@
         "protocolVersion": "4",
         "keepalive": "60",
         "cleansession": true,
-        "autoUnsubscribe": true,
         "birthTopic": "",
         "birthQos": "0",
         "birthPayload": "",

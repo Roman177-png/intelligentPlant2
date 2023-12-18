@@ -1,0 +1,240 @@
+[
+    {
+        "id": "46bd16340365b639",
+        "type": "tab",
+        "label": "settingOptimalConditions",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e99867fbd374ed2b",
+        "type": "http request",
+        "z": "46bd16340365b639",
+        "name": "Get Weather Data",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Rzeszow&units=metric&appid=api",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 210,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1343dd919a8c27b4",
+        "type": "function",
+        "z": "46bd16340365b639",
+        "name": "Process Weather Data",
+        "func": "var temperature = msg.payload.main.temp;\nvar humidity = msg.payload.main.humidity;\nvar pressure = msg.payload.main.pressure;\n\n// Dostosowanie wartości\nvar adjustedTemperature = 25 - temperature;\ntemperature += adjustedTemperature;\n//var adjustedHumidity = humidity;\nvar adjustedHumidity = 0;\nif (humidity < 50) {\n    adjustedHumidity = 50 - humidity;\n} else if (humidity > 80) {\n    adjustedHumidity = 80 - humidity;\n}\nhumidity += adjustedHumidity\n//var adjustedPressure = pressure;\n//msg.topic = \"adjustedTemperature\";\n//msg.topic = \"adjustedHumidity\";\n//msg.topic = \"adjustedPressure\";\n\n// Przygotowanie wiadomości MQTT\nmsg.payload = [\n    { topic: \"PIR/L1/condition/temperature\", payload: temperature },\n    { topic: \"PIR/L1/condition/humidity\", payload: humidity },\n    { topic: \"PIR/L1/condition/pressure\", payload: pressure }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "a3b05ec4d681356a",
+                "212bb200abbe7f04",
+                "5aabf932c51be711"
+            ]
+        ]
+    },
+    {
+        "id": "c7edffa60f86c993",
+        "type": "inject",
+        "z": "46bd16340365b639",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "e99867fbd374ed2b"
+            ]
+        ]
+    },
+    {
+        "id": "3ba8e3a62f34b257",
+        "type": "mqtt out",
+        "z": "46bd16340365b639",
+        "name": "",
+        "topic": "PIR/L1/condition/temperature",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 860,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1be1e1eac867a54e",
+        "type": "mqtt out",
+        "z": "46bd16340365b639",
+        "name": "",
+        "topic": "PIR/L1/condition/humidity",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 850,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ef262e042fd231c5",
+        "type": "mqtt out",
+        "z": "46bd16340365b639",
+        "name": "",
+        "topic": "PIR/L1/condition/pressure",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 850,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "a3b05ec4d681356a",
+        "type": "change",
+        "z": "46bd16340365b639",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 60,
+        "wires": [
+            [
+                "3ba8e3a62f34b257"
+            ]
+        ]
+    },
+    {
+        "id": "212bb200abbe7f04",
+        "type": "change",
+        "z": "46bd16340365b639",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[1].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "1be1e1eac867a54e"
+            ]
+        ]
+    },
+    {
+        "id": "5aabf932c51be711",
+        "type": "change",
+        "z": "46bd16340365b639",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[2].payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 260,
+        "wires": [
+            [
+                "ef262e042fd231c5"
+            ]
+        ]
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

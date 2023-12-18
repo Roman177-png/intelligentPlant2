@@ -1,48 +1,77 @@
 [
     {
-        "id": "bcc897168fd1a696",
-        "type": "mysql",
-        "z": "17a32eb80983d8c1",
-        "mydb": "a94c2155e352c42e",
-        "name": "",
-        "x": 570,
-        "y": 220,
-        "wires": [
-            []
-        ]
+        "id": "b206da5a90f13c79",
+        "type": "tab",
+        "label": "Database",
+        "disabled": false,
+        "info": "",
+        "env": []
     },
     {
-        "id": "f9e8df806ba2e746",
-        "type": "json",
-        "z": "17a32eb80983d8c1",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": true,
-        "x": 270,
-        "y": 400,
-        "wires": [
-            [
-                "45778a7e5d114076"
-            ]
-        ]
-    },
-    {
-        "id": "45778a7e5d114076",
+        "id": "f92cc6c3565f9aa3",
         "type": "function",
-        "z": "17a32eb80983d8c1",
+        "z": "b206da5a90f13c79",
         "name": "Parsowanie JSON",
-        "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\nvar timeWatering = data.timeWatering;\nvar moilSoilture = data.moilSoilture;\nvar temperature = data.temperature;\nvar humidity = data.humidity;\nvar pressure = data.pressure;\n\n\nvar extractedData = {\n    \"Name\": name,\n    \"Time Watering\": timeWatering,\n    \"Soil Moisture\": moilSoilture,\n    \"Temperature\": temperature,\n    \"Humidity\": humidity,\n    \"Pressure\": pressure\n};\n\nnode.warn(JSON.stringify(extractedData));\n\ncontext.set('name', undefined);\ncontext.set('timeWatering', undefined);\ncontext.set('temperature', undefined);\ncontext.set('pressure', undefined);\ncontext.set('humidity', undefined);\ncontext.set('moilSoilture', undefined);\n\nvar date = getCurrentDateTime();\nvar query = 'INSERT INTO plant_data(moilSoilture, temperature, humidity, pressure, date, timeWatering, name) VALUES (?,?,?,?,?,?,?)';\nvar params = [moilSoilture, temperature, humidity, pressure, date, timeWatering, name];\n\nmsg.topic = query;\nmsg.payload = params;\n\nreturn msg;\n\nfunction getCurrentDateTime() {\n    var now = new Date();\n    var year = now.getFullYear();\n    var month = padNumber(now.getMonth() + 1);\n    var day = padNumber(now.getDate());\n    var hours = padNumber(now.getHours());\n    var minutes = padNumber(now.getMinutes());\n    var seconds = padNumber(now.getSeconds());\n\n    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;\n}\n\nfunction padNumber(num) {\n    return (num < 10 ? '0' : '') + num;\n}\n",
+        "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\nvar timeWatering = data.timeWatering;\nvar moilSoilture = data.moilSoilture;\nvar temperature = data.temperature;\nvar humidity = data.humidity;\nvar pressure = data.pressure;\n\n\nvar extractedData = {\n    \"Name\": name,\n    \"Time Watering\": timeWatering,\n    \"Soil Moisture\": moilSoilture,\n    \"Temperature\": temperature,\n    \"Humidity\": humidity,\n    \"Pressure\": pressure\n};\n\n//node.warn(JSON.stringify(extractedData));\n\ncontext.set('name', undefined);\ncontext.set('timeWatering', undefined);\ncontext.set('temperature', undefined);\ncontext.set('pressure', undefined);\ncontext.set('humidity', undefined);\ncontext.set('moilSoilture', undefined);\n\nvar date = getCurrentDateTime();\nvar query = 'INSERT INTO plant_data(moilSoilture, temperature, humidity, pressure, date, timeWatering, name) VALUES (?,?,?,?,?,?,?)';\nvar params = [moilSoilture, temperature, humidity, pressure, date, timeWatering, name];\n\nmsg.topic = query;\nmsg.payload = params;\n\nreturn msg;\n\nfunction getCurrentDateTime() {\n    var now = new Date();\n    var year = now.getFullYear();\n    var month = padNumber(now.getMonth() + 1);\n    var day = padNumber(now.getDate());\n    var hours = padNumber(now.getHours());\n    var minutes = padNumber(now.getMinutes());\n    var seconds = padNumber(now.getSeconds());\n\n    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;\n}\n\nfunction padNumber(num) {\n    return (num < 10 ? '0' : '') + num;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 160,
+        "x": 350,
+        "y": 120,
         "wires": [
             [
-                "bcc897168fd1a696"
+                "4c3e578d5cf77dee"
+            ]
+        ]
+    },
+    {
+        "id": "4c3e578d5cf77dee",
+        "type": "mysql",
+        "z": "b206da5a90f13c79",
+        "mydb": "a94c2155e352c42e",
+        "name": "",
+        "x": 550,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "410cbd72591de897",
+        "type": "json",
+        "z": "b206da5a90f13c79",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 250,
+        "y": 360,
+        "wires": [
+            [
+                "f92cc6c3565f9aa3"
+            ]
+        ]
+    },
+    {
+        "id": "e0884e65e07b671e",
+        "type": "mqtt in",
+        "z": "b206da5a90f13c79",
+        "name": "",
+        "topic": "PIR/L1/Z3/jsonData",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 300,
+        "wires": [
+            [
+                "410cbd72591de897"
             ]
         ]
     },
@@ -55,5 +84,32 @@
         "db": "csp",
         "tz": "",
         "charset": "UTF8"
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
     }
 ]

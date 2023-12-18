@@ -1,0 +1,254 @@
+[
+    {
+        "id": "1c69695d99877074",
+        "type": "tab",
+        "label": "automaticWatering",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6f2517b1d511da48",
+        "type": "inject",
+        "z": "1c69695d99877074",
+        "name": "0",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "23 14 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "b05b0356c02125fb"
+            ]
+        ]
+    },
+    {
+        "id": "c1dc119ea11574ff",
+        "type": "inject",
+        "z": "1c69695d99877074",
+        "name": "1",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "22 14 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "b05b0356c02125fb"
+            ]
+        ]
+    },
+    {
+        "id": "b05b0356c02125fb",
+        "type": "template",
+        "z": "1c69695d99877074",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{payload}}",
+        "output": "str",
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "404e846105784347",
+                "30d5903e9972d803"
+            ]
+        ]
+    },
+    {
+        "id": "404e846105784347",
+        "type": "mqtt out",
+        "z": "1c69695d99877074",
+        "name": "PIR/L1/Z3/buttB",
+        "topic": "PIR/L1/Z3/buttB",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 600,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "43940aac9d1f33eb",
+        "type": "ui_switch",
+        "z": "1c69695d99877074",
+        "name": "",
+        "label": "Water",
+        "tooltip": "",
+        "group": "4cb8672b03fb8675",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "fa-toggle-on bigIcon",
+        "oncolor": "green",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "fa-toggle-off bigIcon",
+        "offcolor": "red",
+        "animate": false,
+        "className": "",
+        "x": 610,
+        "y": 280,
+        "wires": [
+            [
+                "57736a2b719a42ee"
+            ]
+        ]
+    },
+    {
+        "id": "30d5903e9972d803",
+        "type": "function",
+        "z": "1c69695d99877074",
+        "name": "function 4",
+        "func": "if (msg.payload == \"0\") msg.payload = false;\nelse if (msg.payload == \"1\") msg.payload = true;\nelse console.log(\"Stan nieokreslony\");\n//msg.pass = (msg.payload == 1) ? true : false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 320,
+        "wires": [
+            [
+                "43940aac9d1f33eb"
+            ]
+        ]
+    },
+    {
+        "id": "57736a2b719a42ee",
+        "type": "function",
+        "z": "1c69695d99877074",
+        "name": "control",
+        "func": "if (msg.payload == false) msg.payload = \"0\";\nelse if (msg.payload == true) msg.payload = \"1\";\nelse console.log(\"Stan nieokreslony\");\n//msg.pass = (msg.payload == 1) ? true : false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 260,
+        "wires": [
+            [
+                "53e6d107625c5566"
+            ]
+        ]
+    },
+    {
+        "id": "db80f520e9888b80",
+        "type": "ui_template",
+        "z": "1c69695d99877074",
+        "group": "4cb8672b03fb8675",
+        "name": "icon style",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    .bigIcon{\n        font-size:2em;\n        transition: 1s;\n    }\n    .bigIcon.red{\n        color:red;\n    }\n    \n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 620,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53e6d107625c5566",
+        "type": "mqtt out",
+        "z": "1c69695d99877074",
+        "name": "PIR/L1/Z3/buttB",
+        "topic": "PIR/L1/Z3/buttB",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1658dccaf854d8ce",
+        "x": 908.3333129882812,
+        "y": 157.33334350585938,
+        "wires": []
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4cb8672b03fb8675",
+        "type": "ui_group",
+        "name": "Water",
+        "tab": "bab38d0e8d437520",
+        "order": 3,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "bab38d0e8d437520",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1
+    }
+]

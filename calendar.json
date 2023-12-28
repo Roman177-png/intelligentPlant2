@@ -1,0 +1,1595 @@
+[
+    {
+        "id": "9b49521f2eea2015",
+        "type": "tab",
+        "label": "Flow 9",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "42dcdf219945fdf5",
+        "type": "ui_form",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "label": "",
+        "group": "c3da721ec21aa8db",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Data rozpoczęcia",
+                "value": "date",
+                "type": "date",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Czas rozpoczęcia",
+                "value": "start",
+                "type": "time",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Czas zakończenia",
+                "value": "end",
+                "type": "time",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Typ wydarzenia",
+                "value": "type",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Descripton",
+                "value": "description",
+                "type": "multiline",
+                "required": false,
+                "rows": 3
+            }
+        ],
+        "formValue": {
+            "date": "",
+            "start": "",
+            "end": "",
+            "type": "",
+            "description": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "fce3de963019e276"
+            ]
+        ]
+    },
+    {
+        "id": "261823bb0d8d6311",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "event/add",
+        "topic": "event/add",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 580,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1c1c56b650b9fd07",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 1",
+        "func": "const events =[\n    { id: 0, type:\"posilek\" },\n    { id: 1, type: \"nauka\" },\n    { id: 2, type: \"cwiczenia\" },\n    { id: 3, type: \"spotkanie\" },\n    { id: 4, type: \"opoczynek\" },\n    { id: 5, type: \"porzadki\" },\n    { id: 6, type: \"drzemka\" },\n    { id: 7, type: \"spacer\" },\n    { id: 8, type: \"wyjazd\" },\n    { id: 9, type: \"obowiazki\" },\n    { id: 10, type: \"rodzina\" },\n    { id: 11, type: \"znajmomi\" },\n    { id: 12, type: \"szkolenia\" },\n    { id: 13, type: \"toaleta\" },\n    { id: 14, type: \"inne\" },\n    { id: 0, type: \"posiłek\" },\n    { id: 2, type: \"ćwiczenia\" },\n    { id: 5, type: \"porządki\" },\n    { id: 9, type: \"obowiązki\" },\n]\n\nconst event = events.find(e => e.type===String(msg.type).toLowerCase())\nconst type_id = event?.id !== undefined ?  event.id: 14\n\nmsg.payload = `${msg.day};${msg.month};${msg.year};${msg.hour_start};${msg.minute_start};${msg.hour_end};${msg.minute_end};${type_id};${msg.createDay};${msg.createMonth};${msg.createYear};${msg.createHours};${msg.createMinutes};${msg.createSeconds}`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 320,
+        "wires": [
+            [
+                "261823bb0d8d6311"
+            ]
+        ]
+    },
+    {
+        "id": "2f80876499ae0abc",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 2",
+        "func": "msg.topic = \"SELECT * FROM events\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 160,
+        "wires": [
+            [
+                "337fc3cb27158168"
+            ]
+        ]
+    },
+    {
+        "id": "84127f8beea7fd09",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 3",
+        "func": "msg.payload = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 160,
+        "wires": [
+            [
+                "b91612e4e4041ab4"
+            ]
+        ]
+    },
+    {
+        "id": "4d1c22cb65b1327c",
+        "type": "http in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "url": "/events",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "2f80876499ae0abc"
+            ]
+        ]
+    },
+    {
+        "id": "b91612e4e4041ab4",
+        "type": "http response",
+        "z": "9b49521f2eea2015",
+        "name": "Events",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 850,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "1ec9fccc9b54427d",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 4",
+        "func": "msg.topic = `INSERT INTO events(date, start, end, type, created, description) VALUES('${msg.year}-${msg.month}-${msg.day}', '${msg.hour_start}:${msg.minute_start}:00','${msg.hour_end}:${msg.minute_end}:59', '${msg.type}', '${msg.createYear}-${msg.createMonth}-${msg.createDay} ${msg.createHours}:${msg.createMinutes}:${msg.createSeconds}','${msg.description}')`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 540,
+        "wires": [
+            [
+                "c807cd5a289b200e"
+            ]
+        ]
+    },
+    {
+        "id": "fce3de963019e276",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 5",
+        "func": "const { date, start, end, type, description } = msg.payload\n\nconst date_start = new Date(String(date));\n\nconst year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date_start);\nconst month = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date_start);\nconst day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_start);\n\nconst time_start = new Date(String(start));\nconst hour_start = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_start);\nconst minute_start = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_start);\n\nconst time_end = new Date(String(end));\nconst hour_end = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_end);\nconst minute_end = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_end);\n\nmsg.year=year;\nmsg.month=month;\nmsg.day=day;\nmsg.hour_start=hour_start;\nmsg.minute_start=minute_start;\nmsg.hour_end = hour_end;\nmsg.minute_end = minute_end;\nmsg.type = type;\nmsg.description = description;\n\nconst createDate = new Date();\n\nconst createDay = createDate.getDate();\nconst createMonth = createDate.getMonth() + 1;\nconst createYear = createDate.getFullYear();\n\nconst createHours = createDate.getHours();\nconst createMinutes = createDate.getMinutes();\nconst createSeconds = createDate.getSeconds();\n\nmsg.createDay = createDay;\nmsg.createMonth = createMonth;\nmsg.createYear = createYear;\nmsg.createHours = createHours;\nmsg.createMinutes = createMinutes;\nmsg.createSeconds = createSeconds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 380,
+        "wires": [
+            [
+                "1c1c56b650b9fd07",
+                "618192d2c7d5ce94"
+            ]
+        ]
+    },
+    {
+        "id": "560180f573d0f46f",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/M5Stack",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 780,
+        "wires": [
+            [
+                "32b4cd9df2fd2294"
+            ]
+        ]
+    },
+    {
+        "id": "32b4cd9df2fd2294",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 8",
+        "func": "const { date, start, end, type, created } = msg.payload\n\nmsg.day = date.split(\".\")[0];\nmsg.month = date.split(\".\")[1];\nmsg.year = date.split(\".\")[2];\nmsg.hour_start = start.split(\":\")[0];\nmsg.minute_start = start.split(\":\")[1];\nmsg.hour_end = end.split(\":\")[0];\nmsg.minute_end = end.split(\":\")[1];\n\nconst events = [\n    { id: 0, type: \"Posilek\" },\n    { id: 1, type: \"Nauka\" },\n    { id: 2, type: \"Cwiczenia\" },\n    { id: 3, type: \"Spotkanie\" },\n    { id: 4, type: \"Opoczynek\" },\n    { id: 5, type: \"Porzadki\" },\n    { id: 6, type: \"Drzemka\" },\n    { id: 7, type: \"Spacer\" },\n    { id: 8, type: \"Wyjazd\" },\n    { id: 9, type: \"Obowiazki\" },\n    { id: 10, type: \"Rodzina\" },\n    { id: 11, type: \"Znajmomi\" },\n    { id: 12, type: \"Szkolenia\" },\n    { id: 13, type: \"Toaleta\" },\n    { id: 14, type: \"Inne\" },\n]\n\nconst event = events.find(e => e.id === type)\nmsg.type = String(event.type).toLowerCase();\nmsg.type_id = type;\n\nconst createDay = created.split(\".\")[0];\nconst createMonth = created.split(\".\")[1];\nconst createYear = created.split(\".\")[2].split(\" \")[0];\n\nconst createHours = created.split(\".\")[2].split(\" \")[1].split(\":\")[0];\nconst createMinutes = created.split(\".\")[2].split(\" \")[1].split(\":\")[1];\nconst createSeconds = created.split(\".\")[2].split(\" \")[1].split(\":\")[2];\n\nmsg.createDay = createDay;\nmsg.createMonth = createMonth;\nmsg.createYear = createYear;\nmsg.createHours = createHours;\nmsg.createMinutes = createMinutes;\nmsg.createSeconds = createSeconds;\n\nmsg.topic = `SELECT * FROM type_event WHERE id='${type}'`\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 780,
+        "wires": [
+            [
+                "19d1924918b5b75c"
+            ]
+        ]
+    },
+    {
+        "id": "c3c26a98942f8a34",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 9",
+        "func": "msg.topic = `INSERT INTO events(date, start, end, type, created, description, proposed) VALUES('${msg.year}-${msg.month}-${msg.day}', '${msg.hour_start}:${msg.minute_start}:00','${msg.hour_end}:${msg.minute_end}:59', '${msg.type}', '${msg.createYear}-${msg.createMonth}-${msg.createDay} ${msg.createHours}:${msg.createMinutes}:${msg.createSeconds}','${msg.description}')`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 780,
+        "wires": [
+            [
+                "d6fce14449e754c9"
+            ]
+        ]
+    },
+    {
+        "id": "72e3e162e0549f55",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/delete/M5Stack",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 1000,
+        "wires": [
+            [
+                "96297356b5d93bc1"
+            ]
+        ]
+    },
+    {
+        "id": "96297356b5d93bc1",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 10",
+        "func": "const { date, start, end, type, created } = msg.payload\n\nmsg.day = date.split(\".\")[0];\nmsg.month = date.split(\".\")[1];\nmsg.year = date.split(\".\")[2];\nmsg.hour_start = start.split(\":\")[0];\nmsg.minute_start = start.split(\":\")[1];\nmsg.hour_end = end.split(\":\")[0];\nmsg.minute_end = end.split(\":\")[1];\n\nconst events = [\n    { id: 0, type: \"Posilek\" },\n    { id: 1, type: \"Nauka\" },\n    { id: 2, type: \"Cwiczenia\" },\n    { id: 3, type: \"Spotkanie\" },\n    { id: 4, type: \"Opoczynek\" },\n    { id: 5, type: \"Porzadki\" },\n    { id: 6, type: \"Drzemka\" },\n    { id: 7, type: \"Spacer\" },\n    { id: 8, type: \"Wyjazd\" },\n    { id: 9, type: \"Obowiazki\" },\n    { id: 10, type: \"Rodzina\" },\n    { id: 11, type: \"Znajmomi\" },\n    { id: 12, type: \"Szkolenia\" },\n    { id: 13, type: \"Toaleta\" },\n    { id: 14, type: \"Inne\" },\n]\n\nconst event = events.find(e => e.id === type)\nmsg.type = event.type;\n\nconst createDay = created.split(\".\")[0];\nconst createMonth = created.split(\".\")[1];\nconst createYear = created.split(\".\")[2].split(\" \")[0];\n\nconst createHours = created.split(\".\")[2].split(\" \")[1].split(\":\")[0];\nconst createMinutes = created.split(\".\")[2].split(\" \")[1].split(\":\")[1];\nconst createSeconds = created.split(\".\")[2].split(\" \")[1].split(\":\")[2];\n\nmsg.createDay = createDay;\nmsg.createMonth = createMonth;\nmsg.createYear = createYear;\nmsg.createHours = createHours;\nmsg.createMinutes = createMinutes;\nmsg.createSeconds = createSeconds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1000,
+        "wires": [
+            [
+                "772d905020d3caf1"
+            ]
+        ]
+    },
+    {
+        "id": "772d905020d3caf1",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 11",
+        "func": "msg.topic = `DELETE FROM events WHERE \\`date\\`=STR_TO_DATE('${msg.day},${msg.month},${msg.year}','%d, %m, %Y')  AND start=STR_TO_DATE('${msg.hour_start},${msg.minute_start},0', '%H, %i, %s') AND end=STR_TO_DATE('${msg.hour_end},${msg.minute_end},59', '%H, %i, %s') AND created=STR_TO_DATE('${msg.createDay},${msg.createMonth},${msg.createYear},${msg.createHours},${msg.createMinutes},${msg.createSeconds}','%d, %m, %Y, %H, %i, %s')`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 1000,
+        "wires": [
+            [
+                "7162c19aa1c21ddd"
+            ]
+        ]
+    },
+    {
+        "id": "618192d2c7d5ce94",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 26",
+        "func": "const events = [\n    { id: 0, type: \"posilek\" },\n    { id: 1, type: \"nauka\" },\n    { id: 2, type: \"cwiczenia\" },\n    { id: 3, type: \"spotkanie\" },\n    { id: 4, type: \"opoczynek\" },\n    { id: 5, type: \"porzadki\" },\n    { id: 6, type: \"drzemka\" },\n    { id: 7, type: \"spacer\" },\n    { id: 8, type: \"wyjazd\" },\n    { id: 9, type: \"obowiazki\" },\n    { id: 10, type: \"rodzina\" },\n    { id: 11, type: \"znajmomi\" },\n    { id: 12, type: \"szkolenia\" },\n    { id: 13, type: \"toaleta\" },\n    { id: 14, type: \"inne\" },\n    { id: 0, type: \"posiłek\" },\n    { id: 2, type: \"ćwiczenia\" },\n    { id: 5, type: \"porządki\" },\n    { id: 9, type: \"obowiązki\" },\n]\n\nconst event = events.find(e => e.type === String(msg.type).toLowerCase())\nconst type_id = event?.id !== undefined ? event.id : 14\nmsg.type_id = type_id;\n\nmsg.topic = `SELECT * FROM type_event WHERE id='${type_id}'`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 440,
+        "wires": [
+            [
+                "3030f6ce48781c07"
+            ]
+        ]
+    },
+    {
+        "id": "3964ae97a8171ae9",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 710,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "dcc8fb472e11b967",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1070,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "7caf93a2c4d1c647",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/synchronize",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 2320,
+        "wires": [
+            [
+                "211dc5359b65d9fc"
+            ]
+        ]
+    },
+    {
+        "id": "211dc5359b65d9fc",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 40",
+        "func": "msg.dataWithM5Stack = msg.payload;\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 2320,
+        "wires": [
+            [
+                "87090259a9104453"
+            ]
+        ]
+    },
+    {
+        "id": "87090259a9104453",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 41",
+        "func": "msg.topic = \"SELECT * FROM events\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 2320,
+        "wires": [
+            [
+                "2e6cdc7a05024ecf"
+            ]
+        ]
+    },
+    {
+        "id": "3aecb25aece81a41",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 42",
+        "func": "msg.dataWithMySQL = msg.payload;\nmsg.addToMySQL = msg.dataWithM5Stack.filter((dataWithM5Stack) => !msg.dataWithMySQL.some(({created}) => {\n    console.log(created);\n    const createDay = String(dataWithM5Stack.created.split(\".\")[0]);\n    const createMonth = String(dataWithM5Stack.created.split(\".\")[1]);\n    const createYear = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[0]);\n\n    const createHours = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[0]);\n    const createMinutes = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[1]);\n    const createSeconds = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[2]);\n \n    const dataFormatMySQL = new Date(created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    })\n    return String(`${createYear}-${createMonth.padStart(2, '0')}-${createDay.padStart(2, '0')} ${createHours.padStart(2, '0')}:${createMinutes.padStart(2, '0')}:${createSeconds.padStart(2, '0')}`) == String(dataFormatMySQL); \n}));\n\nconst events = [\n    { id: 0, type: \"Posilek\" },\n    { id: 1, type: \"Nauka\" },\n    { id: 2, type: \"Cwiczenia\" },\n    { id: 3, type: \"Spotkanie\" },\n    { id: 4, type: \"Opoczynek\" },\n    { id: 5, type: \"Porzadki\" },\n    { id: 6, type: \"Drzemka\" },\n    { id: 7, type: \"Spacer\" },\n    { id: 8, type: \"Wyjazd\" },\n    { id: 9, type: \"Obowiazki\" },\n    { id: 10, type: \"Rodzina\" },\n    { id: 11, type: \"Znajmomi\" },\n    { id: 12, type: \"Szkolenia\" },\n    { id: 13, type: \"Toaleta\" },\n    { id: 14, type: \"Inne\" },\n]\n\nmsg.topic=\"\";\nfor (const element of msg.addToMySQL){\n    let event = events.find(e => e.id == element.type);\n    const createDay = String(element.created.split(\".\")[0]);\n    const createMonth = String(element.created.split(\".\")[1]);\n    const createYear = String(element.created.split(\".\")[2].split(\" \")[0]);\n    const createHours = String(element.created.split(\".\")[2].split(\" \")[1].split(\":\")[0]);\n    const createMinutes = String(element.created.split(\".\")[2].split(\" \")[1].split(\":\")[1]);\n    const createSeconds = String(element.created.split(\".\")[2].split(\" \")[1].split(\":\")[2]);\n\n    const day = String(element.date.split(\".\")[0]);\n    const month = String(element.date.split(\".\")[1]);\n    const year = String(element.date.split(\".\")[2]);\n\n    msg.topic += `INSERT INTO events(date, start, end, type, created, description) VALUES('${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}', '${element.start}:00', '${element.end}:59', '${event.type}', '${createYear}-${createMonth.padStart(2, '0')}-${createDay.padStart(2, '0')} ${createHours.padStart(2, '0')}:${createMinutes.padStart(2, '0')}:${createSeconds.padStart(2, '0')}', '${msg.description}');`;\n}\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 2320,
+        "wires": [
+            [
+                "593a2956b95b02d8"
+            ]
+        ]
+    },
+    {
+        "id": "6ea49e709d334aa6",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1310,
+        "y": 2320,
+        "wires": []
+    },
+    {
+        "id": "4cc2b8e4ba51233e",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 43",
+        "func": "msg.dataWithMySQL = msg.payload;\nmsg.addToM5Stack = msg.dataWithMySQL.filter(({ created }) => !msg.dataWithM5Stack.some((dataWithM5Stack) => {\n    const createDay = String(dataWithM5Stack.created.split(\".\")[0]);\n    const createMonth = String(dataWithM5Stack.created.split(\".\")[1]);\n    const createYear = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[0]);\n\n    const createHours = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[0]);\n    const createMinutes = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[1]);\n    const createSeconds = String(dataWithM5Stack.created.split(\".\")[2].split(\" \")[1].split(\":\")[2]);\n\n    const dataFormatMySQL = new Date(created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n    return String(`${createYear}-${createMonth.padStart(2, '0')}-${createDay.padStart(2, '0')} ${createHours.padStart(2, '0')}:${createMinutes.padStart(2, '0')}:${createSeconds.padStart(2, '0')}`) == String(dataFormatMySQL) \n}));\n\nconst events = [\n    { id: 0, type: \"posilek\" },\n    { id: 1, type: \"nauka\" },\n    { id: 2, type: \"cwiczenia\" },\n    { id: 3, type: \"spotkanie\" },\n    { id: 4, type: \"opoczynek\" },\n    { id: 5, type: \"porzadki\" },\n    { id: 6, type: \"drzemka\" },\n    { id: 7, type: \"spacer\" },\n    { id: 8, type: \"wyjazd\" },\n    { id: 9, type: \"obowiazki\" },\n    { id: 10, type: \"rodzina\" },\n    { id: 11, type: \"znajmomi\" },\n    { id: 12, type: \"szkolenia\" },\n    { id: 13, type: \"toaleta\" },\n    { id: 14, type: \"inne\" },\n    { id: 0, type: \"posiłek\" },\n    { id: 2, type: \"ćwiczenia\" },\n    { id: 5, type: \"porządki\" },\n    { id: 9, type: \"obowiązki\" },\n]\n\nmsg.payload =\"\";\n\nfor (const element of msg.addToM5Stack){\n    let event = events.find(e => String(e.type).toLowerCase() == String(element.type).toLowerCase()) ? events.find(e => String(e.type).toLowerCase() == String(element.type).toLowerCase()):{id:14};\n\n    const dataFormatMySQL = new Date(element.created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n    \n    const createYear = String(dataFormatMySQL).split(\"-\")[0];\n    const createMonth = String(dataFormatMySQL).split(\"-\")[1];\n    const createDay = String(dataFormatMySQL).split(\"-\")[2].split(\" \")[0];\n    const createHours = String(dataFormatMySQL).split(\"-\")[2].split(\" \")[1].split(\":\")[0];\n    const createMinutes = String(dataFormatMySQL).split(\"-\")[2].split(\" \")[1].split(\":\")[1];\n    const createSeconds = String(dataFormatMySQL).split(\"-\")[2].split(\" \")[1].split(\":\")[2];\n\n    const dataStartFormatMySQL = new Date(element.date).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const year = String(dataStartFormatMySQL).split(\"-\")[0];\n    const month = String(dataStartFormatMySQL).split(\"-\")[1];\n    const day = String(dataStartFormatMySQL).split(\"-\")[2].split(\" \")[0];\n\n    const hour_start = String(element.start).split(\":\")[0];\n    const minute_start = String(element.start).split(\":\")[1];\n    const hour_end = String(element.end).split(\":\")[0];\n    const minute_end  = String(element.end).split(\":\")[1];\n\n   //msg.payload += dataFormatMySQL;\n   msg.payload += `${day};${month};${year};${hour_start};${minute_start};${hour_end};${minute_end};${event.id};${createDay};${createMonth};${createYear};${createHours};${createMinutes};${createSeconds}\\n`;\n}\n\nreturn msg\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 2460,
+        "wires": [
+            [
+                "0e524ff484862e4d"
+            ]
+        ]
+    },
+    {
+        "id": "0e524ff484862e4d",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "event/add",
+        "topic": "event/add",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1100,
+        "y": 2460,
+        "wires": []
+    },
+    {
+        "id": "380495c4c05b661f",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/alarms",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 2640,
+        "wires": [
+            [
+                "c0fdc716322636ce"
+            ]
+        ]
+    },
+    {
+        "id": "e4d344bf4a03f28e",
+        "type": "e-mail",
+        "z": "9b49521f2eea2015",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "akuzma503@gmail.com",
+        "dname": "",
+        "x": 1210,
+        "y": 2640,
+        "wires": []
+    },
+    {
+        "id": "c0fdc716322636ce",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 44",
+        "func": "msg.topic = \"SELECT * FROM events;\"\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 2640,
+        "wires": [
+            [
+                "3a8a715b1cf056f0"
+            ]
+        ]
+    },
+    {
+        "id": "48de9de0f864e9ac",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 45",
+        "func": "const events = msg.payload.map((props) => {\n    const { id, date, start, end, type, description, created } =\n        props;\n    const date_start = new Date(String(date));\n\n    const year_start = new Intl.DateTimeFormat(\"en\", {\n        year: \"numeric\",\n    }).format(date_start);\n    const month_start = new Intl.DateTimeFormat(\"en\", {\n        month: \"numeric\",\n    }).format(date_start);\n    const day_start = new Intl.DateTimeFormat(\"en\", {\n        day: \"numeric\",\n    }).format(date_start);\n\n    const next_date_start = date_start.setDate(date_start.getDate() + 1);\n\n    const year_next_date_start = new Intl.DateTimeFormat(\"en\", {\n        year: \"numeric\",\n    }).format(next_date_start);\n    const month_next_date_start = new Intl.DateTimeFormat(\"en\", {\n        month: \"numeric\",\n    }).format(next_date_start);\n    const day_next_date_start = new Intl.DateTimeFormat(\"en\", {\n        day: \"numeric\",\n    }).format(next_date_start);\n\n    const year_end = start < end ? year_start : year_next_date_start;\n    const month_end = start < end ? month_start : month_next_date_start;\n    const day_end = start < end ? day_start : day_next_date_start;\n\n    const startSplit = start.split(\":\");\n    const endSplit = end.split(\":\");\n    return {\n        id: id,\n        start: new Date(\n            year_start,\n            Number(month_start) - 1,\n            day_start,\n            startSplit[0],\n            startSplit[1],\n            startSplit[2]\n        ),\n        end: new Date(\n            year_end,\n            Number(month_end) - 1,\n            day_end,\n            endSplit[0],\n            endSplit[1],\n            endSplit[2]\n        ),\n        title: type,\n        description: description,\n        created: created\n    };\n});\n\nconst currentDate = new Date();\n\nconst currentEvents = events.filter((event) => {\n    return event.start.toLocaleString() < currentDate.toLocaleString() && event.end.toLocaleString() > currentDate.toLocaleString() \n})\n\nmsg.currentEvents = currentEvents;\nmsg.currentEventsCount = currentEvents?.lenght!=0 ? currentEvents?.length: 0;\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2640,
+        "wires": [
+            [
+                "fdd781fcdbcc9944",
+                "3dcf1e5c31b1bb19"
+            ]
+        ]
+    },
+    {
+        "id": "fdd781fcdbcc9944",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 46",
+        "func": "if (msg.currentEventsCount == 0) {\n    msg.messageWhatsApp = \"Obecnie nie zaplanowano żadngo wydarzenia\"\n}\nelse if (msg.currentEventsCount == 1) {\n    msg.messageWhatsApp = \"Obecnie trwa jedno zaplanowane wydarzenie\"\n}\nelse{\n    msg.messageWhatsApp = undefined;\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 2840,
+        "wires": [
+            [
+                "e02b81e99e084f35"
+            ]
+        ]
+    },
+    {
+        "id": "3dcf1e5c31b1bb19",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 47",
+        "func": "if (msg.currentEventsCount == 0){\n    msg.payload = `Obecnie brak zaplanowanych wydarzen`;\n}\nelse {\n    msg.payload = `Obecnie jest  zaplanowanych ${msg.currentEventsCount} wydarzeń, oto one\\n`\n    for (const event of msg.currentEvents){\n        msg.payload+=`---------------------------\\n`;\n        for (const property in event) {\n            msg.payload += `${property}: ${event[property]}\\n`\n        }\n    }\n}\nmsg.topic = \"Zaplanowane wydarzenia\"\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 2640,
+        "wires": [
+            [
+                "e4d344bf4a03f28e"
+            ]
+        ]
+    },
+    {
+        "id": "09607b3f8217c40a",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/backup",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 2960,
+        "wires": [
+            [
+                "7f8072af58582703"
+            ]
+        ]
+    },
+    {
+        "id": "7f8072af58582703",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 48",
+        "func": "msg.topic = \"SELECT * FROM events;\"\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 2960,
+        "wires": [
+            [
+                "c10dfb5d64c88a81"
+            ]
+        ]
+    },
+    {
+        "id": "72663e206e2b9861",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 49",
+        "func": "msg.topic = \"DELETE FROM backup_events;\"\n\nfor (const element of msg.payload){\n    const dataFormat = new Date(element.created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const createYear = String(dataFormat).split(\"-\")[0];\n    const createMonth = String(dataFormat).split(\"-\")[1];\n    const createDay = String(dataFormat).split(\"-\")[2].split(\" \")[0];\n    const createHours = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[0];\n    const createMinutes = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[1];\n    const createSeconds = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[2];\n\n    const dataStartFormat = new Date(element.date).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const year = String(dataStartFormat).split(\"-\")[0];\n    const month = String(dataStartFormat).split(\"-\")[1];\n    const day = String(dataStartFormat).split(\"-\")[2].split(\" \")[0];\n\n    msg.topic += `INSERT INTO backup_events(date, start, end, type, created, description, proposed) VALUES('${year}-${month}-${day}', '${element.start}', '${element.end}', '${element.type}', '${createYear}-${createMonth}-${createDay} ${createHours}:${createMinutes}:${createSeconds}', '${element.description}', '${element.proposed}');`    \n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 2960,
+        "wires": [
+            [
+                "c06249b7b05d2c0d"
+            ]
+        ]
+    },
+    {
+        "id": "180e39afb397f0fe",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/backup/information",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1130,
+        "y": 2960,
+        "wires": []
+    },
+    {
+        "id": "04c288f7e6a26bf5",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/restore/backup",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 3120,
+        "wires": [
+            [
+                "2a3cbede5a9fbc5b"
+            ]
+        ]
+    },
+    {
+        "id": "2a3cbede5a9fbc5b",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 50",
+        "func": "msg.topic = \"SELECT * FROM backup_events;\"\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 3120,
+        "wires": [
+            [
+                "d0393b7d165aada6"
+            ]
+        ]
+    },
+    {
+        "id": "d41a8ccb5c1a92da",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 51",
+        "func": "msg.event  = msg.payload;\nmsg.topic = \"DELETE FROM events;\"\n\nfor (const element of msg.payload){\n    const dataFormat = new Date(element.created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n    \n    const createYear = String(dataFormat).split(\"-\")[0];\n    const createMonth = String(dataFormat).split(\"-\")[1];\n    const createDay = String(dataFormat).split(\"-\")[2].split(\" \")[0];\n    const createHours = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[0];\n    const createMinutes = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[1];\n    const createSeconds = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[2];\n\n    const dataStartFormat = new Date(element.date).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const year = String(dataStartFormat).split(\"-\")[0];\n    const month = String(dataStartFormat).split(\"-\")[1];\n    const day = String(dataStartFormat).split(\"-\")[2].split(\" \")[0];\n\n    msg.topic += `INSERT INTO events(date, start, end, type, created, description) VALUES('${year}-${month}-${day}', '${element.start}', '${element.end}', '${element.type}', '${createYear}-${createMonth}-${createDay} ${createHours}:${createMinutes}:${createSeconds}', '${element.description}');`\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 3120,
+        "wires": [
+            [
+                "a76306343a256e89"
+            ]
+        ]
+    },
+    {
+        "id": "6e1557bc8506fa9b",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/restore/backup/information",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1320,
+        "y": 3220,
+        "wires": []
+    },
+    {
+        "id": "47b84a40a90d40e0",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 52",
+        "func": "const events = [\n    { id: 0, type: \"posilek\" },\n    { id: 1, type: \"nauka\" },\n    { id: 2, type: \"cwiczenia\" },\n    { id: 3, type: \"spotkanie\" },\n    { id: 4, type: \"opoczynek\" },\n    { id: 5, type: \"porzadki\" },\n    { id: 6, type: \"drzemka\" },\n    { id: 7, type: \"spacer\" },\n    { id: 8, type: \"wyjazd\" },\n    { id: 9, type: \"obowiazki\" },\n    { id: 10, type: \"rodzina\" },\n    { id: 11, type: \"znajmomi\" },\n    { id: 12, type: \"szkolenia\" },\n    { id: 13, type: \"toaleta\" },\n    { id: 14, type: \"inne\" },\n    { id: 0, type: \"posiłek\" },\n    { id: 2, type: \"ćwiczenia\" },\n    { id: 5, type: \"porządki\" },\n    { id: 9, type: \"obowiązki\" },\n]\n\nmsg.payload = \"\";\n\nfor (const element of msg.event) {\n    let event = events.find(e => String(e.type).toLowerCase() == String(element.type).toLowerCase()) ? events.find(e => String(e.type).toLowerCase() == String(element.type).toLowerCase()) : { id: 14 };\n\n    const dataFormat = new Date(element.created).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const createYear = String(dataFormat).split(\"-\")[0];\n    const createMonth = String(dataFormat).split(\"-\")[1];\n    const createDay = String(dataFormat).split(\"-\")[2].split(\" \")[0];\n    const createHours = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[0];\n    const createMinutes = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[1];\n    const createSeconds = String(dataFormat).split(\"-\")[2].split(\" \")[1].split(\":\")[2];\n\n    const dataStartFormatMySQL = new Date(element.date).toLocaleString(\"sv\", {\n        timeZone: \"Europe/Paris\",\n    });\n\n    const year = String(dataStartFormatMySQL).split(\"-\")[0];\n    const month = String(dataStartFormatMySQL).split(\"-\")[1];\n    const day = String(dataStartFormatMySQL).split(\"-\")[2].split(\" \")[0];\n\n    const hour_start = String(element.start).split(\":\")[0];\n    const minute_start = String(element.start).split(\":\")[1];\n    const hour_end = String(element.end).split(\":\")[0];\n    const minute_end = String(element.end).split(\":\")[1];\n    msg.payload += `${day};${month};${year};${hour_start};${minute_start};${hour_end};${minute_end};${event.id};${createDay};${createMonth};${createYear};${createHours};${createMinutes};${createSeconds}\\n`;\n}\n\nreturn msg\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 3220,
+        "wires": [
+            [
+                "6e1557bc8506fa9b"
+            ]
+        ]
+    },
+    {
+        "id": "109d032eb4dbf49f",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1150,
+        "y": 3120,
+        "wires": []
+    },
+    {
+        "id": "cd7ff7f3e083c6b9",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "event/add",
+        "topic": "event/add",
+        "qos": "2",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 540,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "6b87dac65e205dee",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 54",
+        "func": "msg.payload = '';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 60,
+        "wires": [
+            [
+                "cd7ff7f3e083c6b9"
+            ]
+        ]
+    },
+    {
+        "id": "2a6253cacdc0a35b",
+        "type": "inject",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "6b87dac65e205dee"
+            ]
+        ]
+    },
+    {
+        "id": "5f2c4927ff70792c",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1030,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "337fc3cb27158168",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 470,
+        "y": 160,
+        "wires": [
+            [
+                "84127f8beea7fd09"
+            ]
+        ]
+    },
+    {
+        "id": "c807cd5a289b200e",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 450,
+        "y": 540,
+        "wires": [
+            [
+                "3964ae97a8171ae9"
+            ]
+        ]
+    },
+    {
+        "id": "d6fce14449e754c9",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 790,
+        "y": 780,
+        "wires": [
+            [
+                "dcc8fb472e11b967"
+            ]
+        ]
+    },
+    {
+        "id": "7162c19aa1c21ddd",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 790,
+        "y": 1000,
+        "wires": [
+            [
+                "5f2c4927ff70792c"
+            ]
+        ]
+    },
+    {
+        "id": "3030f6ce48781c07",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 570,
+        "y": 440,
+        "wires": [
+            [
+                "1ec9fccc9b54427d"
+            ]
+        ]
+    },
+    {
+        "id": "19d1924918b5b75c",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 450,
+        "y": 780,
+        "wires": [
+            [
+                "c3c26a98942f8a34"
+            ]
+        ]
+    },
+    {
+        "id": "2e6cdc7a05024ecf",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 750,
+        "y": 2320,
+        "wires": [
+            [
+                "3aecb25aece81a41",
+                "4cc2b8e4ba51233e"
+            ]
+        ]
+    },
+    {
+        "id": "593a2956b95b02d8",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 1090,
+        "y": 2320,
+        "wires": [
+            [
+                "6ea49e709d334aa6"
+            ]
+        ]
+    },
+    {
+        "id": "3a8a715b1cf056f0",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 510,
+        "y": 2640,
+        "wires": [
+            [
+                "48de9de0f864e9ac"
+            ]
+        ]
+    },
+    {
+        "id": "c10dfb5d64c88a81",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 550,
+        "y": 2960,
+        "wires": [
+            [
+                "72663e206e2b9861"
+            ]
+        ]
+    },
+    {
+        "id": "c06249b7b05d2c0d",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 890,
+        "y": 2960,
+        "wires": [
+            [
+                "180e39afb397f0fe"
+            ]
+        ]
+    },
+    {
+        "id": "d0393b7d165aada6",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 570,
+        "y": 3120,
+        "wires": [
+            [
+                "d41a8ccb5c1a92da"
+            ]
+        ]
+    },
+    {
+        "id": "a76306343a256e89",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 910,
+        "y": 3120,
+        "wires": [
+            [
+                "47b84a40a90d40e0",
+                "109d032eb4dbf49f"
+            ]
+        ]
+    },
+    {
+        "id": "e02b81e99e084f35",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9b49521f2eea2015",
+        "name": "message",
+        "credtype": "account",
+        "account": "208445739b562fec",
+        "text": "messageWhatsApp",
+        "phonenumbervalue": "",
+        "apikeyvalue": "",
+        "apikeyinputtypemessage": "msg",
+        "phonenumberinputtypemessage": "msg",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1120,
+        "y": 2840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6a1b94280a53a857",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9b49521f2eea2015",
+        "name": "message",
+        "account": "208445739b562fec",
+        "text": "payload",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1140,
+        "y": 2020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0df59bf2f007814a",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9b49521f2eea2015",
+        "name": "message",
+        "account": "208445739b562fec",
+        "text": "payload",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1260,
+        "y": 2180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d270c20fede70218",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/delete",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 1220,
+        "wires": [
+            [
+                "09eadc068e51b53a"
+            ]
+        ]
+    },
+    {
+        "id": "de3614dd05ea673d",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 650,
+        "y": 1220,
+        "wires": [
+            [
+                "d9281b3a2909fa17",
+                "3bfc5a61dc095d0e"
+            ]
+        ]
+    },
+    {
+        "id": "3bfc5a61dc095d0e",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/delete/success",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1000,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "09eadc068e51b53a",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 55",
+        "func": "msg.topic = `DELETE FROM events WHERE id=${msg.payload.id}`;\nmsg.id = msg.payload.id\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1220,
+        "wires": [
+            [
+                "de3614dd05ea673d",
+                "b3be8745b5b0dcb9"
+            ]
+        ]
+    },
+    {
+        "id": "b3be8745b5b0dcb9",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "d9281b3a2909fa17",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 1010,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "13a41b504484b7c1",
+        "type": "ui_form",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "label": "",
+        "group": "7edf9a766184e5a5",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Id",
+                "value": "id",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Data rozpoczęcia",
+                "value": "date",
+                "type": "date",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Czas rozpoczęcia",
+                "value": "start",
+                "type": "time",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Czas zakończenia",
+                "value": "end",
+                "type": "time",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Typ wydarzenia",
+                "value": "type",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Descripton",
+                "value": "description",
+                "type": "multiline",
+                "required": true,
+                "rows": 3
+            }
+        ],
+        "formValue": {
+            "id": "",
+            "date": "",
+            "start": "",
+            "end": "",
+            "type": "",
+            "description": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 90,
+        "y": 1440,
+        "wires": [
+            [
+                "8e734e3e3c5bbe91"
+            ]
+        ]
+    },
+    {
+        "id": "8e734e3e3c5bbe91",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 56",
+        "func": "const { date, start, end, type, description, id } = msg.payload\n\nconst date_start = new Date(String(date));\n\nconst year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date_start);\nconst month = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date_start);\nconst day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_start);\n\nconst time_start = new Date(String(start));\nconst hour_start = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_start);\nconst minute_start = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_start);\n\nconst time_end = new Date(String(end));\nconst hour_end = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_end);\nconst minute_end = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_end);\n\nmsg.year=year;\nmsg.month=month;\nmsg.day=day;\nmsg.hour_start=hour_start;\nmsg.minute_start=minute_start;\nmsg.hour_end = hour_end;\nmsg.minute_end = minute_end;\nmsg.type = type;\nmsg.description = description;\n\nconst createDate = new Date();\n\nconst createDay = createDate.getDate();\nconst createMonth = createDate.getMonth() + 1;\nconst createYear = createDate.getFullYear();\n\nconst createHours = createDate.getHours();\nconst createMinutes = createDate.getMinutes();\nconst createSeconds = createDate.getSeconds();\n\nmsg.createDay = createDay;\nmsg.createMonth = createMonth;\nmsg.createYear = createYear;\nmsg.createHours = createHours;\nmsg.createMinutes = createMinutes;\nmsg.createSeconds = createSeconds;\nmsg.id = id\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 1440,
+        "wires": [
+            [
+                "d4a01962a906cb0e"
+            ]
+        ]
+    },
+    {
+        "id": "d4a01962a906cb0e",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 57",
+        "func": "const events = [\n    { id: 0, type: \"posilek\" },\n    { id: 1, type: \"nauka\" },\n    { id: 2, type: \"cwiczenia\" },\n    { id: 3, type: \"spotkanie\" },\n    { id: 4, type: \"opoczynek\" },\n    { id: 5, type: \"porzadki\" },\n    { id: 6, type: \"drzemka\" },\n    { id: 7, type: \"spacer\" },\n    { id: 8, type: \"wyjazd\" },\n    { id: 9, type: \"obowiazki\" },\n    { id: 10, type: \"rodzina\" },\n    { id: 11, type: \"znajmomi\" },\n    { id: 12, type: \"szkolenia\" },\n    { id: 13, type: \"toaleta\" },\n    { id: 14, type: \"inne\" },\n    { id: 0, type: \"posiłek\" },\n    { id: 2, type: \"ćwiczenia\" },\n    { id: 5, type: \"porządki\" },\n    { id: 9, type: \"obowiązki\" },\n]\n\nconst event = events.find(e => e.type === String(msg.type).toLowerCase())\nconst type_id = event?.id !== undefined ? event.id : 14\nmsg.type_id = type_id;\n\nmsg.topic = `SELECT * FROM type_event WHERE id='${type_id}'`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 698.2000122070312,
+        "y": 1485,
+        "wires": [
+            [
+                "74a3611d88ae10f6"
+            ]
+        ]
+    },
+    {
+        "id": "74a3611d88ae10f6",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 350,
+        "y": 1600,
+        "wires": [
+            [
+                "8668e47021e37af8"
+            ]
+        ]
+    },
+    {
+        "id": "8668e47021e37af8",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 58",
+        "func": "msg.topic = `UPDATE events SET date='${msg.year}-${msg.month}-${msg.day}', start='${msg.hour_start}:${msg.minute_start}:00', end='${msg.hour_end}:${msg.minute_end}:59',type='${msg.type}', created='${msg.createYear}-${msg.createMonth}-${msg.createDay} ${msg.createHours}:${msg.createMinutes}:${msg.createSeconds}', description='${msg.description}' WHERE id=${msg.id}`;\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 1620,
+        "wires": [
+            [
+                "a74e89336ffd4edd",
+                "b0f26a9465886f64"
+            ]
+        ]
+    },
+    {
+        "id": "a74e89336ffd4edd",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 747.2000122070312,
+        "y": 1601.2000732421875,
+        "wires": [
+            [
+                "d197516b0fac72e4"
+            ]
+        ]
+    },
+    {
+        "id": "d197516b0fac72e4",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/add/calendar",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 764.2000122070312,
+        "y": 1693.800048828125,
+        "wires": []
+    },
+    {
+        "id": "b0f26a9465886f64",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 16",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "05b4c213d82262f1",
+        "type": "ui_spacer",
+        "z": "9b49521f2eea2015",
+        "name": "spacer",
+        "group": "",
+        "order": 3,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "fa97d362ab0be39e",
+        "type": "ui_spacer",
+        "z": "9b49521f2eea2015",
+        "name": "spacer",
+        "group": "",
+        "order": 4,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "715272136313a3a9",
+        "type": "ui_spacer",
+        "z": "9b49521f2eea2015",
+        "name": "spacer",
+        "group": "",
+        "order": 5,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "c3da721ec21aa8db",
+        "type": "ui_group",
+        "name": "Add event",
+        "tab": "c906f1c1d0f47777",
+        "order": 1,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1722c15d6d515c7e",
+        "type": "mqtt-broker",
+        "name": "test.mosquitto.org",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ca928f375421d7e7",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "sql8.freesqldatabase.com",
+        "port": "3306",
+        "db": "sql8673318",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "208445739b562fec",
+        "type": "node-red-contrib-whatsapp-cmb-account",
+        "name": "Whata"
+    },
+    {
+        "id": "7edf9a766184e5a5",
+        "type": "ui_group",
+        "name": "Edit event",
+        "tab": "f0cb35e6b13e43bf",
+        "order": 1,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "c906f1c1d0f47777",
+        "type": "ui_tab",
+        "name": "Add event",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f0cb35e6b13e43bf",
+        "type": "ui_tab",
+        "name": "Edit event",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

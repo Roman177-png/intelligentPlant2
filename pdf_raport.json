@@ -1,0 +1,259 @@
+[
+    {
+        "id": "615dec9af904f25b",
+        "type": "tab",
+        "label": "pdf_raport",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "155dd324bd469b2e",
+        "type": "html-to-pdf",
+        "z": "615dec9af904f25b",
+        "name": "raport",
+        "format": "A4",
+        "zoom": 100,
+        "orientation": "Portrait",
+        "width": "",
+        "height": "",
+        "widthUnit": "cm",
+        "heightUnit": "cm",
+        "marginTop": 1,
+        "marginLeft": 1,
+        "marginBottom": 1,
+        "marginRight": 1,
+        "marginTopUnits": "cm",
+        "marginLeftUnits": "cm",
+        "marginBottomUnits": "cm",
+        "marginRightUnits": "cm",
+        "omitBackground": false,
+        "printGraphics": true,
+        "x": 850,
+        "y": 380,
+        "wires": [
+            [
+                "dd868cadebf241bd"
+            ]
+        ]
+    },
+    {
+        "id": "b178fc397e8fa957",
+        "type": "ui_form",
+        "z": "615dec9af904f25b",
+        "name": "",
+        "label": "",
+        "group": "46e8acd577452cbe",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Raport od:",
+                "value": "date_from",
+                "type": "date",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Raport do:",
+                "value": "date_to",
+                "type": "date",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "date_from": "",
+            "date_to": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "className": "",
+        "x": 90,
+        "y": 200,
+        "wires": [
+            [
+                "dd2d0412c83e5def"
+            ]
+        ]
+    },
+    {
+        "id": "6d0d50b9e055b851",
+        "type": "mysql",
+        "z": "615dec9af904f25b",
+        "mydb": "a94c2155e352c42e",
+        "name": "MySQL Database",
+        "x": 530,
+        "y": 380,
+        "wires": [
+            [
+                "23c79862dbc72633",
+                "f15a8c0535addbf0"
+            ]
+        ]
+    },
+    {
+        "id": "5",
+        "type": "file",
+        "z": "615dec9af904f25b",
+        "name": "",
+        "filename": "/path/to/save/report.pdf",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "x": 1130,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "23c79862dbc72633",
+        "type": "ui_etable",
+        "z": "615dec9af904f25b",
+        "payload": "[             {                 \"field\": \"name\",                 \"title\": \"Name\",                 \"width\": \"90\",                 \"align\": \"left\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"timeWatering\",                 \"title\": \"lastWatering\",                 \"width\": \"\",                 \"align\": \"left\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"temperature\",                 \"title\": \"Temperature\",                 \"width\": \"140\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"pressure\",                 \"title\": \"Pressure\",                 \"width\": \"110\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"humidity\",                 \"title\": \"Humidity\",                 \"width\": \"110\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"moilSoilture\",                 \"title\": \"SoilMoilture\",                 \"width\": \"140\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"date\",                 \"title\": \"Date\",                 \"width\": \"180\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             }         ]",
+        "payloadType": "json",
+        "options": "{}",
+        "group": "c6a946649513ebd8",
+        "name": "",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "columns": [],
+        "outputs": 1,
+        "cts": false,
+        "x": 690,
+        "y": 460,
+        "wires": [
+            [
+                "155dd324bd469b2e"
+            ]
+        ]
+    },
+    {
+        "id": "dd2d0412c83e5def",
+        "type": "function",
+        "z": "615dec9af904f25b",
+        "name": "sqlQuery - date_from & date_to",
+        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `\n  SELECT temperature, pressure, humidity, soil_moisture, date\n  FROM plant_data\n  WHERE date >= '${formattedDateFrom}' AND date <= '${formattedDateTo}';\n`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.payload = sqlQuery;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 380,
+        "wires": [
+            [
+                "6d0d50b9e055b851"
+            ]
+        ]
+    },
+    {
+        "id": "dd868cadebf241bd",
+        "type": "file",
+        "z": "615dec9af904f25b",
+        "name": "",
+        "filename": "./raport.pdf",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 890,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f15a8c0535addbf0",
+        "type": "ui_chart",
+        "z": "615dec9af904f25b",
+        "name": "",
+        "group": "c6a946649513ebd8",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 790,
+        "y": 240,
+        "wires": [
+            [
+                "155dd324bd469b2e"
+            ]
+        ]
+    },
+    {
+        "id": "46e8acd577452cbe",
+        "type": "ui_group",
+        "name": "Zakres czasowy",
+        "tab": "e3a0b8b5379ac4d1",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "a94c2155e352c42e",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "csp",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "c6a946649513ebd8",
+        "type": "ui_group",
+        "name": "Group 2",
+        "tab": "e3a0b8b5379ac4d1",
+        "order": 2,
+        "disp": true,
+        "width": 6
+    },
+    {
+        "id": "e3a0b8b5379ac4d1",
+        "type": "ui_tab",
+        "name": "Raport",
+        "icon": "chrome_reader_mode",
+        "order": 9,
+        "disabled": false,
+        "hidden": false
+    }
+]

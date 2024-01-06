@@ -88,7 +88,62 @@ const Event = () => {
       console.log("Wydarzenie istnieje");
     }
   };
-  const handleEventsNextMonth = () => {};
+  const handleEventsNextMonth = () => {
+    const currentMonth = state.event.start.getMonth();
+
+    // Filtruj wydarzenia, aby znaleźć te zaplanowane w tym samym miesiącu
+    const eventsInSameMonth = state.eventsData.filter(
+      (event) =>
+        currentMonth == event.start.getMonth() && event.title == "Podlewanie"
+    );
+    console.log(eventsInSameMonth);
+    eventsInSameMonth.forEach((event) => {
+      const { start, end, title, description, created } = event;
+      console.log(end.getMonth());
+      const startEvent = new Date(
+        start.getMonth() + 1 == 12
+          ? start.getFullYear() + 1
+          : start.getFullYear(),
+        start.getMonth() + 1 == 12 ? 0 : start.getMonth() + 1,
+        start.getDate(),
+        start.getHours(),
+        start.getMinutes(),
+        start.getSeconds()
+      );
+      const endEvent = new Date(
+        end.getMonth() + 1 == 12 ? end.getFullYear() + 1 : end.getFullYear(),
+        end.getMonth() + 1 == 12 ? 0 : end.getMonth() + 1,
+        end.getDate(),
+        end.getHours(),
+        end.getMinutes(),
+        end.getSeconds()
+      );
+      const addEvent = {
+        date: startEvent,
+        start: startEvent,
+        end: endEvent,
+        title: title,
+        description: description,
+      };
+      const findEvent = state.eventsData.find((events) => {
+        return (
+          addEvent.start.toLocaleString() == events.start.toLocaleString() &&
+          addEvent.title == events.title &&
+          addEvent.description == events.description
+        );
+      });
+      if (!findEvent) {
+        client.current.publish(
+          "event/addEventsPlants",
+          JSON.stringify({ addEvent }),
+          (error) => console.log(error)
+        );
+      } else {
+        console.log("Wydarzenie istnieje");
+      }
+    });
+  };
+  // navigate("/calendar");
   return (
     <div>
       {state.event.title == "Podlewanie" && (

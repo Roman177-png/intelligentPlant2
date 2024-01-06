@@ -30,7 +30,7 @@
         "omitBackground": false,
         "printGraphics": true,
         "x": 850,
-        "y": 380,
+        "y": 980,
         "wires": [
             [
                 "0d9d4b8789fda5db"
@@ -78,7 +78,8 @@
         "y": 200,
         "wires": [
             [
-                "6b0350761903bf3b"
+                "6b0350761903bf3b",
+                "856d1ce325cb8022"
             ]
         ]
     },
@@ -92,31 +93,10 @@
         "y": 380,
         "wires": [
             [
-                "46f13c9be347baa3",
-                "f5ca4ad7dc3eefc7"
-            ]
-        ]
-    },
-    {
-        "id": "46f13c9be347baa3",
-        "type": "ui_etable",
-        "z": "d651ca8f20c9b01d",
-        "payload": "[             {                 \"field\": \"name\",                 \"title\": \"Name\",                 \"width\": \"90\",                 \"align\": \"left\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"timeWatering\",                 \"title\": \"lastWatering\",                 \"width\": \"\",                 \"align\": \"left\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"temperature\",                 \"title\": \"Temperature\",                 \"width\": \"140\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"pressure\",                 \"title\": \"Pressure\",                 \"width\": \"110\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"humidity\",                 \"title\": \"Humidity\",                 \"width\": \"110\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"moilSoilture\",                 \"title\": \"SoilMoilture\",                 \"width\": \"140\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             },             {                 \"field\": \"date\",                 \"title\": \"Date\",                 \"width\": \"180\",                 \"align\": \"center\",                 \"formatter\": \"plaintext\",                 \"formatterParams\": {                     \"target\": \"_blank\"                 }             }         ]",
-        "payloadType": "json",
-        "options": "{}",
-        "group": "c6a946649513ebd8",
-        "name": "",
-        "order": 1,
-        "width": "0",
-        "height": "0",
-        "columns": [],
-        "outputs": 1,
-        "cts": false,
-        "x": 690,
-        "y": 460,
-        "wires": [
-            [
-                "1f3d71bd620afb91"
+                "6e2378201dba6253",
+                "ef8a9cbc5fc82e29",
+                "b917f172afb67cb0",
+                "4977c42e35c91a4d"
             ]
         ]
     },
@@ -125,7 +105,7 @@
         "type": "function",
         "z": "d651ca8f20c9b01d",
         "name": "sqlQuery - date_from & date_to",
-        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `\n  SELECT temperature, pressure, humidity, soil_moisture, date\n  FROM plant_data\n  WHERE date >= '${formattedDateFrom}' AND date <= '${formattedDateTo}';\n`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.payload = sqlQuery;\n\nreturn msg;\n",
+        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE('${formattedDateFrom}', '%Y.%m.%d') AND STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE('${formattedDateTo}', '%Y.%m.%d')`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.topic = sqlQuery;\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -135,7 +115,8 @@
         "y": 380,
         "wires": [
             [
-                "307e29b5a13e7dbd"
+                "307e29b5a13e7dbd",
+                "287dd190c1e967a3"
             ]
         ]
     },
@@ -144,20 +125,306 @@
         "type": "file",
         "z": "d651ca8f20c9b01d",
         "name": "",
-        "filename": "./raport.pdf",
+        "filename": "report.pdf",
         "filenameType": "str",
         "appendNewline": true,
         "createDir": true,
         "overwriteFile": "true",
         "encoding": "none",
-        "x": 890,
-        "y": 540,
+        "x": 1420,
+        "y": 640,
         "wires": [
             []
         ]
     },
     {
-        "id": "f5ca4ad7dc3eefc7",
+        "id": "287dd190c1e967a3",
+        "type": "debug",
+        "z": "d651ca8f20c9b01d",
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 420,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "856d1ce325cb8022",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "function 59",
+        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}_${monthFrom < 10 ? '0' : ''}${monthFrom}_${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}_${monthTo < 10 ? '0' : ''}${monthTo}_${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// msg.payload.date_from = formattedDateFrom;\n// msg.payload.date_to = formattedDateTo;\nmsg.payload = \"<div>raport\" + formattedDateFrom + \"_\" + formattedDateTo+\"</div>\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 740,
+        "wires": [
+            [
+                "7291d4b6fea1a6b5"
+            ]
+        ]
+    },
+    {
+        "id": "6e2378201dba6253",
+        "type": "tableify",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "before": "",
+        "after": "",
+        "tableStyle": "",
+        "theadStyle": "",
+        "tbodyStyle": "",
+        "trStyle": "",
+        "tdStyle": "",
+        "x": 500,
+        "y": 620,
+        "wires": [
+            [
+                "70ec6f541b18f847"
+            ]
+        ]
+    },
+    {
+        "id": "ef8a9cbc5fc82e29",
+        "type": "ui_table",
+        "z": "d651ca8f20c9b01d",
+        "group": "c6a946649513ebd8",
+        "name": "",
+        "order": 1,
+        "width": 18,
+        "height": 12,
+        "columns": [
+            {
+                "field": "name",
+                "title": "Name",
+                "width": "90",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "timeWatering",
+                "title": "lastWatering",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "temperature",
+                "title": "Temperature",
+                "width": "140",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "pressure",
+                "title": "Pressure",
+                "width": "110",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "humidity",
+                "title": "Humidity",
+                "width": "110",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "moilSoilture",
+                "title": "SoilMoilture",
+                "width": "140",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "date",
+                "title": "Date",
+                "width": "180",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 810,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "b917f172afb67cb0",
+        "type": "debug",
+        "z": "d651ca8f20c9b01d",
+        "name": "debug 18",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "88678a24c258ed36",
+        "type": "debug",
+        "z": "d651ca8f20c9b01d",
+        "name": "debug 19",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "0d3052f327f126f4",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "function 60",
+        "func": "var table = msg.table;\nwhile (table === \"undefined\"){\n    var table = msg.table;\n}\n\nvar raport_header = msg.raport_header;\nwhile (raport_header === \"undefined\") {\n    var raport_header = msg.raport_header;\n}\nif (table != \"undefined\" && raport_header != \"undefined\"){\n    var result = raport_header + \"<div>\" + table + \"</div>\";\n    msg.payload = result;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "70ec6f541b18f847",
+        "type": "change",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 700,
+        "wires": [
+            [
+                "7291d4b6fea1a6b5"
+            ]
+        ]
+    },
+    {
+        "id": "7291d4b6fea1a6b5",
+        "type": "join",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 590,
+        "y": 940,
+        "wires": [
+            [
+                "88678a24c258ed36",
+                "1f3d71bd620afb91"
+            ]
+        ]
+    },
+    {
+        "id": "98c42a9b30c2084c",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "function 61",
+        "func": "let r = msg.payload;\nlet serie = [\"temperature\"];\nlet data = [r.map(v => ({\n    \"x\": v.date,\n    \"y\": parseFloat(v.temperature)\n}))];\n\nmsg.payload = [{ \"series\": serie, \"data\": data }];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 320,
+        "wires": [
+            [
+                "677e3a5222ec127f",
+                "8e747614b16bd3b9"
+            ]
+        ]
+    },
+    {
+        "id": "677e3a5222ec127f",
+        "type": "debug",
+        "z": "d651ca8f20c9b01d",
+        "name": "debug 20",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8e747614b16bd3b9",
         "type": "ui_chart",
         "z": "d651ca8f20c9b01d",
         "name": "",
@@ -194,11 +461,449 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 790,
-        "y": 240,
+        "x": 1050,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4977c42e35c91a4d",
+        "type": "change",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "topic",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 380,
         "wires": [
             [
-                "1f3d71bd620afb91"
+                "98c42a9b30c2084c"
+            ]
+        ]
+    },
+    {
+        "id": "84fe8fcbc58c1a34",
+        "type": "debug",
+        "z": "d651ca8f20c9b01d",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "1355b20ffa014ab6",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": 300,
+        "x": 730,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dce34fa7.56d7d",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "Vertical Bar Chart",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'Vertical bar example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 330,
+        "y": 1840,
+        "wires": [
+            [
+                "12d010c4.fc8e3f"
+            ]
+        ]
+    },
+    {
+        "id": "12d010c4.fc8e3f",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 1840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "68d737f4.5047f8",
+        "type": "inject",
+        "z": "d651ca8f20c9b01d",
+        "name": "Vertical Bar",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 1840,
+        "wires": [
+            [
+                "dce34fa7.56d7d"
+            ]
+        ]
+    },
+    {
+        "id": "5f624f25.98f38",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "Vertical Bar Chart 2 series",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'Vertical bar with 2 data series'\n        },\n        legend: {\n            display:true\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                backgroundColor:'rgba(127, 184, 57,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\nlet k = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    k = k + Math.floor(Math.random()*6)-3;\n    m.data.datasets[1].data.push(k);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    let month = \"\" + (d.getMonth() + 1);\n    let day = \"\" + d.getDate();\n    let year = d.getFullYear();\n\n    if (month.length < 2) month = '0' + month;\n    if (day.length < 2) day = '0' + day;\n    m.data.labels.push(day + \".\"+month+\".\"+year);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 350,
+        "y": 1900,
+        "wires": [
+            [
+                "89dfcf39.990ca"
+            ]
+        ]
+    },
+    {
+        "id": "89dfcf39.990ca",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 570,
+        "y": 1900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d658d601.f421e8",
+        "type": "inject",
+        "z": "d651ca8f20c9b01d",
+        "name": "Vertical Bar",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 1900,
+        "wires": [
+            [
+                "5f624f25.98f38"
+            ]
+        ]
+    },
+    {
+        "id": "e284de4.fc6a12",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "Line Chart",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Line chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 2000,
+        "wires": [
+            [
+                "f7e11042.f96d9"
+            ]
+        ]
+    },
+    {
+        "id": "f7e11042.f96d9",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 2000,
+        "wires": [
+            [
+                "f296dba7c97c84ad"
+            ]
+        ]
+    },
+    {
+        "id": "f9531538.ab1988",
+        "type": "inject",
+        "z": "d651ca8f20c9b01d",
+        "name": "Line Chart",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 2000,
+        "wires": [
+            [
+                "e284de4.fc6a12"
+            ]
+        ]
+    },
+    {
+        "id": "4bfe6190.6619c",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "Line Chart 3 series",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Line chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:true,\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n            {\n                label:\"Series 3\",\n                borderColor:'rgba(184, 57, 93,0.8)',\n                fill:false,\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\nlet k = l;\nlet j = l;\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    k = k + Math.floor(Math.random()*6)-3;\n    m.data.datasets[1].data.push(k);\n    j = j + Math.floor(Math.random()*6)-3;\n    m.data.datasets[2].data.push(j);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 330,
+        "y": 2080,
+        "wires": [
+            [
+                "c86b69d5.68d2d8"
+            ]
+        ]
+    },
+    {
+        "id": "c86b69d5.68d2d8",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 2080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "13c25f21.9a6aa1",
+        "type": "inject",
+        "z": "d651ca8f20c9b01d",
+        "name": "Line Chart",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 2080,
+        "wires": [
+            [
+                "4bfe6190.6619c"
+            ]
+        ]
+    },
+    {
+        "id": "d1ca5ba9.da1338",
+        "type": "function",
+        "z": "d651ca8f20c9b01d",
+        "name": "Doughnut example",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'pie',\n    options: {\n        cutoutPercentage: 50,\n        title: {\n            display:true,\n            text:'Doughnut chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value, context) {\n                    return value > 0 ? context.chart.data.labels[context.dataIndex]+\": \"+value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                backgroundColor:[],\n                borderColor:\"white\",\n                borderWidth:2,\n                data:[]\n            }\n        ]\n    }\n}\n\n\n\nfor (let i=0; i<12; i++) {\n    m.data.datasets[0].data.push(Math.floor(Math.random()*50));\n    m.data.datasets[0].backgroundColor.push(\"hsl(\"+i*360/12+\",100%,50%)\");\n    m.data.labels.push(mL[i]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 330,
+        "y": 2160,
+        "wires": [
+            [
+                "4af5b6dc.e60d28"
+            ]
+        ]
+    },
+    {
+        "id": "4af5b6dc.e60d28",
+        "type": "chart-image",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 2160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "493ec7a4.b98fe8",
+        "type": "inject",
+        "z": "d651ca8f20c9b01d",
+        "name": "Line Chart",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 2160,
+        "wires": [
+            [
+                "d1ca5ba9.da1338"
+            ]
+        ]
+    },
+    {
+        "id": "f296dba7c97c84ad",
+        "type": "file",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "filename": "D:\\Studia\\Magister\\drugi_rok\\semestr_1\\Cyfryzacja systemów produkcyjnych\\projekt\\intelligentPlant2\\wykres.jpg",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1120,
+        "y": 2000,
+        "wires": [
+            [
+                "214e73dc6e29251e"
+            ]
+        ]
+    },
+    {
+        "id": "3c7bafdf15205535",
+        "type": "html-to-pdf",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "format": "A4",
+        "zoom": 100,
+        "orientation": "Portrait",
+        "widthUnit": "cm",
+        "heightUnit": "cm",
+        "marginTop": 1,
+        "marginLeft": 1,
+        "marginBottom": 1,
+        "marginRight": 1,
+        "marginTopUnits": "cm",
+        "marginLeftUnits": "cm",
+        "marginBottomUnits": "cm",
+        "marginRightUnits": "cm",
+        "omitBackground": false,
+        "printGraphics": true,
+        "x": 850,
+        "y": 2140,
+        "wires": [
+            [
+                "bfaeb0db144d53a5"
+            ]
+        ]
+    },
+    {
+        "id": "bfaeb0db144d53a5",
+        "type": "file",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "filename": "wykre2s.pdf",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 930,
+        "y": 2200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "214e73dc6e29251e",
+        "type": "template",
+        "z": "d651ca8f20c9b01d",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": " <img src=\"D:\\Studia\\Magister\\drugi_rok\\semestr_1\\Cyfryzacja systemów produkcyjnych\\projekt\\intelligentPlant2\\wykres.jpg\" width=\"500\" height=\"600\"> ",
+        "output": "str",
+        "x": 680,
+        "y": 2140,
+        "wires": [
+            [
+                "3c7bafdf15205535"
             ]
         ]
     },
@@ -217,9 +922,9 @@
         "id": "a94c2155e352c42e",
         "type": "MySQLdatabase",
         "name": "",
-        "host": "127.0.0.1",
+        "host": "db4free.net",
         "port": "3306",
-        "db": "csp",
+        "db": "cspdatabase",
         "tz": "",
         "charset": "UTF8"
     },
@@ -230,7 +935,9 @@
         "tab": "e3a0b8b5379ac4d1",
         "order": 2,
         "disp": true,
-        "width": 6
+        "width": "24",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "e3a0b8b5379ac4d1",

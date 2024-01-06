@@ -84,6 +84,7 @@ const Event = () => {
         JSON.stringify({ addEvent }),
         (error) => console.log(error)
       );
+      navigate("/calendar");
     } else {
       console.log("Wydarzenie istnieje");
     }
@@ -142,25 +143,29 @@ const Event = () => {
         console.log("Wydarzenie istnieje");
       }
     });
+    navigate("/calendar");
   };
-  // navigate("/calendar");
+
   return (
     <div>
-      {state.event.title == "Podlewanie" && (
-        <div onClick={handleEventNextMonth}>
-          {" "}
-          Ustaw na ten sam dzień w następnym miesiacu
-        </div>
-      )}
-      {state.event.title == "Podlewanie" && (
-        <div onClick={handleEventsNextMonth}>
-          {" "}
-          Ustaw wszytkie zaplanowane podlewania w tym miesiącu na następnym
-          miesiąc
-        </div>
-      )}
       <div className="w-[100%] flex items-center justify-end pr-[20px] pt-[10px]">
-        <div className="w-[30%] flex items-center gap-[20px]">
+        <div className="flex items-center gap-[20px]">
+          {state.event.title == "Podlewanie" && (
+            <div
+              className="flex items-center border-0 box-border shadow-none m-0 py-2 px-5 bg-[#3174ad] rounded-md text-white w-[50%] text-left  cursor-pointer"
+              onClick={handleEventNextMonth}
+            >
+              Ustaw podlewanie na ten sam dzień w następnym miesiacu
+            </div>
+          )}
+          {state.event.title == "Podlewanie" && (
+            <div
+              className="flex items-center border-0 box-border shadow-none m-0 py-2 px-5 bg-[#3174ad] rounded-md text-white w-[50%] text-left  cursor-pointer"
+              onClick={handleEventsNextMonth}
+            >
+              Ustaw podlewania zaplanowane w tym miesiącu na następnym
+            </div>
+          )}
           <NavLink
             to="http://127.0.0.1:1880/ui/#!/2?socketid=aV6mkA2jXZNhKTvqAAAB"
             className="flex items-center border-0 box-border shadow-none m-0 py-2 px-5 bg-[#3174ad] rounded-md text-white w-[50%] text-left capitalize cursor-pointer"

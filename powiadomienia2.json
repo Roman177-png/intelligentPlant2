@@ -1,0 +1,343 @@
+[
+    {
+        "id": "e37888bbca76c05e",
+        "type": "tab",
+        "label": "Powiadomienia kalendarzowe 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "32361d4fc4065111",
+        "type": "mqtt in",
+        "z": "e37888bbca76c05e",
+        "name": "PIR/L1/Z3/buttB",
+        "topic": "PIR/L1/Z3/buttB",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "aa8c629f747e440f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 140,
+        "wires": [
+            [
+                "6b27670591298661"
+            ]
+        ]
+    },
+    {
+        "id": "6b27670591298661",
+        "type": "switch",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 270,
+        "y": 140,
+        "wires": [
+            [
+                "6c36416806beac0e"
+            ],
+            [
+                "6c36416806beac0e"
+            ]
+        ]
+    },
+    {
+        "id": "6c36416806beac0e",
+        "type": "join",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": " ",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 450,
+        "y": 140,
+        "wires": [
+            [
+                "f69b4def05337d6d"
+            ]
+        ]
+    },
+    {
+        "id": "f69b4def05337d6d",
+        "type": "switch",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1 0",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "344d19b06246a373"
+            ],
+            [
+                "d326f858c0b99ebb"
+            ]
+        ]
+    },
+    {
+        "id": "d7b80ab2bacf70ce",
+        "type": "template",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "Podlano roślinkę {{payload}}",
+        "output": "str",
+        "x": 480,
+        "y": 320,
+        "wires": [
+            [
+                "228c871986b48f9b",
+                "c1c69fb82913278f"
+            ]
+        ]
+    },
+    {
+        "id": "d326f858c0b99ebb",
+        "type": "template",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "",
+        "output": "str",
+        "x": 480,
+        "y": 420,
+        "wires": [
+            [
+                "228c871986b48f9b",
+                "c1c69fb82913278f"
+            ]
+        ]
+    },
+    {
+        "id": "228c871986b48f9b",
+        "type": "change",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "payload",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "123c6369875936af",
+        "type": "mqtt in",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "topic": "PIR/L1/Z3/jsonData",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1658dccaf854d8ce",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 700,
+        "wires": [
+            [
+                "701e14fbde9a1ed1"
+            ]
+        ]
+    },
+    {
+        "id": "701e14fbde9a1ed1",
+        "type": "json",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 310,
+        "y": 700,
+        "wires": [
+            [
+                "e6b672a264c0f8cf"
+            ]
+        ]
+    },
+    {
+        "id": "e6b672a264c0f8cf",
+        "type": "function",
+        "z": "e37888bbca76c05e",
+        "name": "Parsowanie JSON",
+        "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\nvar timeWatering = data.timeWatering;\nvar moilSoilture = data.moilSoilture;\nvar temperature = data.temperature;\nvar humidity = data.humidity;\nvar pressure = data.pressure;\n\nvar result = name + \",\\nczas podlewania: \" + timeWatering; \nresult=result+\",\\nparametry:\\n\" \nresult+= moilSoilture+\"% wilgotności gleby w doniczce\\n\"\nresult += temperature + \"stopni celsusza powietrza w otoczeniu\\n\"\nresult += humidity + \"% wilgotności powietrza w otoczeniu\\n\"\nresult += pressure + \"hPa ciśnienia powietrza w otoczeniu\"\n\nmsg.payload=result;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 560,
+        "wires": [
+            [
+                "344d19b06246a373"
+            ]
+        ]
+    },
+    {
+        "id": "344d19b06246a373",
+        "type": "join",
+        "z": "e37888bbca76c05e",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": " ",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 310,
+        "y": 320,
+        "wires": [
+            [
+                "d7b80ab2bacf70ce"
+            ]
+        ]
+    },
+    {
+        "id": "c1c69fb82913278f",
+        "type": "ui_toast",
+        "z": "e37888bbca76c05e",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 780,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "aa8c629f747e440f",
+        "type": "mqtt-broker",
+        "name": "test.mosquitto.org",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1658dccaf854d8ce",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

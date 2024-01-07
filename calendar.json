@@ -613,7 +613,8 @@
         "wires": [
             [
                 "fdd781fcdbcc9944",
-                "3dcf1e5c31b1bb19"
+                "3dcf1e5c31b1bb19",
+                "e3cc1dcfe61f749c"
             ]
         ]
     },
@@ -633,7 +634,7 @@
         "y": 2840,
         "wires": [
             [
-                "e02b81e99e084f35"
+                "dc47e44a0f1eccd9"
             ]
         ]
     },
@@ -1122,26 +1123,6 @@
         ]
     },
     {
-        "id": "e02b81e99e084f35",
-        "type": "node-red-contrib-whatsapp-cmb-send-message",
-        "z": "9b49521f2eea2015",
-        "name": "message",
-        "credtype": "account",
-        "account": "208445739b562fec",
-        "text": "messageWhatsApp",
-        "phonenumbervalue": "",
-        "apikeyvalue": "",
-        "apikeyinputtypemessage": "msg",
-        "phonenumberinputtypemessage": "msg",
-        "inputtypemessage": "msg",
-        "rejectssl": false,
-        "x": 1120,
-        "y": 2840,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "6a1b94280a53a857",
         "type": "node-red-contrib-whatsapp-cmb-send-message",
         "z": "9b49521f2eea2015",
@@ -1483,6 +1464,231 @@
         "wires": []
     },
     {
+        "id": "be7c9d4c89af4ffd",
+        "type": "mqtt in",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/addEventsPlants",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1722c15d6d515c7e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 220,
+        "y": 3420,
+        "wires": [
+            [
+                "45786b9a79789554",
+                "7283444df0d84fc8"
+            ]
+        ]
+    },
+    {
+        "id": "45786b9a79789554",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 3360,
+        "wires": []
+    },
+    {
+        "id": "7283444df0d84fc8",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 59",
+        "func": "const { date, start, end, type, description, id } = msg.payload.addEvent\n\nconst date_start = new Date(String(date));\n\nconst year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date_start);\nconst month = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date_start);\nconst day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date_start);\n\nconst time_start = new Date(String(start));\nconst hour_start = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_start);\nconst minute_start = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_start);\n\nconst time_end = new Date(String(end));\nconst hour_end = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(time_end);\nconst minute_end = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(time_end);\n\nmsg.year=year;\nmsg.month=month;\nmsg.day=day;\nmsg.hour_start=hour_start;\nmsg.minute_start=minute_start;\nmsg.hour_end = hour_end;\nmsg.minute_end = minute_end;\nmsg.type = type;\nmsg.description = description;\n\nconst createDate = new Date();\n\nconst createDay = createDate.getDate();\nconst createMonth = createDate.getMonth() + 1;\nconst createYear = createDate.getFullYear();\n\nconst createHours = createDate.getHours();\nconst createMinutes = createDate.getMinutes();\nconst createSeconds = createDate.getSeconds();\n\nmsg.createDay = createDay;\nmsg.createMonth = createMonth;\nmsg.createYear = createYear;\nmsg.createHours = createHours;\nmsg.createMinutes = createMinutes;\nmsg.createSeconds = createSeconds;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 443.79998779296875,
+        "y": 3439.800048828125,
+        "wires": [
+            [
+                "44c09cb3fe21ccb6"
+            ]
+        ]
+    },
+    {
+        "id": "0e76e89ce4872486",
+        "type": "mysql",
+        "z": "9b49521f2eea2015",
+        "mydb": "ca928f375421d7e7",
+        "name": "db",
+        "x": 650,
+        "y": 3400,
+        "wires": [
+            [
+                "7a19ae0e425b9a30"
+            ]
+        ]
+    },
+    {
+        "id": "44c09cb3fe21ccb6",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 61",
+        "func": "msg.topic = `INSERT INTO events(date, start, end, type, created, description) VALUES('${msg.year}-${msg.month}-${msg.day}', '${msg.hour_start}:${msg.minute_start}:00','${msg.hour_end}:${msg.minute_end}:59', 'Podlewanie', '${msg.createYear}-${msg.createMonth}-${msg.createDay} ${msg.createHours}:${msg.createMinutes}:${msg.createSeconds}','${msg.description}')`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 3540,
+        "wires": [
+            [
+                "0e76e89ce4872486",
+                "814f252a5db02a6d"
+            ]
+        ]
+    },
+    {
+        "id": "7a19ae0e425b9a30",
+        "type": "mqtt out",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "topic": "event/addEventsPlants/success",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1722c15d6d515c7e",
+        "x": 930,
+        "y": 3440,
+        "wires": []
+    },
+    {
+        "id": "814f252a5db02a6d",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 22",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 751.7999877929688,
+        "y": 3558.60009765625,
+        "wires": []
+    },
+    {
+        "id": "e3cc1dcfe61f749c",
+        "type": "function",
+        "z": "9b49521f2eea2015",
+        "name": "function 62",
+        "func": "if (msg.currentEventsCount == 0) {\n    msg.messageWhatsApp = undefined;\n}\nelse {\n    for (const event of msg.currentEvents) {\n        if (event.title == \"Podlewanie\") {\n            msg.messageWhatsApp = \"TRWA PODLEWANIE\";\n            break;\n        }\n        msg.messageWhatsApp = undefined;\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 2880,
+        "wires": [
+            [
+                "a10153a32a9af1b9"
+            ]
+        ]
+    },
+    {
+        "id": "bdf4e2a8a3e989fe",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 23",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "messageWhatsApp",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 2900,
+        "wires": []
+    },
+    {
+        "id": "dc47e44a0f1eccd9",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "credtype": "account",
+        "account": "fc516c9ae45d1c54",
+        "text": "messageWhatsApp",
+        "phonenumbervalue": "",
+        "apikeyvalue": "",
+        "apikeyinputtypemessage": "msg",
+        "phonenumberinputtypemessage": "msg",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1160,
+        "y": 2780,
+        "wires": [
+            [
+                "6217c6a054fc177b"
+            ]
+        ]
+    },
+    {
+        "id": "6217c6a054fc177b",
+        "type": "debug",
+        "z": "9b49521f2eea2015",
+        "name": "debug 24",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 2740,
+        "wires": []
+    },
+    {
+        "id": "a10153a32a9af1b9",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9b49521f2eea2015",
+        "name": "",
+        "credtype": "account",
+        "account": "fc516c9ae45d1c54",
+        "text": "messageWhatsApp",
+        "phonenumbervalue": "",
+        "apikeyvalue": "",
+        "apikeyinputtypemessage": "msg",
+        "phonenumberinputtypemessage": "msg",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1120,
+        "y": 2840,
+        "wires": [
+            [
+                "bdf4e2a8a3e989fe"
+            ]
+        ]
+    },
+    {
         "id": "05b4c213d82262f1",
         "type": "ui_spacer",
         "z": "9b49521f2eea2015",
@@ -1554,9 +1760,9 @@
         "id": "ca928f375421d7e7",
         "type": "MySQLdatabase",
         "name": "",
-        "host": "sql8.freesqldatabase.com",
+        "host": "bwjjoe9wn9e5dhidno1r-mysql.services.clever-cloud.com",
         "port": "3306",
-        "db": "sql8673318",
+        "db": "bwjjoe9wn9e5dhidno1r",
         "tz": "",
         "charset": "UTF8"
     },
@@ -1575,6 +1781,11 @@
         "width": 10,
         "collapse": false,
         "className": ""
+    },
+    {
+        "id": "fc516c9ae45d1c54",
+        "type": "node-red-contrib-whatsapp-cmb-account",
+        "name": "2"
     },
     {
         "id": "c906f1c1d0f47777",

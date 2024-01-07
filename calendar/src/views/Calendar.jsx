@@ -8,6 +8,7 @@ import mqtt from "mqtt/dist/mqtt";
 
 const CalendarView = () => {
   const [eventsData, setEventsData] = useState();
+  const currentEventsRef = useRef([]);
   moment.locale("en-GB");
   const localizer = momentLocalizer(moment);
   const navigate = useNavigate();
@@ -88,6 +89,52 @@ const CalendarView = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const checkEvents = () => {
+      console.log("checkEvents");
+      const currentDate = new Date();
+
+      const currentEventsFilter = eventsData.filter((event) => {
+        return (
+          event.start.toLocaleString() < currentDate.toLocaleString() &&
+          event.end.toLocaleString() > currentDate.toLocaleString()
+        );
+      });
+
+      console.log(currentEventsFilter);
+      if (currentEventsFilter?.length > 0) {
+        // Jeśli aktualna data znajduje się w trakcie trwania przynajmniej jednego z wydarzeń, wyślij powiadomienie
+        sendNotification(currentEventsFilter);
+      } else {
+        currentEventsRef.current = [];
+      }
+    };
+
+    const sendNotification = (currentEventsFilter) => {
+      console.log();
+      if (
+        currentEventsRef.current[currentEventsRef.current.length - 1]?.title !=
+          currentEventsFilter[currentEventsFilter.length - 1]?.title &&
+        currentEventsRef.current[currentEventsRef.current.length - 1]?.start !=
+          currentEventsFilter[currentEventsFilter.length - 1]?.start &&
+        currentEventsRef.current[currentEventsRef.current.length - 1]?.end !=
+          currentEventsFilter[currentEventsFilter.length - 1]?.end
+      ) {
+        console.log("TAK");
+        currentEventsRef.current = currentEventsFilter;
+        client.current.publish("event/alarms", JSON.stringify({}), (error) =>
+          console.log(error)
+        );
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      checkEvents();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [eventsData]);
+
   return (
     <>
       <Calendar
@@ -98,7 +145,11 @@ const CalendarView = () => {
         defaultView="month"
         events={eventsData}
         style={{ height: "95vh" }}
-        onSelectEvent={(event) => navigate("/event", { state: event })}
+        onSelectEvent={(event) =>
+          navigate("/event", {
+            state: { event: event, eventsData: eventsData },
+          })
+        }
       />
     </>
   );

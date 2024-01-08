@@ -1,6 +1,6 @@
 [
     {
-        "id": "d651ca8f20c9b01d",
+        "id": "42867bee5645236b",
         "type": "tab",
         "label": "pdf_raport",
         "disabled": false,
@@ -8,43 +8,13 @@
         "env": []
     },
     {
-        "id": "1f3d71bd620afb91",
-        "type": "html-to-pdf",
-        "z": "d651ca8f20c9b01d",
-        "name": "raport",
-        "format": "A4",
-        "zoom": 100,
-        "orientation": "Portrait",
-        "width": "",
-        "height": "",
-        "widthUnit": "cm",
-        "heightUnit": "cm",
-        "marginTop": 1,
-        "marginLeft": 1,
-        "marginBottom": 1,
-        "marginRight": 1,
-        "marginTopUnits": "cm",
-        "marginLeftUnits": "cm",
-        "marginBottomUnits": "cm",
-        "marginRightUnits": "cm",
-        "omitBackground": false,
-        "printGraphics": true,
-        "x": 850,
-        "y": 980,
-        "wires": [
-            [
-                "0d9d4b8789fda5db"
-            ]
-        ]
-    },
-    {
-        "id": "473c1d20b71790ea",
+        "id": "d44e6f66caed7b29",
         "type": "ui_form",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
         "label": "",
-        "group": "46e8acd577452cbe",
-        "order": 3,
+        "group": "65a30eb9e76fbcbb",
+        "order": 1,
         "width": 0,
         "height": 0,
         "options": [
@@ -78,32 +48,34 @@
         "y": 200,
         "wires": [
             [
-                "6b0350761903bf3b",
-                "856d1ce325cb8022"
+                "2b4a6f88d221d8ce",
+                "a7b490f3486a04c9"
             ]
         ]
     },
     {
-        "id": "307e29b5a13e7dbd",
+        "id": "714a8414f122abc5",
         "type": "mysql",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "mydb": "a94c2155e352c42e",
         "name": "MySQL Database",
         "x": 530,
         "y": 380,
         "wires": [
             [
-                "6e2378201dba6253",
-                "ef8a9cbc5fc82e29",
-                "b917f172afb67cb0",
-                "4977c42e35c91a4d"
+                "43ab76f691f8d149",
+                "3b8af7b27c702f4c",
+                "747c52d83715bc10",
+                "682e21b69520f511",
+                "01c5ce6fb4d11ace",
+                "c96a3ccc6e6ad78b"
             ]
         ]
     },
     {
-        "id": "6b0350761903bf3b",
+        "id": "2b4a6f88d221d8ce",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "sqlQuery - date_from & date_to",
         "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE('${formattedDateFrom}', '%Y.%m.%d') AND STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE('${formattedDateTo}', '%Y.%m.%d')`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.topic = sqlQuery;\n\nreturn msg;\n",
         "outputs": 1,
@@ -111,55 +83,20 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
+        "x": 210,
         "y": 380,
         "wires": [
             [
-                "307e29b5a13e7dbd",
-                "287dd190c1e967a3"
+                "714a8414f122abc5"
             ]
         ]
     },
     {
-        "id": "0d9d4b8789fda5db",
-        "type": "file",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "filename": "report.pdf",
-        "filenameType": "str",
-        "appendNewline": true,
-        "createDir": true,
-        "overwriteFile": "true",
-        "encoding": "none",
-        "x": 1420,
-        "y": 640,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "287dd190c1e967a3",
-        "type": "debug",
-        "z": "d651ca8f20c9b01d",
-        "name": "debug 17",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "topic",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 420,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "856d1ce325cb8022",
+        "id": "a7b490f3486a04c9",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "function 59",
-        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}_${monthFrom < 10 ? '0' : ''}${monthFrom}_${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}_${monthTo < 10 ? '0' : ''}${monthTo}_${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// msg.payload.date_from = formattedDateFrom;\n// msg.payload.date_to = formattedDateTo;\nmsg.payload = \"<div>raport\" + formattedDateFrom + \"_\" + formattedDateTo+\"</div>\"\nreturn msg;",
+        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}_${monthFrom < 10 ? '0' : ''}${monthFrom}_${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}_${monthTo < 10 ? '0' : ''}${monthTo}_${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// msg.payload.date_from = formattedDateFrom;\n// msg.payload.date_to = formattedDateTo;\nmsg.payload = \"<h1>Raport dla roślinki od \" + formattedDateFrom + \" do\" + formattedDateTo+\"</h1>\"\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -169,35 +106,15 @@
         "y": 740,
         "wires": [
             [
-                "7291d4b6fea1a6b5"
+                "b13744dc02f4686b"
             ]
         ]
     },
     {
-        "id": "6e2378201dba6253",
-        "type": "tableify",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "before": "",
-        "after": "",
-        "tableStyle": "",
-        "theadStyle": "",
-        "tbodyStyle": "",
-        "trStyle": "",
-        "tdStyle": "",
-        "x": 500,
-        "y": 620,
-        "wires": [
-            [
-                "70ec6f541b18f847"
-            ]
-        ]
-    },
-    {
-        "id": "ef8a9cbc5fc82e29",
+        "id": "43ab76f691f8d149",
         "type": "ui_table",
-        "z": "d651ca8f20c9b01d",
-        "group": "c6a946649513ebd8",
+        "z": "42867bee5645236b",
+        "group": "316802793ce8a988",
         "name": "",
         "order": 1,
         "width": 18,
@@ -281,59 +198,9 @@
         "wires": []
     },
     {
-        "id": "b917f172afb67cb0",
-        "type": "debug",
-        "z": "d651ca8f20c9b01d",
-        "name": "debug 18",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 580,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "88678a24c258ed36",
-        "type": "debug",
-        "z": "d651ca8f20c9b01d",
-        "name": "debug 19",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 700,
-        "y": 860,
-        "wires": []
-    },
-    {
-        "id": "0d3052f327f126f4",
-        "type": "function",
-        "z": "d651ca8f20c9b01d",
-        "name": "function 60",
-        "func": "var table = msg.table;\nwhile (table === \"undefined\"){\n    var table = msg.table;\n}\n\nvar raport_header = msg.raport_header;\nwhile (raport_header === \"undefined\") {\n    var raport_header = msg.raport_header;\n}\nif (table != \"undefined\" && raport_header != \"undefined\"){\n    var result = raport_header + \"<div>\" + table + \"</div>\";\n    msg.payload = result;\n    return msg;\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1110,
-        "y": 440,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "70ec6f541b18f847",
+        "id": "a92dd3e6fed86637",
         "type": "change",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
         "rules": [
             {
@@ -350,18 +217,18 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 500,
-        "y": 700,
+        "x": 400,
+        "y": 720,
         "wires": [
             [
-                "7291d4b6fea1a6b5"
+                "b13744dc02f4686b"
             ]
         ]
     },
     {
-        "id": "7291d4b6fea1a6b5",
+        "id": "b13744dc02f4686b",
         "type": "join",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
         "mode": "custom",
         "build": "string",
@@ -376,60 +243,43 @@
         "reduceRight": false,
         "reduceExp": "",
         "reduceInit": "",
-        "reduceInitType": "",
+        "reduceInitType": "num",
         "reduceFixup": "",
-        "x": 590,
-        "y": 940,
+        "x": 450,
+        "y": 1020,
         "wires": [
             [
-                "88678a24c258ed36",
-                "1f3d71bd620afb91"
+                "357f9ca12b0bbc28",
+                "5835aee3c3c46a50"
             ]
         ]
     },
     {
-        "id": "98c42a9b30c2084c",
+        "id": "4af9f885eac09ebb",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "function 61",
-        "func": "let r = msg.payload;\nlet serie = [\"temperature\"];\nlet data = [r.map(v => ({\n    \"x\": v.date,\n    \"y\": parseFloat(v.temperature)\n}))];\n\nmsg.payload = [{ \"series\": serie, \"data\": data }];\nreturn msg;",
+        "func": "let r = msg.payload;\nlet serie = [\"temperature\"];\nlet data =[r.map(v => ({\n    \"x\": v.date,\n    \"y\": parseFloat(v.temperature)\n}))];\n\n\nmsg.payload = [{ \"series\": serie, \"data\": data }];\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 830,
-        "y": 320,
+        "y": 300,
         "wires": [
             [
-                "677e3a5222ec127f",
-                "8e747614b16bd3b9"
+                "4df4d6d887ed6b73"
             ]
         ]
     },
     {
-        "id": "677e3a5222ec127f",
-        "type": "debug",
-        "z": "d651ca8f20c9b01d",
-        "name": "debug 20",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 960,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "8e747614b16bd3b9",
+        "id": "4df4d6d887ed6b73",
         "type": "ui_chart",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
-        "group": "c6a946649513ebd8",
-        "order": 1,
+        "group": "316802793ce8a988",
+        "order": 14,
         "width": 0,
         "height": 0,
         "label": "chart",
@@ -443,7 +293,7 @@
         "ymax": "",
         "removeOlder": 1,
         "removeOlderPoints": "",
-        "removeOlderUnit": "3600",
+        "removeOlderUnit": "86400",
         "cutout": 0,
         "useOneColor": false,
         "useUTC": false,
@@ -461,16 +311,16 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1050,
-        "y": 260,
+        "x": 950,
+        "y": 220,
         "wires": [
             []
         ]
     },
     {
-        "id": "4977c42e35c91a4d",
+        "id": "3b8af7b27c702f4c",
         "type": "change",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
         "rules": [
             {
@@ -488,43 +338,14 @@
         "y": 380,
         "wires": [
             [
-                "98c42a9b30c2084c"
+                "4af9f885eac09ebb"
             ]
         ]
     },
     {
-        "id": "84fe8fcbc58c1a34",
-        "type": "debug",
-        "z": "d651ca8f20c9b01d",
-        "name": "debug 21",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "1355b20ffa014ab6",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": 300,
-        "x": 730,
-        "y": 720,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "dce34fa7.56d7d",
+        "id": "ba5b03d1dac198bf",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Vertical Bar Chart",
         "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'Vertical bar example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
@@ -535,27 +356,14 @@
         "y": 1840,
         "wires": [
             [
-                "12d010c4.fc8e3f"
+                "35ae467b8546885c"
             ]
         ]
     },
     {
-        "id": "12d010c4.fc8e3f",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": "500",
-        "x": 530,
-        "y": 1840,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "68d737f4.5047f8",
+        "id": "46f4386025f7434b",
         "type": "inject",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Vertical Bar",
         "props": [
             {
@@ -577,14 +385,14 @@
         "y": 1840,
         "wires": [
             [
-                "dce34fa7.56d7d"
+                "ba5b03d1dac198bf"
             ]
         ]
     },
     {
-        "id": "5f624f25.98f38",
+        "id": "103be647a25bdc25",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Vertical Bar Chart 2 series",
         "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'Vertical bar with 2 data series'\n        },\n        legend: {\n            display:true\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                backgroundColor:'rgba(127, 184, 57,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\nlet k = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    k = k + Math.floor(Math.random()*6)-3;\n    m.data.datasets[1].data.push(k);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    let month = \"\" + (d.getMonth() + 1);\n    let day = \"\" + d.getDate();\n    let year = d.getFullYear();\n\n    if (month.length < 2) month = '0' + month;\n    if (day.length < 2) day = '0' + day;\n    m.data.labels.push(day + \".\"+month+\".\"+year);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
@@ -595,27 +403,14 @@
         "y": 1900,
         "wires": [
             [
-                "89dfcf39.990ca"
+                "83286978704911a3"
             ]
         ]
     },
     {
-        "id": "89dfcf39.990ca",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": "500",
-        "x": 570,
-        "y": 1900,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "d658d601.f421e8",
+        "id": "684907b62f6196d9",
         "type": "inject",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Vertical Bar",
         "props": [
             {
@@ -637,14 +432,14 @@
         "y": 1900,
         "wires": [
             [
-                "5f624f25.98f38"
+                "103be647a25bdc25"
             ]
         ]
     },
     {
-        "id": "e284de4.fc6a12",
+        "id": "5ac14d2010804aeb",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Line Chart",
         "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Line chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
@@ -656,29 +451,14 @@
         "y": 2000,
         "wires": [
             [
-                "f7e11042.f96d9"
+                "e67577ef7609c2fd"
             ]
         ]
     },
     {
-        "id": "f7e11042.f96d9",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": "500",
-        "x": 530,
-        "y": 2000,
-        "wires": [
-            [
-                "f296dba7c97c84ad"
-            ]
-        ]
-    },
-    {
-        "id": "f9531538.ab1988",
+        "id": "b2b080ef43cae5c1",
         "type": "inject",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Line Chart",
         "props": [
             {
@@ -700,45 +480,33 @@
         "y": 2000,
         "wires": [
             [
-                "e284de4.fc6a12"
+                "5ac14d2010804aeb"
             ]
         ]
     },
     {
-        "id": "4bfe6190.6619c",
+        "id": "696a9ed05cea35b7",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Line Chart 3 series",
         "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Line chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:true,\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n            {\n                label:\"Series 3\",\n                borderColor:'rgba(184, 57, 93,0.8)',\n                fill:false,\n                data:[]\n            }\n        ]\n    }\n}\n\nlet l = Math.floor(Math.random()*50);\nlet k = l;\nlet j = l;\n\nfor (let i=0; i<10; i++) {\n    l = l + Math.floor(Math.random()*6)-3;\n    m.data.datasets[0].data.push(l);\n    k = k + Math.floor(Math.random()*6)-3;\n    m.data.datasets[1].data.push(k);\n    j = j + Math.floor(Math.random()*6)-3;\n    m.data.datasets[2].data.push(j);\n    var d = new Date();\n    d.setTime(now.getTime()-1000*60*60*24*(10-i));\n    m.data.labels.push(dL[d.getDay()]+\", \"+getGetOrdinal(d.getDate()));\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
+        "libs": [],
         "x": 330,
         "y": 2080,
         "wires": [
             [
-                "c86b69d5.68d2d8"
+                "e9fd1808087e32c1"
             ]
         ]
     },
     {
-        "id": "c86b69d5.68d2d8",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": "500",
-        "x": 530,
-        "y": 2080,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "13c25f21.9a6aa1",
+        "id": "cfe54663c19edf1a",
         "type": "inject",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Line Chart",
         "props": [
             {
@@ -760,45 +528,33 @@
         "y": 2080,
         "wires": [
             [
-                "4bfe6190.6619c"
+                "696a9ed05cea35b7"
             ]
         ]
     },
     {
-        "id": "d1ca5ba9.da1338",
+        "id": "ec5a4ee24e4e575d",
         "type": "function",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Doughnut example",
         "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'pie',\n    options: {\n        cutoutPercentage: 50,\n        title: {\n            display:true,\n            text:'Doughnut chart example'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value, context) {\n                    return value > 0 ? context.chart.data.labels[context.dataIndex]+\": \"+value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                backgroundColor:[],\n                borderColor:\"white\",\n                borderWidth:2,\n                data:[]\n            }\n        ]\n    }\n}\n\n\n\nfor (let i=0; i<12; i++) {\n    m.data.datasets[0].data.push(Math.floor(Math.random()*50));\n    m.data.datasets[0].backgroundColor.push(\"hsl(\"+i*360/12+\",100%,50%)\");\n    m.data.labels.push(mL[i]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
+        "libs": [],
         "x": 330,
         "y": 2160,
         "wires": [
             [
-                "4af5b6dc.e60d28"
+                "3d7df85247cb08e5"
             ]
         ]
     },
     {
-        "id": "4af5b6dc.e60d28",
-        "type": "chart-image",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "width": 500,
-        "height": "500",
-        "x": 530,
-        "y": 2160,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "493ec7a4.b98fe8",
+        "id": "9c6cf81d7cf6dbff",
         "type": "inject",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "Line Chart",
         "props": [
             {
@@ -820,37 +576,137 @@
         "y": 2160,
         "wires": [
             [
-                "d1ca5ba9.da1338"
+                "ec5a4ee24e4e575d"
             ]
         ]
     },
     {
-        "id": "f296dba7c97c84ad",
+        "id": "be82aff3c19086a0",
         "type": "file",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
-        "filename": "D:\\Studia\\Magister\\drugi_rok\\semestr_1\\Cyfryzacja systemów produkcyjnych\\projekt\\intelligentPlant2\\wykres.jpg",
+        "filename": "C:\\Users\\Kamil\\Downloads\\wykres.pdf",
         "filenameType": "str",
         "appendNewline": true,
         "createDir": false,
         "overwriteFile": "false",
         "encoding": "none",
-        "x": 1120,
-        "y": 2000,
+        "x": 1350,
+        "y": 2140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7cc01290a6ceab52",
+        "type": "tableify",
+        "z": "42867bee5645236b",
+        "name": "",
+        "before": "Statystyki dla pomiarów",
+        "after": "Następnie przedstawione zostaną wykresy",
+        "tableStyle": "",
+        "theadStyle": "",
+        "tbodyStyle": "",
+        "trStyle": "",
+        "tdStyle": "",
+        "x": 440,
+        "y": 560,
         "wires": [
             [
-                "214e73dc6e29251e"
+                "a92dd3e6fed86637"
             ]
         ]
     },
     {
-        "id": "3c7bafdf15205535",
+        "id": "e0f9cdbaee848f0f",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": 300,
+        "x": 730,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "35ae467b8546885c",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 1840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "83286978704911a3",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 570,
+        "y": 1900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e67577ef7609c2fd",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": "500",
+        "height": "500",
+        "x": 530,
+        "y": 2000,
+        "wires": [
+            [
+                "803aec50.7fc51"
+            ]
+        ]
+    },
+    {
+        "id": "e9fd1808087e32c1",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 2080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d7df85247cb08e5",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 530,
+        "y": 2160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "14e70ec2dca06fa1",
         "type": "html-to-pdf",
-        "z": "d651ca8f20c9b01d",
+        "z": "42867bee5645236b",
         "name": "",
         "format": "A4",
         "zoom": 100,
         "orientation": "Portrait",
+        "width": "",
+        "height": "",
         "widthUnit": "cm",
         "heightUnit": "cm",
         "marginTop": 1,
@@ -863,65 +719,447 @@
         "marginRightUnits": "cm",
         "omitBackground": false,
         "printGraphics": true,
-        "x": 850,
-        "y": 2140,
+        "x": 1130,
+        "y": 2020,
         "wires": [
             [
-                "bfaeb0db144d53a5"
+                "be82aff3c19086a0"
             ]
         ]
     },
     {
-        "id": "bfaeb0db144d53a5",
-        "type": "file",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "filename": "wykre2s.pdf",
-        "filenameType": "str",
-        "appendNewline": true,
-        "createDir": false,
-        "overwriteFile": "false",
-        "encoding": "none",
-        "x": 930,
-        "y": 2200,
+        "id": "803aec50.7fc51",
+        "type": "base64",
+        "z": "42867bee5645236b",
+        "name": "Encode",
+        "action": "",
+        "property": "payload",
+        "x": 700,
+        "y": 1980,
+        "wires": [
+            [
+                "b4187f4d.4be78",
+                "5835aee3c3c46a50"
+            ]
+        ]
+    },
+    {
+        "id": "b4187f4d.4be78",
+        "type": "ui_template",
+        "z": "42867bee5645236b",
+        "group": "65a30eb9e76fbcbb",
+        "name": "Display Image",
+        "order": 5,
+        "width": 17,
+        "height": 9,
+        "format": "<img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,{{msg.payload}}\"/>\n\n",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 920,
+        "y": 2020,
         "wires": [
             []
         ]
     },
     {
-        "id": "214e73dc6e29251e",
-        "type": "template",
-        "z": "d651ca8f20c9b01d",
-        "name": "",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": " <img src=\"D:\\Studia\\Magister\\drugi_rok\\semestr_1\\Cyfryzacja systemów produkcyjnych\\projekt\\intelligentPlant2\\wykres.jpg\" width=\"500\" height=\"600\"> ",
-        "output": "str",
-        "x": 680,
-        "y": 2140,
+        "id": "5fc8f60fcbae984f",
+        "type": "function",
+        "z": "42867bee5645236b",
+        "name": "function 63",
+        "func": "let tabela = msg.payload[1]\nlet wykresy = '<h1>To jest wykres</h1>' + ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' + msg.payload[0] + ' \" />'\n        + '<div style=\"page-break-before:always\">&nbsp;</div>' + '<h1>To jest bargraph</h1>' + ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' + msg.payload[2] + ' \" />';\nmsg.payload =  tabela + wykresy\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 1900,
         "wires": [
             [
-                "3c7bafdf15205535"
+                "14e70ec2dca06fa1",
+                "5b939f5894abf90d"
             ]
         ]
     },
     {
-        "id": "46e8acd577452cbe",
+        "id": "5b939f5894abf90d",
+        "type": "debug",
+        "z": "42867bee5645236b",
+        "name": "debug 23",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "747c52d83715bc10",
+        "type": "function",
+        "z": "42867bee5645236b",
+        "name": "Line Chart",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\nlet r = msg.payload;\n\nlet temp = [r.map(v => parseFloat(v.temperature))];\nlet timeV = [r.map(v =>v.date)];\n    \n\n\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display: true,\n            text: 'Wykres temperatury w czasie'\n        },\n        legend: {\n            display: true,\n        },\n        chartArea: {\n            backgroundColor: 'rgba(255, 255, 255, 0.9)',\n            borderColor: 'rgba(0, 0, 0, 0.1)',\n            borderWidth: 1,\n        },\n        scales: {\n            xAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Czas'\n                },\n                ticks: {\n                    autoSkip: true,\n                    maxTicksLimit: 10\n                }\n            }],\n            yAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Temperatura'\n                }\n            }]\n        },\n        plugins: {\n            datalabels: {\n                display: false,\n                backgroundColor: 'whitesmoke',\n                borderRadius: 1,\n                padding: 1,\n                align: 'right',\n                anchor: function (context) {\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset: 8,\n                formatter: function (value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels: [],\n        datasets: [\n            {\n                label: \"Sample data\",\n                borderColor: 'rgba(57,97,184,0.8)',\n                borderWidth: 2,\n                fill: false,\n                data: [],\n                pointRadius: 2,\n            }\n        ]\n    }\n};\n\n\nfor (let i = 0; i < temp[0].length; i = i + (temp[0].length/100)) {\n    \n    let idx = parseInt(i)\n    console.log(idx);\n    m.data.datasets[0].data.push(temp[0][idx]);\n    // Zamień spację na literę \"T\" i dodaj sufiks \"Z\"\n    let str_date = timeV[0][idx].replace(\" \", \"T\") + \"+01:00\";\n\n    // Utwórz obiekt Date na podstawie przekształconego stringa\n    let dateV = new Date(str_date);\n    m.data.labels.push(dateV.toLocaleString()) }\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 1620,
+        "wires": [
+            [
+                "e67577ef7609c2fd"
+            ]
+        ]
+    },
+    {
+        "id": "682e21b69520f511",
+        "type": "function",
+        "z": "42867bee5645236b",
+        "name": "function 64",
+        "func": "// Przykładowe dane o wilgotności powietrza\nlet r = msg.payload;\n\nlet wilgotnoscPowietrza = r.map(v => parseFloat(v.humidity));\n//let wilgotnoscPowietrza = [50, 60, 70, 75, 80, 85, 90, 92, 95, 98, 100];\n\n// Funkcja do grupowania danych w zakresy\nfunction groupData(data, rangeSize) {\n    let groupedData = {};\n    data.forEach(value => {\n        let rangeKey = Math.floor(value / rangeSize) * rangeSize;\n        if (!groupedData[rangeKey]) {\n            groupedData[rangeKey] = 0;\n        }\n        groupedData[rangeKey]++;\n    });\n    return groupedData;\n}\nlet size = Math.floor((Math.max(...wilgotnoscPowietrza) - Math.min(...wilgotnoscPowietrza)) / 5);\n\n\n// Grupowanie danych w zakresy o szerokości 10\nlet groupedData = groupData(wilgotnoscPowietrza, size);\n\n// Konwersja danych do formatu zrozumiałego dla Chart.js\nlet labels = Object.keys(groupedData).map(rangeKey => `${rangeKey}-${parseInt(rangeKey) + 10}`);\nlet data = Object.values(groupedData);\n\n// Inicjalizacja obiektu wykresu kolumnowego\nlet histogramChart =  {\n    type: 'bar',\n    data: {\n        labels: labels,\n        datasets: [{\n            label: 'Wilgotność powietrza',\n            data: data,\n            backgroundColor: 'rgba(57,97,184,0.8)',\n        }]\n    },\n    options: {\n        title: {\n            display: true,\n            text: 'Histogram Wilgotności Powietrza'\n        },\n        scales: {\n            xAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Zakresy wilgotności'\n                }\n            }],\n            yAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Liczba wystąpień'\n                },\n                ticks: {\n                    beginAtZero: true,\n                    stepSize: 1 // Ustawienie kroku osi Y na 1\n                }\n            }]\n        }\n    }\n};\nmsg.payload = histogramChart\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 1520,
+        "wires": [
+            [
+                "e6945f10650573d3"
+            ]
+        ]
+    },
+    {
+        "id": "e6945f10650573d3",
+        "type": "chart-image",
+        "z": "42867bee5645236b",
+        "name": "",
+        "width": 500,
+        "height": "500",
+        "x": 950,
+        "y": 1480,
+        "wires": [
+            [
+                "659c6e43f29a6644"
+            ]
+        ]
+    },
+    {
+        "id": "659c6e43f29a6644",
+        "type": "base64",
+        "z": "42867bee5645236b",
+        "name": "Encode",
+        "action": "",
+        "property": "payload",
+        "x": 760,
+        "y": 1640,
+        "wires": [
+            [
+                "5e71bb548849ad53",
+                "5835aee3c3c46a50"
+            ]
+        ]
+    },
+    {
+        "id": "5e71bb548849ad53",
+        "type": "ui_template",
+        "z": "42867bee5645236b",
+        "group": "65a30eb9e76fbcbb",
+        "name": "Display Image22",
+        "order": 6,
+        "width": 17,
+        "height": 9,
+        "format": "<img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,{{msg.payload}}\"/>\n\n",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1170,
+        "y": 1560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5835aee3c3c46a50",
+        "type": "join",
+        "z": "42867bee5645236b",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 730,
+        "y": 1780,
+        "wires": [
+            [
+                "5fc8f60fcbae984f"
+            ]
+        ]
+    },
+    {
+        "id": "01c5ce6fb4d11ace",
+        "type": "function",
+        "z": "42867bee5645236b",
+        "name": "function 65",
+        "func": "// Pobierz wyniki zapytania SQL\nconst results = msg.payload;\n\n// Inicjalizuj zmienne do przechowywania maksymalnych, minimalnych i średnich wartości\nlet maxTemperature = Number.MIN_SAFE_INTEGER;\nlet minTemperature = Number.MAX_SAFE_INTEGER;\nlet sumTemperature = 0.0;\n\nlet maxHumidity = Number.MIN_SAFE_INTEGER;\nlet minHumidity = Number.MAX_SAFE_INTEGER;\nlet sumHumidity = 0.0;\n\n\nlet maxS = Number.MIN_SAFE_INTEGER;\nlet minS = Number.MAX_SAFE_INTEGER;\nlet sumS = 0;\n\nlet maxP = Number.MIN_SAFE_INTEGER;\nlet minP = Number.MAX_SAFE_INTEGER;\nlet sumP = 0.0;\nlet licznik = 0.0;\n// Przetwarzaj wyniki, znajdując maksymalne, minimalne i obliczając sumy\nresults.forEach(result => {\n    maxTemperature = Math.max(maxTemperature, result.temperature);\n    minTemperature = Math.min(minTemperature, result.temperature);\n    sumTemperature += parseFloat(result.temperature);\n    licznik +=1.0\n    maxHumidity = Math.max(maxHumidity, result.humidity);\n    minHumidity = Math.min(minHumidity, result.humidity);\n    sumHumidity += parseFloat(result.humidity);\n\n    maxS = Math.max(maxS, result.moilSoilture);\n    minS = Math.min(minS, result.moilSoilture);\n    sumS += parseInt(result.moilSoilture);\n\n    maxP = Math.max(maxP, result.pressure);\n    minP = Math.min(minP, result.pressure);\n    sumP += parseFloat(result.pressure);\n});\n\n// Oblicz średnie wartości\nlet avgTemperature = sumTemperature / licznik;\nlet avgHumidity = sumHumidity / licznik;\nlet avgS = sumS / licznik;\nlet avgP = sumP / licznik;\n\n// Utwórz nowe właściwości msg z nazwami kolumn i wartościami\nmsg.payload = \n    [{ type: \"max\", temp: maxTemperature, humidity: maxHumidity,pressure: maxP , soilMoisture: maxS  },\n    { type: \"min\", temp: minTemperature, humidity: minHumidity, pressure: minP, soilMoisture: minS  },\n    { type: \"avg\", temp: avgTemperature, humidity: avgHumidity, pressure: avgP, soilMoisture: avgS } ]\n    \n;\n\nconsole.log(\"TESST\", licznik,\"TESTTT\", sumP)\n\n\n// Przekazanie nowych danych do bloczku tableify\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 480,
+        "wires": [
+            [
+                "7cc01290a6ceab52",
+                "b0399f87579154b2"
+            ]
+        ]
+    },
+    {
+        "id": "c96a3ccc6e6ad78b",
+        "type": "debug",
+        "z": "42867bee5645236b",
+        "name": "debug 24",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "b0399f87579154b2",
+        "type": "debug",
+        "z": "42867bee5645236b",
+        "name": "debug 25",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "357f9ca12b0bbc28",
+        "type": "change",
+        "z": "42867bee5645236b",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload2",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a934e152bef47e5b",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "65a30eb9e76fbcbb",
+        "order": 2,
+        "width": 17,
+        "height": 1
+    },
+    {
+        "id": "eee2f7b3c4c31b5d",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "65a30eb9e76fbcbb",
+        "order": 3,
+        "width": 17,
+        "height": 1
+    },
+    {
+        "id": "2a4368b5321f6cf8",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "65a30eb9e76fbcbb",
+        "order": 4,
+        "width": 17,
+        "height": 1
+    },
+    {
+        "id": "e230c7e4ba2ccaaa",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 2,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "6b9642ad434f302a",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 3,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "a878551fecfbc056",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 4,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "d3b6f7f314d8d013",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 5,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "c8c4fa1aad8aac5e",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 6,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "5c2920761c6d84d3",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 7,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "8729bac5c89aa80b",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 8,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "4975f45bd5afc957",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 9,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "5e27c57ad523bb09",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 10,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "55148e35f56b4f2d",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 11,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "1bd408a333654a70",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 12,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "06f5e21362d36d44",
+        "type": "ui_spacer",
+        "z": "42867bee5645236b",
+        "name": "spacer",
+        "group": "316802793ce8a988",
+        "order": 13,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "65a30eb9e76fbcbb",
         "type": "ui_group",
         "name": "Zakres czasowy",
-        "tab": "e3a0b8b5379ac4d1",
+        "tab": "dc0406609f1914ba",
         "order": 1,
         "disp": true,
-        "width": "6",
+        "width": 17,
         "collapse": true,
         "className": ""
     },
     {
         "id": "a94c2155e352c42e",
         "type": "MySQLdatabase",
-        "name": "",
+        "name": "cspdatabase",
         "host": "db4free.net",
         "port": "3306",
         "db": "cspdatabase",
@@ -929,10 +1167,10 @@
         "charset": "UTF8"
     },
     {
-        "id": "c6a946649513ebd8",
+        "id": "316802793ce8a988",
         "type": "ui_group",
         "name": "Group 2",
-        "tab": "e3a0b8b5379ac4d1",
+        "tab": "dc0406609f1914ba",
         "order": 2,
         "disp": true,
         "width": "24",
@@ -940,7 +1178,7 @@
         "className": ""
     },
     {
-        "id": "e3a0b8b5379ac4d1",
+        "id": "dc0406609f1914ba",
         "type": "ui_tab",
         "name": "Raport",
         "icon": "chrome_reader_mode",

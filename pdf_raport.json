@@ -31,11 +31,19 @@
                 "type": "date",
                 "required": true,
                 "rows": null
+            },
+            {
+                "label": "Nazwa rośliny",
+                "value": "plant",
+                "type": "text",
+                "required": true,
+                "rows": null
             }
         ],
         "formValue": {
             "date_from": "",
-            "date_to": ""
+            "date_to": "",
+            "plant": ""
         },
         "payload": "",
         "submit": "submit",
@@ -44,12 +52,13 @@
         "topicType": "msg",
         "splitLayout": "",
         "className": "",
-        "x": 90,
-        "y": 200,
+        "x": 70,
+        "y": 80,
         "wires": [
             [
                 "e3804d8801221d39",
-                "f8c0d5f3f8e0f956"
+                "f8c0d5f3f8e0f956",
+                "75a9f21c6bb0aa3e"
             ]
         ]
     },
@@ -60,7 +69,7 @@
         "mydb": "a94c2155e352c42e",
         "name": "MySQL Database",
         "x": 530,
-        "y": 380,
+        "y": 200,
         "wires": [
             [
                 "c050efe97f60f1c8",
@@ -68,14 +77,14 @@
                 "ba995f26a63afa97",
                 "13bef5b7fdfd0e85",
                 "420be431b2ff3af1",
-                "4465d6028e07aec3",
                 "137c36cf0f9e1870",
                 "b2e40a1b4686a1c3",
                 "0b4e22fd6f1fca40",
                 "d09f6c6970f5ecd7",
                 "44b982fd4671d070",
                 "67b5b0e2ef8c67fe",
-                "95e2d37ec6ebbdf7"
+                "95e2d37ec6ebbdf7",
+                "fabe5aab74f6a098"
             ]
         ]
     },
@@ -84,14 +93,15 @@
         "type": "function",
         "z": "fa8f0bbc554d4dba",
         "name": "sqlQuery - date_from & date_to",
-        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\n\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE('${formattedDateFrom}', '%Y.%m.%d') AND STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE('${formattedDateTo}', '%Y.%m.%d')`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.topic = sqlQuery;\n\nreturn msg;\n",
+        "func": "// Pobierz daty z payload\nconst date_from = msg.payload.date_from;\nconst date_to = msg.payload.date_to;\nconst plant  = msg.payload.plant;\n// Utwórz obiekty daty\nconst dateFromObject = new Date(date_from);\nconst dateToObject = new Date(date_to);\n\n// Uzyskaj poszczególne komponenty daty\nconst yearFrom = dateFromObject.getFullYear();\nconst monthFrom = dateFromObject.getMonth() + 1; // Dodajemy 1, ponieważ miesiące są liczone od 0 do 11\nconst dayFrom = dateFromObject.getDate();\n\nconst yearTo = dateToObject.getFullYear();\nconst monthTo = dateToObject.getMonth() + 1;\nconst dayTo = dateToObject.getDate();\n\n// Sformatuj daty w oczekiwanym formacie\nconst formattedDateFrom = `${yearFrom}.${monthFrom < 10 ? '0' : ''}${monthFrom}.${dayFrom < 10 ? '0' : ''}${dayFrom}`;\nconst formattedDateTo = `${yearTo}.${monthTo < 10 ? '0' : ''}${monthTo}.${dayTo < 10 ? '0' : ''}${dayTo}`;\n\n// Utwórz zapytanie SQL z uwzględnieniem zakresu dat\nconst sqlQuery = `SELECT name,timeWatering,temperature, pressure, humidity, moilSoilture, date FROM plant_data WHERE name='${plant}' AND STR_TO_DATE(date, '%Y-%m-%d') >= STR_TO_DATE('${formattedDateFrom}', '%Y.%m.%d') AND STR_TO_DATE(date, '%Y-%m-%d') <= STR_TO_DATE('${formattedDateTo}', '%Y.%m.%d')`;\n\n// Przypisz zapytanie do payload, aby mogło być przekazane do kolejnych węzłów\nmsg.topic = sqlQuery;\n\nreturn msg;\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 210,
-        "y": 380,
+        "x": 230,
+        "y": 200,
         "wires": [
             [
                 "7de2401262133ceb"
@@ -109,8 +119,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 230,
-        "y": 740,
+        "x": 210,
+        "y": 420,
         "wires": [
             [
                 "bc357cff67b6017f"
@@ -200,8 +210,8 @@
         ],
         "outputs": 0,
         "cts": false,
-        "x": 810,
-        "y": 460,
+        "x": 830,
+        "y": 280,
         "wires": []
     },
     {
@@ -225,7 +235,7 @@
         "to": "",
         "reg": false,
         "x": 390,
-        "y": 720,
+        "y": 440,
         "wires": [
             [
                 "bc357cff67b6017f"
@@ -252,8 +262,8 @@
         "reduceInit": "",
         "reduceInitType": "num",
         "reduceFixup": "",
-        "x": 410,
-        "y": 1000,
+        "x": 390,
+        "y": 520,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -264,15 +274,16 @@
         "id": "ecb8ea0e27e67247",
         "type": "function",
         "z": "fa8f0bbc554d4dba",
-        "name": "function 61",
+        "name": "Get temperture ",
         "func": "let r = msg.payload;\nlet serie = [\"temperature\"];\nlet data =[r.map(v => ({\n    \"x\": v.date,\n    \"y\": parseFloat(v.temperature)\n}))];\n\n\nmsg.payload = [{ \"series\": serie, \"data\": data }];\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 830,
-        "y": 300,
+        "x": 1040,
+        "y": 200,
         "wires": [
             [
                 "e0ad9b46904d2bbe"
@@ -317,8 +328,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 950,
-        "y": 220,
+        "x": 1290,
+        "y": 200,
         "wires": [
             []
         ]
@@ -340,8 +351,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 760,
-        "y": 380,
+        "x": 780,
+        "y": 200,
         "wires": [
             [
                 "ecb8ea0e27e67247"
@@ -359,8 +370,8 @@
         "createDir": false,
         "overwriteFile": "true",
         "encoding": "none",
-        "x": 1360,
-        "y": 2140,
+        "x": 1280,
+        "y": 820,
         "wires": [
             [
                 "58e488ed04939dc3"
@@ -379,8 +390,8 @@
         "tbodyStyle": "",
         "trStyle": "",
         "tdStyle": "",
-        "x": 400,
-        "y": 560,
+        "x": 320,
+        "y": 380,
         "wires": [
             [
                 "e3696614ae69b35c"
@@ -394,8 +405,8 @@
         "name": "",
         "width": "500",
         "height": "500",
-        "x": 530,
-        "y": 2000,
+        "x": 450,
+        "y": 660,
         "wires": [
             [
                 "38182f01bbd4cc60"
@@ -424,8 +435,8 @@
         "marginRightUnits": "cm",
         "omitBackground": false,
         "printGraphics": true,
-        "x": 1130,
-        "y": 2020,
+        "x": 1350,
+        "y": 740,
         "wires": [
             [
                 "2be65cba4917fee4"
@@ -438,7 +449,7 @@
         "z": "fa8f0bbc554d4dba",
         "group": "1c470b80cfdc6307",
         "name": "Display Image",
-        "order": 5,
+        "order": 2,
         "width": 17,
         "height": 9,
         "format": "<img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,{{msg.payload}}\"/>\n\n",
@@ -448,7 +459,7 @@
         "templateScope": "local",
         "className": "",
         "x": 960,
-        "y": 2060,
+        "y": 820,
         "wires": [
             []
         ]
@@ -457,37 +468,21 @@
         "id": "9c2face1e18b8228",
         "type": "function",
         "z": "fa8f0bbc554d4dba",
-        "name": "function 63",
+        "name": "Create HTML",
         "func": "let tabela = msg.payload['table2'];\nlet tabela2 = msg.payload['table'];\nlet wykresy =\n        \"<h1>Wykresy:</h1>\" +\n        ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['temperatureChart'] +\n        ' \" />' +\n        '<div style=\"page-break-before:always\">&nbsp;</div>' +\n        ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['pressureChart'] +\n        ' \" />' +\n        '<div style=\"page-break-before:always\">&nbsp;</div>' +\n        ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['soilChart'] +\n        ' \" />' +\n        '<div style=\"page-break-before:always\">&nbsp;</div>' +\n        ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['humidityChart'] +\n        ' \" />' +\n        '<div style=\"page-break-before:always\">&nbsp;</div>' +\n        \"<h1>Bargraph'y:</h1>\" +\n        ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['humidityHistogram'] +\n        ' \" />' +\n         '<div style=\"page-break-before:always\">&nbsp;</div>' +\n         ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n         msg.payload['temperatureHistogram'] +\n          ' \" />' +\n         '<div style=\"page-break-before:always\">&nbsp;</div>' +\n         ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n         msg.payload['soilHistogram'] +\n         ' \" />' +\n         '<div style=\"page-break-before:always\">&nbsp;</div>' +\n ' <img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,' +\n        msg.payload['pressureHistogram']\n         +\n        ' \" />';\nmsg.payload = tabela + wykresy + \"<br>\" + tabela2;\nreturn msg;\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 950,
-        "y": 1900,
+        "x": 1180,
+        "y": 740,
         "wires": [
             [
-                "566defbe77a31b89",
-                "2068e064edd0f218"
+                "566defbe77a31b89"
             ]
         ]
-    },
-    {
-        "id": "2068e064edd0f218",
-        "type": "debug",
-        "z": "fa8f0bbc554d4dba",
-        "name": "debug 23",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1120,
-        "y": 1820,
-        "wires": []
     },
     {
         "id": "ba995f26a63afa97",
@@ -500,8 +495,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 1620,
+        "x": 610,
+        "y": 560,
         "wires": [
             [
                 "6853d59cb027aa81"
@@ -512,15 +507,16 @@
         "id": "13bef5b7fdfd0e85",
         "type": "function",
         "z": "fa8f0bbc554d4dba",
-        "name": "function 64",
+        "name": "temperatueBargraph",
         "func": "\nlet r = msg.payload;\n\nlet wilgotnoscPowietrza = r.map(v => parseFloat(v.humidity));\n//let wilgotnoscPowietrza = [50, 60, 70, 75, 80, 85, 90, 92, 95, 98, 100];\n\n// Funkcja do grupowania danych w zakresy\nfunction groupData(data, rangeSize) {\n    let groupedData = {};\n    data.forEach(value => {\n        let rangeKey = Math.floor(value / rangeSize) * rangeSize;\n        if (!groupedData[rangeKey]) {\n            groupedData[rangeKey] = 0;\n        }\n        groupedData[rangeKey]++;\n    });\n    return groupedData;\n}\nlet size = Math.floor((Math.max(...wilgotnoscPowietrza) - Math.min(...wilgotnoscPowietrza)) / 5);\n\n\n// Grupowanie danych w zakresy o szerokości 10\nlet groupedData = groupData(wilgotnoscPowietrza, size);\n\n// Konwersja danych do formatu zrozumiałego dla Chart.js\n\nlet labels = Object.keys(groupedData).map(\n    (rangeKey) => `${parseInt(rangeKey)}-${(parseInt(rangeKey) + parseInt(size))}`\n);\n\nlet data = Object.values(groupedData);\n\n// Inicjalizacja obiektu wykresu kolumnowego\nlet histogramChart = {\n    type: 'bar',\n    data: {\n        labels: labels,\n        datasets: [{\n            label: 'Wilgotność powietrza',\n            data: data,\n            backgroundColor: 'rgba(57,97,184,0.8)',\n        }]\n    },\n    options: {\n        title: {\n            display: true,\n            text: 'Histogram Wilgotności Powietrza'\n        },\n        scales: {\n            xAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Zakresy wilgotności'\n                }\n            }],\n            yAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Liczba wystąpień'\n                },\n                ticks: {\n                    beginAtZero: true,\n                    stepSize: 1 // Ustawienie kroku osi Y na 1\n                }\n            }]\n        }\n    }\n};\nmsg.payload = histogramChart\nmsg.topic = 'humidityHistogram'\nreturn msg\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 790,
-        "y": 1400,
+        "x": 920,
+        "y": 360,
         "wires": [
             [
                 "ff33280e9d3c400f"
@@ -534,8 +530,8 @@
         "name": "",
         "width": 500,
         "height": "500",
-        "x": 950,
-        "y": 1480,
+        "x": 1110,
+        "y": 360,
         "wires": [
             [
                 "f49b83c54c88c4a9"
@@ -548,7 +544,7 @@
         "z": "fa8f0bbc554d4dba",
         "group": "1c470b80cfdc6307",
         "name": "Display Image22",
-        "order": 6,
+        "order": 3,
         "width": 17,
         "height": 9,
         "format": "<img width=\"500\" height=\"500\" alt=\"image\" src=\"data:image/jpg;base64,{{msg.payload}}\"/>\n\n",
@@ -558,7 +554,7 @@
         "templateScope": "local",
         "className": "",
         "x": 1170,
-        "y": 1560,
+        "y": 600,
         "wires": [
             []
         ]
@@ -583,8 +579,8 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 910,
-        "y": 1780,
+        "x": 1010,
+        "y": 740,
         "wires": [
             [
                 "9c2face1e18b8228"
@@ -595,53 +591,21 @@
         "id": "420be431b2ff3af1",
         "type": "function",
         "z": "fa8f0bbc554d4dba",
-        "name": "function 65",
+        "name": "Table with statistics",
         "func": "// Pobierz wyniki zapytania SQL\nconst results = msg.payload;\n\n// Inicjalizuj zmienne do przechowywania maksymalnych, minimalnych i średnich wartości\nlet maxTemperature = Number.MIN_SAFE_INTEGER;\nlet minTemperature = Number.MAX_SAFE_INTEGER;\nlet sumTemperature = 0.0;\n\nlet maxHumidity = Number.MIN_SAFE_INTEGER;\nlet minHumidity = Number.MAX_SAFE_INTEGER;\nlet sumHumidity = 0.0;\n\n\nlet maxS = Number.MIN_SAFE_INTEGER;\nlet minS = Number.MAX_SAFE_INTEGER;\nlet sumS = 0;\n\nlet maxP = Number.MIN_SAFE_INTEGER;\nlet minP = Number.MAX_SAFE_INTEGER;\nlet sumP = 0.0;\nlet licznik = 0.0;\n// Przetwarzaj wyniki, znajdując maksymalne, minimalne i obliczając sumy\nresults.forEach(result => {\n    maxTemperature = Math.max(maxTemperature, result.temperature);\n    minTemperature = Math.min(minTemperature, result.temperature);\n    sumTemperature += parseFloat(result.temperature);\n    licznik +=1.0\n    maxHumidity = Math.max(maxHumidity, result.humidity);\n    minHumidity = Math.min(minHumidity, result.humidity);\n    sumHumidity += parseFloat(result.humidity);\n\n    maxS = Math.max(maxS, result.moilSoilture);\n    minS = Math.min(minS, result.moilSoilture);\n    sumS += parseInt(result.moilSoilture);\n\n    maxP = Math.max(maxP, result.pressure);\n    minP = Math.min(minP, result.pressure);\n    sumP += parseFloat(result.pressure);\n});\n\n// Oblicz średnie wartości\nlet avgTemperature = sumTemperature / licznik;\nlet avgHumidity = sumHumidity / licznik;\nlet avgS = sumS / licznik;\nlet avgP = sumP / licznik;\n\n// Utwórz nowe właściwości msg z nazwami kolumn i wartościami\nmsg.payload = \n    [{ type: \"max\", temp: maxTemperature, humidity: maxHumidity,pressure: maxP , soilMoisture: maxS  },\n    { type: \"min\", temp: minTemperature, humidity: minHumidity, pressure: minP, soilMoisture: minS  },\n    { type: \"avg\", temp: avgTemperature, humidity: avgHumidity, pressure: avgP, soilMoisture: avgS } ]\n    \n;\n\nconsole.log(\"TESST\", licznik,\"TESTTT\", sumP)\n\n\n// Przekazanie nowych danych do bloczku tableify\nreturn msg;\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
-        "y": 480,
+        "x": 410,
+        "y": 300,
         "wires": [
             [
-                "ebf4fb50a5d9721a",
-                "d304f040e8a0f4b9"
+                "ebf4fb50a5d9721a"
             ]
         ]
-    },
-    {
-        "id": "4465d6028e07aec3",
-        "type": "debug",
-        "z": "fa8f0bbc554d4dba",
-        "name": "debug 24",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 800,
-        "y": 560,
-        "wires": []
-    },
-    {
-        "id": "d304f040e8a0f4b9",
-        "type": "debug",
-        "z": "fa8f0bbc554d4dba",
-        "name": "debug 25",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 880,
-        "y": 660,
-        "wires": []
     },
     {
         "id": "38182f01bbd4cc60",
@@ -650,8 +614,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 700,
-        "y": 1980,
+        "x": 620,
+        "y": 660,
         "wires": [
             [
                 "03c01f63e6ef3e73",
@@ -666,8 +630,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 760,
-        "y": 1640,
+        "x": 860,
+        "y": 600,
         "wires": [
             [
                 "ddee48fe7e511679",
@@ -687,8 +651,8 @@
         "tbodyStyle": "",
         "trStyle": "",
         "tdStyle": "",
-        "x": 540,
-        "y": 600,
+        "x": 560,
+        "y": 420,
         "wires": [
             [
                 "c1a716aa1c06c1a5"
@@ -702,8 +666,8 @@
         "name": "",
         "width": "500",
         "height": "500",
-        "x": 530,
-        "y": 2080,
+        "x": 450,
+        "y": 740,
         "wires": [
             [
                 "35452bf31aea88d1"
@@ -717,8 +681,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 700,
-        "y": 2060,
+        "x": 620,
+        "y": 720,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -732,8 +696,8 @@
         "name": "",
         "width": "500",
         "height": "500",
-        "x": 530,
-        "y": 2180,
+        "x": 450,
+        "y": 840,
         "wires": [
             [
                 "5a14a0d1093630d7"
@@ -747,8 +711,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 700,
-        "y": 2160,
+        "x": 620,
+        "y": 820,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -762,8 +726,8 @@
         "name": "",
         "width": "500",
         "height": "500",
-        "x": 530,
-        "y": 2260,
+        "x": 450,
+        "y": 920,
         "wires": [
             [
                 "f4b3cb66d476e3f6"
@@ -777,8 +741,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 700,
-        "y": 2240,
+        "x": 620,
+        "y": 900,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -796,8 +760,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 2080,
+        "x": 260,
+        "y": 740,
         "wires": [
             [
                 "d71440f891cb28a0"
@@ -809,14 +773,14 @@
         "type": "function",
         "z": "fa8f0bbc554d4dba",
         "name": "soilMoistureChart",
-        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\nlet r = msg.payload;\n\nlet temp = [r.map(v => parseFloat(v.moilSoilture))];\nlet timeV = [r.map(v =>v.date)];\n    \n\n\n\nvar dL = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\nvar dS = [\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\"];\nvar mL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];\nvar mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];\n\nlet now = new Date();\n\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display: true,\n            text: 'Wykres wilgotnosci gleby w czasie'\n        },\n        legend: {\n            display: true,\n        },\n        chartArea: {\n            backgroundColor: 'rgba(255, 255, 255, 0.9)',\n            borderColor: 'rgba(0, 0, 0, 0.1)',\n            borderWidth: 1,\n        },\n        scales: {\n            xAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Czas'\n                },\n                ticks: {\n                    autoSkip: true,\n                    maxTicksLimit: 10\n                }\n            }],\n            yAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'wilgotnosc gleby w %'\n                }\n            }]\n        },\n        plugins: {\n            datalabels: {\n                display: false,\n                backgroundColor: 'whitesmoke',\n                borderRadius: 1,\n                padding: 1,\n                align: 'right',\n                anchor: function (context) {\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset: 8,\n                formatter: function (value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels: [],\n        datasets: [\n            {\n                label: \"moilSoilture\",\n                borderColor: 'rgba(57,97,184,0.8)',\n                borderWidth: 2,\n                fill: false,\n                data: [],\n                pointRadius: 2,\n            }\n        ]\n    }\n};\n\n\nfor (let i = 0; i < temp[0].length; i = i + (temp[0].length/100)) {\n    \n    let idx = parseInt(i)\n    console.log(idx);\n    m.data.datasets[0].data.push(temp[0][idx]);\n    // Zamień spację na literę \"T\" i dodaj sufiks \"Z\"\n    let str_date = timeV[0][idx].replace(\" \", \"T\") + \"+01:00\";\n\n    // Utwórz obiekt Date na podstawie przekształconego stringa\n    let dateV = new Date(str_date);\n    m.data.labels.push(dateV.toLocaleString()) }\n\nmsg.payload = m;\nmsg.topic = 'soilChart'\nreturn msg;\n",
+        "func": "function getGetOrdinal(n) {\n    var s=[\"th\",\"st\",\"nd\",\"rd\"],\n    v=n%100;\n    return n+(s[(v-20)%10]||s[v]||s[0]);\n }\n\nlet r = msg.payload;\n\nlet temp = [r.map(v => parseFloat(v.moilSoilture))];\nlet timeV = [r.map(v =>v.date)];\n  \n\n\n\nlet now = new Date();\n\n\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display: true,\n            text: 'Wykres wilgotnosci gleby w czasie'\n        },\n        legend: {\n            display: true,\n        },\n        chartArea: {\n            backgroundColor: 'rgba(255, 255, 255, 0.9)',\n            borderColor: 'rgba(0, 0, 0, 0.1)',\n            borderWidth: 1,\n        },\n        scales: {\n            xAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'Czas'\n                },\n                ticks: {\n                    autoSkip: true,\n                    maxTicksLimit: 10\n                }\n            }],\n            yAxes: [{\n                scaleLabel: {\n                    display: true,\n                    labelString: 'wilgotnosc gleby w %'\n                }\n            }]\n        },\n        plugins: {\n            datalabels: {\n                display: false,\n                backgroundColor: 'whitesmoke',\n                borderRadius: 1,\n                padding: 1,\n                align: 'right',\n                anchor: function (context) {\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset: 8,\n                formatter: function (value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels: [],\n        datasets: [\n            {\n                label: \"moilSoilture\",\n                borderColor: 'rgba(57,97,184,0.8)',\n                borderWidth: 2,\n                fill: false,\n                data: [],\n                pointRadius: 2,\n            }\n        ]\n    }\n};\n\n\nfor (let i = 0; i < temp[0].length; i = i + (temp[0].length/100)) {\n    \n    let idx = parseInt(i)\n    console.log(idx);\n    m.data.datasets[0].data.push(temp[0][idx]);\n    // Zamień spację na literę \"T\" i dodaj sufiks \"Z\"\n    let str_date = timeV[0][idx].replace(\" \", \"T\") + \"+01:00\";\n\n    // Utwórz obiekt Date na podstawie przekształconego stringa\n    let dateV = new Date(str_date);\n    m.data.labels.push(dateV.toLocaleString()) }\n\nmsg.payload = m;\nmsg.topic = 'soilChart'\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 2180,
+        "x": 250,
+        "y": 840,
         "wires": [
             [
                 "9b0efa805c41c7f0"
@@ -834,8 +798,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 2260,
+        "x": 260,
+        "y": 920,
         "wires": [
             [
                 "ea4ab3dac3ee5ef0"
@@ -857,8 +821,8 @@
         "className": "",
         "topic": "",
         "name": "",
-        "x": 1520,
-        "y": 2120,
+        "x": 1280,
+        "y": 940,
         "wires": []
     },
     {
@@ -870,13 +834,14 @@
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "Pobrano raport",
+        "template": "Pobrano raport w formacie PDF",
         "output": "str",
-        "x": 1400,
-        "y": 2240,
+        "x": 1080,
+        "y": 920,
         "wires": [
             [
-                "b14358d61e8a57d9"
+                "b14358d61e8a57d9",
+                "7df69aebc8059c35"
             ]
         ]
     },
@@ -887,12 +852,13 @@
         "name": "temperature bargraph",
         "func": "let r = msg.payload;\n\nlet wilgotnoscPowietrza = r.map((v) => parseFloat(v.temperature*10));\n//let wilgotnoscPowietrza = [50, 60, 70, 75, 80, 85, 90, 92, 95, 98, 100];\n\n// Funkcja do grupowania danych w zakresy\nfunction groupData(data, rangeSize) {\n    let groupedData = {};\n    data.forEach(value => {\n        let rangeKey = Math.floor(value / rangeSize) * rangeSize;\n        if (!groupedData[rangeKey]) {\n            groupedData[rangeKey] = 0;\n        }\n        groupedData[rangeKey]++;\n    });\n    return groupedData;\n}\nlet size = Math.floor((Math.max(...wilgotnoscPowietrza) - Math.min(...wilgotnoscPowietrza)) / 5);\n\n\n// Grupowanie danych w zakresy o szerokości 10\nlet groupedData = groupData(wilgotnoscPowietrza, size);\n\n// Konwersja danych do formatu zrozumiałego dla Chart.js\n\nlet labels = Object.keys(groupedData).map(\n    (rangeKey) => `${parseInt(rangeKey)/10}-${(parseInt(rangeKey) + parseInt(size))/10}`\n);\n\nlet data = Object.values(groupedData);\n\n// Inicjalizacja obiektu wykresu kolumnowego\nlet histogramChart = {\n    type: \"bar\",\n    data: {\n        labels: labels,\n        datasets: [\n            {\n                label: \"Temperatura powietrza\",\n                data: data,\n                backgroundColor: \"rgba(57,97,184,0.8)\",\n            },\n        ],\n    },\n    options: {\n        title: {\n            display: true,\n            text: \"Histogram temperatury Powietrza\",\n        },\n        scales: {\n            xAxes: [\n                {\n                    scaleLabel: {\n                        display: true,\n                        labelString: \"Zakresy temperatury\",\n                    },\n                },\n            ],\n            yAxes: [\n                {\n                    scaleLabel: {\n                        display: true,\n                        labelString: \"Liczba wystąpień\",\n                    },\n                    ticks: {\n                        beginAtZero: true,\n                        stepSize: 1, // Ustawienie kroku osi Y na 1\n                    },\n                },\n            ],\n        },\n    },\n};\nmsg.payload = histogramChart;\nmsg.topic = 'temperatureHistogram'\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
-        "y": 2480,
+        "x": 240,
+        "y": 980,
         "wires": [
             [
                 "0e6b3290fe5cc63c"
@@ -906,8 +872,8 @@
         "name": "",
         "width": 500,
         "height": "500",
-        "x": 510,
-        "y": 2420,
+        "x": 470,
+        "y": 980,
         "wires": [
             [
                 "e3bef56e991a6636"
@@ -921,8 +887,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 560,
-        "y": 2540,
+        "x": 660,
+        "y": 980,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -940,8 +906,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 310,
-        "y": 2720,
+        "x": 270,
+        "y": 1060,
         "wires": [
             [
                 "4955399cbbf20f16"
@@ -955,8 +921,8 @@
         "name": "",
         "width": 500,
         "height": "500",
-        "x": 510,
-        "y": 2680,
+        "x": 470,
+        "y": 1060,
         "wires": [
             [
                 "c78228ab587fa18b"
@@ -970,8 +936,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 420,
-        "y": 2800,
+        "x": 680,
+        "y": 1060,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -989,8 +955,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 2980,
+        "x": 270,
+        "y": 1120,
         "wires": [
             [
                 "6ec3a145f9b937c6"
@@ -1004,8 +970,8 @@
         "name": "",
         "width": 500,
         "height": "500",
-        "x": 510,
-        "y": 2940,
+        "x": 490,
+        "y": 1120,
         "wires": [
             [
                 "dbfaacb2ebd3895b"
@@ -1019,8 +985,8 @@
         "name": "Encode",
         "action": "",
         "property": "payload",
-        "x": 520,
-        "y": 3040,
+        "x": 680,
+        "y": 1120,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -1046,8 +1012,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 730,
-        "y": 1480,
+        "x": 830,
+        "y": 440,
         "wires": [
             [
                 "92e9a4af4832ad1f"
@@ -1055,37 +1021,77 @@
         ]
     },
     {
-        "id": "1675d3389afefbf5",
-        "type": "ui_spacer",
+        "id": "7df69aebc8059c35",
+        "type": "ui_audio",
         "z": "fa8f0bbc554d4dba",
-        "name": "spacer",
+        "name": "",
         "group": "1c470b80cfdc6307",
-        "order": 2,
-        "width": 17,
-        "height": 1
+        "voice": "Microsoft Adam - Polish (Poland)",
+        "always": true,
+        "x": 1280,
+        "y": 900,
+        "wires": []
     },
     {
-        "id": "0eedb1e05bb57476",
-        "type": "ui_spacer",
+        "id": "6891e3c775877162",
+        "type": "ui_audio",
         "z": "fa8f0bbc554d4dba",
-        "name": "spacer",
-        "group": "1c470b80cfdc6307",
-        "order": 3,
-        "width": 17,
-        "height": 1
+        "name": "",
+        "group": "4f0d5373c4963023",
+        "voice": "Microsoft Paulina - Polish (Poland)",
+        "always": true,
+        "x": 840,
+        "y": 80,
+        "wires": []
     },
     {
-        "id": "60afd63c7a496932",
-        "type": "ui_spacer",
+        "id": "fabe5aab74f6a098",
+        "type": "function",
         "z": "fa8f0bbc554d4dba",
-        "name": "spacer",
-        "group": "1c470b80cfdc6307",
-        "order": 4,
-        "width": 17,
-        "height": 1
+        "name": "Text to generate speech",
+        "func": "\nif (Array.isArray(msg.payload) && msg.payload.length > 0) {\n    // Jeśli payload to lista z obiektami, zrób coś innego    \n    const plant = global.get(\"plant\");;\n    msg.payload = `Generuje raport dla ${plant}, proszę zaczekać`;\n} else {\n    // W przeciwnym razie, zrób coś jeszcze innego\n    msg.payload = \"Nie poprawny odczyt z bazy danych, spróbuj ponownie\";\n}\n\n// Zwróć zmieniony obiekt wiadomości\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 80,
+        "wires": [
+            [
+                "6891e3c775877162"
+            ]
+        ]
     },
     {
-        "id": "5f6824857ec5d07e",
+        "id": "75a9f21c6bb0aa3e",
+        "type": "change",
+        "z": "fa8f0bbc554d4dba",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "plant",
+                "pt": "global",
+                "to": "payload.plant",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "777b322ad2a0b94f",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1095,7 +1101,7 @@
         "height": 1
     },
     {
-        "id": "055da937c6011809",
+        "id": "9e13cf450f92c3d5",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1105,7 +1111,7 @@
         "height": 1
     },
     {
-        "id": "5d1bb0c5f19892a4",
+        "id": "505492d188e60bb2",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1115,7 +1121,7 @@
         "height": 1
     },
     {
-        "id": "2f65d1cfcf118900",
+        "id": "6b40a03c26e4e886",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1125,7 +1131,7 @@
         "height": 1
     },
     {
-        "id": "e698608272bc5626",
+        "id": "ea49875c2e449d57",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1135,7 +1141,7 @@
         "height": 1
     },
     {
-        "id": "ae479cd0b485e122",
+        "id": "54a29132e0e6db58",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1145,7 +1151,7 @@
         "height": 1
     },
     {
-        "id": "fcfda429b14cf96a",
+        "id": "7c4999922df3318c",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1155,7 +1161,7 @@
         "height": 1
     },
     {
-        "id": "2d1771d9693d2d4b",
+        "id": "fd2e6c0e912d3d3a",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1165,7 +1171,7 @@
         "height": 1
     },
     {
-        "id": "59780bc3c2c95106",
+        "id": "a402415bb9ca6b0e",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1175,7 +1181,7 @@
         "height": 1
     },
     {
-        "id": "9ab97a8cd84db4d0",
+        "id": "d85f72b94f2622c9",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1185,7 +1191,7 @@
         "height": 1
     },
     {
-        "id": "2d20095b2dccacda",
+        "id": "bff19681dde0d358",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1195,7 +1201,7 @@
         "height": 1
     },
     {
-        "id": "796a21ec523a7bac",
+        "id": "abd947d01751c5fe",
         "type": "ui_spacer",
         "z": "fa8f0bbc554d4dba",
         "name": "spacer",
@@ -1239,7 +1245,7 @@
     {
         "id": "baab9e3873f5c3b9",
         "type": "ui_tab",
-        "name": "Raport",
+        "name": "Raport2",
         "icon": "chrome_reader_mode",
         "order": 9,
         "disabled": false,

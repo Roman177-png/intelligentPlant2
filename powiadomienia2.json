@@ -1,6 +1,6 @@
 [
     {
-        "id": "e37888bbca76c05e",
+        "id": "ce04df83f63f6b85",
         "type": "tab",
         "label": "Powiadomienia kalendarzowe 2",
         "disabled": false,
@@ -8,14 +8,14 @@
         "env": []
     },
     {
-        "id": "32361d4fc4065111",
+        "id": "89e4f2131cd3ee7c",
         "type": "mqtt in",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "PIR/L1/Z3/buttB",
         "topic": "PIR/L1/Z3/buttB",
         "qos": "2",
         "datatype": "auto-detect",
-        "broker": "aa8c629f747e440f",
+        "broker": "6f12fc18651ff77d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -24,14 +24,14 @@
         "y": 140,
         "wires": [
             [
-                "6b27670591298661"
+                "db511ace04af3b91"
             ]
         ]
     },
     {
-        "id": "6b27670591298661",
+        "id": "db511ace04af3b91",
         "type": "switch",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "property": "payload",
         "propertyType": "msg",
@@ -54,17 +54,17 @@
         "y": 140,
         "wires": [
             [
-                "6c36416806beac0e"
+                "ae431c2bdfa0b41e"
             ],
             [
-                "6c36416806beac0e"
+                "ae431c2bdfa0b41e"
             ]
         ]
     },
     {
-        "id": "6c36416806beac0e",
+        "id": "ae431c2bdfa0b41e",
         "type": "join",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "mode": "custom",
         "build": "string",
@@ -85,14 +85,14 @@
         "y": 140,
         "wires": [
             [
-                "f69b4def05337d6d"
+                "6b3873c57240180a"
             ]
         ]
     },
     {
-        "id": "f69b4def05337d6d",
+        "id": "6b3873c57240180a",
         "type": "switch",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "property": "payload",
         "propertyType": "msg",
@@ -113,17 +113,17 @@
         "y": 380,
         "wires": [
             [
-                "344d19b06246a373"
+                "8186c9aa6ab436bb"
             ],
             [
-                "d326f858c0b99ebb"
+                "e63e2a903e65b607"
             ]
         ]
     },
     {
-        "id": "d7b80ab2bacf70ce",
+        "id": "ba951c65a4280c83",
         "type": "template",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "field": "payload",
         "fieldType": "msg",
@@ -135,15 +135,16 @@
         "y": 320,
         "wires": [
             [
-                "228c871986b48f9b",
-                "c1c69fb82913278f"
+                "11b1132aa2ddd3e4",
+                "fd1a051dea883abd",
+                "966c6a34f4778643"
             ]
         ]
     },
     {
-        "id": "d326f858c0b99ebb",
+        "id": "e63e2a903e65b607",
         "type": "template",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "field": "payload",
         "fieldType": "msg",
@@ -155,15 +156,15 @@
         "y": 420,
         "wires": [
             [
-                "228c871986b48f9b",
-                "c1c69fb82913278f"
+                "11b1132aa2ddd3e4",
+                "fd1a051dea883abd"
             ]
         ]
     },
     {
-        "id": "228c871986b48f9b",
+        "id": "11b1132aa2ddd3e4",
         "type": "change",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "rules": [
             {
@@ -184,9 +185,9 @@
         ]
     },
     {
-        "id": "123c6369875936af",
+        "id": "d5b26f0ab390f248",
         "type": "mqtt in",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "topic": "PIR/L1/Z3/jsonData",
         "qos": "0",
@@ -200,14 +201,14 @@
         "y": 700,
         "wires": [
             [
-                "701e14fbde9a1ed1"
+                "485039cbe2a8088e"
             ]
         ]
     },
     {
-        "id": "701e14fbde9a1ed1",
+        "id": "485039cbe2a8088e",
         "type": "json",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "property": "payload",
         "action": "",
@@ -216,17 +217,19 @@
         "y": 700,
         "wires": [
             [
-                "e6b672a264c0f8cf"
+                "c36ed7fd50ba66a2",
+                "f2dd3baccb0574bb"
             ]
         ]
     },
     {
-        "id": "e6b672a264c0f8cf",
+        "id": "c36ed7fd50ba66a2",
         "type": "function",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "Parsowanie JSON",
         "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\nvar timeWatering = data.timeWatering;\nvar moilSoilture = data.moilSoilture;\nvar temperature = data.temperature;\nvar humidity = data.humidity;\nvar pressure = data.pressure;\n\nvar result = name + \",\\nczas podlewania: \" + timeWatering; \nresult=result+\",\\nparametry:\\n\" \nresult+= moilSoilture+\"% wilgotności gleby w doniczce\\n\"\nresult += temperature + \"stopni celsusza powietrza w otoczeniu\\n\"\nresult += humidity + \"% wilgotności powietrza w otoczeniu\\n\"\nresult += pressure + \"hPa ciśnienia powietrza w otoczeniu\"\n\nmsg.payload=result;\n\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -235,14 +238,14 @@
         "y": 560,
         "wires": [
             [
-                "344d19b06246a373"
+                "8186c9aa6ab436bb"
             ]
         ]
     },
     {
-        "id": "344d19b06246a373",
+        "id": "8186c9aa6ab436bb",
         "type": "join",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "name": "",
         "mode": "custom",
         "build": "string",
@@ -263,14 +266,14 @@
         "y": 320,
         "wires": [
             [
-                "d7b80ab2bacf70ce"
+                "ba951c65a4280c83"
             ]
         ]
     },
     {
-        "id": "c1c69fb82913278f",
+        "id": "fd1a051dea883abd",
         "type": "ui_toast",
-        "z": "e37888bbca76c05e",
+        "z": "ce04df83f63f6b85",
         "position": "top right",
         "displayTime": "3",
         "highlight": "",
@@ -287,7 +290,76 @@
         "wires": []
     },
     {
-        "id": "aa8c629f747e440f",
+        "id": "966c6a34f4778643",
+        "type": "ui_audio",
+        "z": "ce04df83f63f6b85",
+        "name": "",
+        "group": "4f0d5373c4963023",
+        "voice": "",
+        "always": true,
+        "x": 780,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "4007afaae1e23bec",
+        "type": "ui_audio",
+        "z": "ce04df83f63f6b85",
+        "name": "",
+        "group": "4f0d5373c4963023",
+        "voice": "",
+        "always": true,
+        "x": 940,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "f2dd3baccb0574bb",
+        "type": "function",
+        "z": "ce04df83f63f6b85",
+        "name": "Parsowanie JSON",
+        "func": "var data = JSON.parse(msg.payload);\nvar name = data.name;\n\nvar moilSoilture = parseFloat(data.moilSoilture);\nvar temperature = parseFloat(data.temperature);\nvar humidity = parseFloat(data.humidity);\n\n\n// Określ granice dla każdej wartości\nvar maxMoilSoilture = 70; // przykładowa granica dla moilSoilture\nvar maxTemperature = 26;   // przykładowa granica dla temperature\nvar maxHumidity = 60;      // przykładowa granica dla humidity\n\n\n// Sprawdź, czy wartości przekraczają granice\nif (moilSoilture > maxMoilSoilture) {\n    return msg.payload = \"Wartość wilgotności gleby przekracza granicę\";\n} else if (temperature > maxTemperature) {\n    return msg.payload = \"Wartość temperatury przekracza granicę\";\n} else if (humidity > maxHumidity) {\n    return msg.payload = \"Wartość wilgotności przekracza granicę\";\n}  \n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 760,
+        "wires": [
+            [
+                "dd776d7f8f39382b"
+            ]
+        ]
+    },
+    {
+        "id": "dd776d7f8f39382b",
+        "type": "delay",
+        "z": "ce04df83f63f6b85",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "30",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 740,
+        "y": 660,
+        "wires": [
+            [
+                "4007afaae1e23bec"
+            ]
+        ]
+    },
+    {
+        "id": "6f12fc18651ff77d",
         "type": "mqtt-broker",
         "name": "test.mosquitto.org",
         "broker": "test.mosquitto.org",
@@ -339,5 +411,25 @@
         "willMsg": {},
         "userProps": "",
         "sessionExpiry": ""
+    },
+    {
+        "id": "4f0d5373c4963023",
+        "type": "ui_group",
+        "name": "Group 2",
+        "tab": "baab9e3873f5c3b9",
+        "order": 2,
+        "disp": true,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "baab9e3873f5c3b9",
+        "type": "ui_tab",
+        "name": "Raport2",
+        "icon": "chrome_reader_mode",
+        "order": 9,
+        "disabled": false,
+        "hidden": false
     }
 ]
